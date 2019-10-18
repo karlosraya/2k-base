@@ -1,0 +1,22 @@
+﻿<div class="container-scroller">
+      <!-- partial:partials/_navbar.html -->
+	  <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" ng-include="'views/navbar.html'"></nav>
+      
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+		<nav class="sidebar sidebar-offcanvas" id="sidebar" ng-include="'views/sidebar.html'"></nav>
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+			  <div ui-view></div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+		  <footer class="footer" ng-include="'views/footer.html'"></footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>

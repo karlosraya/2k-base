@@ -1,0 +1,35 @@
+﻿<div class="page-header">
+	<h4>Historical Report</h4>
+</div>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Please select house</h4>
+				<p class="card-description"></p>
+				<form>
+					<div class="col-xs-12">
+						<div class="col-md-6" standard-dropdown header="House" 
+							model="vm.selectedHouse" options="vm.houseOptions" 
+							change-action="vm.displayHouseReport()"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-show="vm.displayReport">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">{{vm.houseInfo.name}}</h4>
+				<p class="card-description">Farm Head: {{vm.houseInfo.head}} <br> {{vm.houseInfo.batch}}</p>
+				<div class="col-xs-12" ng-if="vm.houseReport">
+					<standard-table
+						table-defn="vm.historicalReportTableDefn"
+						data="vm.houseReport"></standard-table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

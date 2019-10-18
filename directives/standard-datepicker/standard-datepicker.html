@@ -1,0 +1,9 @@
+<div class="form-group row">
+	<label class="col-sm-12">{{header}}</label>
+	<div class="col-sm-12">
+		<input id="$index" type="text" class="form-control" name="{{header}}"
+			ng-model="model" ng-readonly="readonly" ng-required="required" ng-disabled="readonly"
+			uib-datepicker-popup="{{'MM/dd/yyyy'}}" is-open="open" datepicker-options="dateOptions" 
+			show-button-bar="false" ng-click="open = true" ng-focus="open = true"/>
+	</div>
+</div>

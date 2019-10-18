@@ -1,0 +1,63 @@
+﻿<div class="page-header">
+	<h4>Input</h4>
+</div>
+<div class="row" ng-show="!vm.editing">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Eggs Production</h4>
+				<p class="card-description">Click on Edit to input/update data</p>
+				<div class="col-xs-12">
+					<standard-table
+						table-defn="vm.eggsProdTableDefn""
+						data="vm.eggsProdData"></standard-table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-show="vm.editing">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Eggs Production</h4>
+				<p class="card-description">Complete required input below</p>
+				<form name="eggProdForm" class="form-sample" novalidate>
+					<div class="row">
+						<div class="col-md-6" standard-datepicker header="Date" 
+							model="vm.eggProd.date" readonly="false" required="true"></div>
+						<div class="col-md-6" standard-dropdown header="House" 
+							model="vm.eggProd.house" readonly="false" required="true"
+							options="vm.houseOptions" change-action=""></div>
+					</div>
+					<div class="row">
+						<div standard-number class="col-md-6" header="Feeds" 
+							model="vm.eggProd.feeds" readonly="false" required="true"></div>
+						<div standard-number class="col-md-6" header="Eggs Produced" 
+							model="vm.eggProd.eggsProduced" readonly="false" required="true"></div>
+					</div>
+					<div class="row">
+						<div standard-number class="col-md-12" header="Beginning Bird Balance" 
+							model="vm.eggProd.beginningBirdBalance" readonly="true" required="false"></div>
+					</div>
+					<div class="row">
+						<div standard-number class="col-md-6" header="Cull" 
+							model="vm.eggProd.cull" readonly="false" required="true"
+							change-action="vm.computeEndingBirdBalance()"></div>
+						<div standard-number class="col-md-6" header="Mortality" 
+							model="vm.eggProd.mortality" readonly="false" required="true"
+							change-action="vm.computeEndingBirdBalance()"></div>
+					</div>
+					<div class="row">
+						<div standard-number class="col-md-12" header="Ending Bird Balance" 
+							model="vm.eggProd.endingBirdBalance" readonly="true" required="false"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button class="btn btn-secondary" ng-click="vm.back()">Back</button>
+						<button class="btn btn-dark" ng-click="vm.verifyFields(eggProdForm)">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,19 @@
+﻿<div class="page-header">
+	<h4>House</h4>
+</div>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<div class="col-xs-12">
+					<button class="btn btn-sm btn-dark add-button" ng-click="vm.addHouse()">
+						Add
+					</button>
+					<standard-table
+						table-defn="vm.houseTableDefn"
+						data="vm.houses"></standard-table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

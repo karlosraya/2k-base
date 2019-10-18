@@ -1,0 +1,10 @@
+<div class="form-group row">
+	<label class="col-sm-12">{{header}}</label>
+	<div class="col-sm-12">
+		<select id="$index" class="form-control" name="{{header}}"
+			ng-readonly="readonly" ng-required="required" ng-model="model" ng-disabled="readonly" 
+			ng-change="changeAction()" ng-options="key as value for (key , value) in options">
+			<option value="" disabled></option>
+		</select>
+	</div>
+</div>

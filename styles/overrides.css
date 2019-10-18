@@ -1,0 +1,25 @@
+.form-group label {
+    font-weight: bold;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-sm, .btn-group-sm > .btn {
+    padding: 0.5rem 0.75rem;
+}
+
+table {
+	font-size: 14px;
+}
+
+.table td, .table th {
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.add-button {
+	float: right;
+    margin-bottom: 5px;
+}
