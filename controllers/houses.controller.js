@@ -12,8 +12,11 @@
 		vm.$onInit = init();
 		
 		vm.addHouse = addHouse;
-		
+		vm.verifyFields = verifyFields;
+
 		function init() {
+			vm.houseInfo = {};
+			vm.report = {};
 			vm.houses = getHouses();
 			
 			vm.houseTableDefn = [
@@ -57,7 +60,7 @@
 					attributes: {},
 					isButton: true,
 					buttonLabel: "Edit",
-					buttonAction: editHouseInfo
+					buttonAction: editHouse
 				},
 				{
 					attributes: {},
@@ -73,17 +76,33 @@
 		}
 		
 		function addHouse() {
+			vm.addingHouse = true;
+		}
+		
+		function removeHouse(index) {
 			
 		}
 		
-		function removeHouse() {
-			
+		function editHouse(index) {
+			vm.editingHouse = true;
+			vm.houseInfo = vm.houses[index];
 		}
 		
-		function editHouseInfo() {
-			
+		function verifyFields(form) {
+			if(form.$invalid) {
+				alert("Please complete form!");
+			} else {
+				updateHouse();
+			}
 		}
 		
-		
+		function updateHouse() {
+			vm.editingHouse = false;
+			vm.addingHouse = false;
+
+			layersService.addHouse(vm.houseInfo, vm.report);
+
+			vm.houses = getHouses();
+		}
 	}
 })();

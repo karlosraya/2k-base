@@ -1,7 +1,7 @@
 ﻿<div class="page-header">
 	<h4>House</h4>
 </div>
-<div class="row">
+<div class="row" ng-show="!(vm.editingHouse || vm.addingHouse)">
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
@@ -13,6 +13,46 @@
 						table-defn="vm.houseTableDefn"
 						data="vm.houses"></standard-table>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-show="vm.editingHouse || vm.addingHouse">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">{{vm.editingHouse ? "Edit House" : vm.addingHouse ? "Add House" : null}}</h4>
+				<p class="card-description">Complete required input below</p>
+				<form name="houseForm" class="form-sample" novalidate>
+					<div class="row">
+						<div standard-text class="col-md-6" header="House" 
+							model="vm.houseInfo.name" readonly="false" required="true"></div>
+						<div standard-text class="col-md-6" header="Farm Head" 
+							model="vm.houseInfo.head" readonly="false" required="true"></div>
+					</div>
+					<div class="row">
+						<div standard-text class="col-md-6" header="Batch" 
+							model="vm.houseInfo.batch" readonly="false" required="true"></div>
+						<div standard-number class="col-md-6" header="Bird Balance" 
+							model="vm.report.birdBalance" readonly="false" required="true" ng-if="vm.addingHouse"></div>
+					</div>
+					<div class="row">
+						<div standard-number class="col-md-6" header="Feeds" 
+							model="vm.report.feeds" readonly="false" required="true" ng-if="vm.addingHouse"></div>
+						<div standard-number class="col-md-6" header="Eggs Produced" 
+							model="vm.report.eggProduction" readonly="false" required="true" ng-if="vm.addingHouse"></div>
+					</div>
+					<div class="row">
+						<div standard-number class="col-md-6" header="Cull" 
+							model="vm.report.cull" readonly="false" required="false" ng-if="vm.addingHouse"></div>
+						<div standard-number class="col-md-6" header="Mortality" 
+							model="vm.report.mortality" readonly="false" required="false" ng-if="vm.addingHouse"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button class="btn btn-secondary" ng-click="vm.back()">Back</button>
+						<button class="btn btn-dark" ng-click="vm.verifyFields(houseForm)">Submit</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

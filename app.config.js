@@ -110,7 +110,7 @@
 				resolve: {
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardTable]
+                            files: [standardTable, standardNumber, standardText]
                         }]);
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {

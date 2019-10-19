@@ -8,7 +8,7 @@
         	require: {
                 form: '^'
             },
-        	restrict: 'E',
+        	restrict: 'A',
         	templateUrl: "directives/standard-text/standard-text.html",
             scope: {
             	header:'@',

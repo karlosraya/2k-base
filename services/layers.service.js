@@ -10,13 +10,7 @@
 		var houses = [
 			{houseId: 1, name: "HSE 1", head: "JOMAR CATAMORA", batch: "21TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
 			{houseId: 2, name: "HSE 2", head: "NICOLAS ABELLA", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 3, name: "HSE 3", head: "NICOLAS ABELLA", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 4, name: "HSE 4", head: "REGIE ASI", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 5, name: "HSE 5", head: "REGIE ASI", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 6, name: "HSE 6", head: "RENATO BANO", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 7, name: "HSE 7", head: "RENATO BANO", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 8, name: "HSE 8", head: "JESSIE LIQUE", batch: "18TH-19TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"},
-			{houseId: 9, name: "HSE 9", head: "JESSIE LIQUE", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"}
+			{houseId: 3, name: "HSE 3", head: "NICOLAS ABELLA", batch: "20TH BATCH", lastUpdateBy: "Antonio Raya", lastUpdateTS: "10/17/2019"}
 		];
 		
 		var reports = {
@@ -66,29 +60,12 @@
 					{date: "10/16/2019", feeds: 28, eggProduction: 301, cull: null, mortality: 12},
 					{date: "10/17/2019", feeds: 28, eggProduction: 359, cull: 10, mortality: null},
 					{date: "10/18/2019", feeds: 28, eggProduction: 391, cull: null, mortality: 4}
-				],
-				4: [
-					
-				],
-				5: [
-					
-				],
-				6: [
-					
-				],
-				7: [
-					
-				],
-				8: [
-					
-				],
-				9: [
-					
 				]
 		}
 		
 		var service = {
 			getHouses: getHouses,
+			addHouse: addHouse,
 			getHouseInfo: getHouseInfo,
 			setHouseInfo: setHouseInfo,
 			getHouseOptions: getHouseOptions,
@@ -105,6 +82,30 @@
 			return houses;
 		}
 		
+		function addHouse(house, report) {
+			if(!angular.equals(report, {})) {
+				var houseId = angular.copy(houses[houses.length]);
+				houseId++;
+				house.houseId = houseId;
+				house.lastUpdateBy = "Antonio Raya";
+				house.lastUpdateTS = stringifyDate(new Date());
+
+				houses.push(house);
+				report.date = stringifyDate(new Date());
+				report.cull = report.cull ? report.cull : null;
+				report.mortality = report.mortality ? report.mortality : null;
+				reports[houseId] = [report];
+			} else {
+				houses.forEach(function(h) {
+					if(h.houseId == house.houseId) {
+						h.name = house.name;
+						h.head = house.head;
+						h.batch = house.batch;
+					}
+				});
+			}
+		}
+
 		function getHouseInfo(houseId) {
 			var house = $filter('filter')(houses, {houseId: parseInt(houseId)});
 			return house[0];
@@ -153,8 +154,13 @@
 						}
 						data.beginningBirdBalance = birdBalance;
 					} else if(compareDate(reportDate, currentDate) == 0) {
-						data.beginningBirdBalance = birdBalance;
-						data.endingBirdBalance = previousRecord.birdBalance - report.cull - report.mortality;
+						if(index == 0) {
+							data.beginningBirdBalance = report.birdBalance + report.cull + report.mortality;
+							data.endingBirdBalance = report.birdBalance;
+						} else {
+							data.beginningBirdBalance = birdBalance;
+							data.endingBirdBalance = previousRecord.birdBalance - report.cull - report.mortality;
+						}
 						data.cull =  report.cull;
 						data.mortality = report.mortality;
 						data.feeds = report.feeds;
