@@ -23,3 +23,8 @@ table {
 	float: right;
     margin-bottom: 5px;
 }
+
+.img-xs {
+    width: 70px;
+    height: 80px;
+}

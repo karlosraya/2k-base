@@ -17,31 +17,22 @@
 		vm.back = back;
 		
 		function init() {
-			vm.editing = true;
-			vm.eggProd = {beginningBirdBalance:12623};
-			
-			getHouseOptions();
-			
-			vm.eggsProdData = [
-				{house:1, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:2, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:3, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:4, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:5, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:6, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:7, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:8, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:9, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:10, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:11, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}, 
-				{house:12, mortality: 0, cull: 0, feeds: null, eggsProduced: null, endingBirdBalance: null, beginningBirdBalance: null}
-			];
-			
+			vm.editing = false;
+			vm.houseOptions = getHouseOptions();
+			vm.eggsProdData = getEggProductionData(); 
+
+
 			vm.eggsProdTableDefn = [
 				{
-					name: "house",
+					name: "houseName",
 					attributes: {},
 					label: "House"
+					
+				},
+				{
+					name: "feeds",
+					attributes: {},
+					label: "Feeds"
 					
 				},
 				{
@@ -51,7 +42,7 @@
 					
 				},
 				{
-					name: "birdBalBeg",
+					name: "beginningBirdBalance",
 					attributes: {
 						dataBreakpoints: "md"
 					},
@@ -71,7 +62,7 @@
 					
 				},
 				{
-					name: "birdBalEnd",
+					name: "endingBirdBalance",
 					attributes: {
 						dataBreakpoints: "md"
 					},
@@ -91,13 +82,31 @@
 		}
 		
 		function getHouseOptions() {
-			vm.houseOptions = layersService.getHouseOptions();
+			return layersService.getHouseOptions();
 		}
 		
+		function getEggProductionData() {
+			return layersService.getEggProdData();
+		}
+
+		function getCurrentEggProductionByDate(index) {
+			return layersService.getEggProdDataByDate(index, new Date());
+		}
+
 		function editEggsProd(index) {
 			vm.editing = true;
-			vm.eggProd = {};
-			vm.eggProd = vm.eggsProdData[index];
+
+			vm.eggProd = angular.copy(vm.eggsProdData[index]);
+			vm.eggProd.date = new Date();
+
+			var currentData = getCurrentEggProductionByDate(vm.eggsProdData[index].houseId);
+			if(currentData) {
+				vm.eggProd.eggsProduced = currentData.eggProduction;
+				vm.eggProd.feeds = currentData.feeds;
+				vm.eggProd.mortality = currentData.mortality;
+				vm.eggProd.cull = currentData.cull;
+				vm.eggProd.endingBirdBalance = vm.eggProd.beginningBirdBalance - vm.eggProd.cull - vm.eggProd.mortality;
+			} 
 		}
 		
 		function computeEndingBirdBalance() {
@@ -117,7 +126,8 @@
 		}
 		
 		function submitEggsProd() {
-			//TODO 
+			layersService.insertEggProdData(vm.eggProd);
+			vm.eggsProdData = getEggProductionData(); 
 			vm.editing = false;
 		}
 		

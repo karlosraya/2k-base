@@ -29,13 +29,6 @@
 		
 		//templates
 		
-		//dependencies
-    	var footable = "plugins/footable/compiled/footable.min.js";
-		
-		//styles
-		var footableStyle = "plugins/footable/compiled/footable.bootstrap.css";
-		
-		
     	$urlRouterProvider.otherwise("/login");
         $stateProvider
             .state("login", {
@@ -77,11 +70,6 @@
                 controller: "EggsProductionCtrl",
 	            controllerAs: "vm",
 				resolve: {
-					loadFootable: ["$ocLazyLoad", function($ocLazyLoad) {
-                        return $ocLazyLoad.load([{
-                            files: [footable, footableStyle]
-                        }]);
-                    }],
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             files: [standardTable, standardNumber, standardDatepicker, standardDropdown]
@@ -120,11 +108,6 @@
                 controller: "HousesCtrl",
 	            controllerAs: "vm",
 				resolve: {
-					loadFootable: ["$ocLazyLoad", function($ocLazyLoad) {
-                        return $ocLazyLoad.load([{
-                            files: [footable, footableStyle]
-                        }]);
-                    }],
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             files: [standardTable]
@@ -177,11 +160,6 @@
                 controller: "HistoricalReportsCtrl",
 	            controllerAs: "vm",
 				resolve: {
-					loadFootable: ["$ocLazyLoad", function($ocLazyLoad) {
-                        return $ocLazyLoad.load([{
-                            files: [footable, footableStyle]
-                        }]);
-                    }],
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             files: [standardTable, standardDropdown]

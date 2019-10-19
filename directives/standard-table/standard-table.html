@@ -1,0 +1,17 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th ng-repeat="column in tableDefn">{{column.label}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="row in data" ng-init="parentIndex = $index">
+      <td ng-repeat="column in tableDefn">
+        {{column.isButton ? null : row[column.name]}}
+        <button class="btn btn-sm btn-dark" ng-if="column.isButton" ng-click="column.buttonAction(parentIndex)">
+          {{column.buttonLabel}}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

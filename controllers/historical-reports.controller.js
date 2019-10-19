@@ -120,7 +120,8 @@
 			var previousAge = null;
 			var initialTargetBirdBalance = null;
 			var ctr = 0; 
-			
+			var targetBirdBalanceCtr = 0;
+
 			report.forEach(function(record, index) {
 				if(!record.birdBalance) {
 					record.birdBalance = caluclateActualBirdBalance(previousRecord.birdBalance, record.cull, record.mortality);
@@ -139,17 +140,17 @@
 				}
 				
 				if(ctr == 7) {
-					record.targetBirdBalance = calculateTargetBirdBalance(initialTargetBirdBalance);
+					record.targetBirdBalance = calculateTargetBirdBalance(initialTargetBirdBalance, targetBirdBalanceCtr);
+					targetBirdBalanceCtr+= 0.001;
 					previousAge++;
 					record.age = previousAge;
-					
 					ctr = 0;
 				} else {
 					ctr++; 
 				}
 				previousRecord = record;
 			});
-			console.log(report);
+			
 			return report;
 		}
 		
@@ -158,7 +159,7 @@
 		}
 		
 		function calculateTargetBirdBalance(initialTargetBirdBalance, index) {
-			var target = 0.999;
+			var target = 0.999 - index;
 			return Math.round(initialTargetBirdBalance * target);
 		}
 		

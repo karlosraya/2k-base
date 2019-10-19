@@ -9,7 +9,7 @@
 				<p class="card-description">Click on Edit to input/update data</p>
 				<div class="col-xs-12">
 					<standard-table
-						table-defn="vm.eggsProdTableDefn""
+						table-defn="vm.eggsProdTableDefn"
 						data="vm.eggsProdData"></standard-table>
 				</div>
 			</div>
@@ -25,10 +25,10 @@
 				<form name="eggProdForm" class="form-sample" novalidate>
 					<div class="row">
 						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.eggProd.date" readonly="false" required="true"></div>
+							model="vm.eggProd.date" readonly="true" required="true"></div>
 						<div class="col-md-6" standard-dropdown header="House" 
-							model="vm.eggProd.house" readonly="false" required="true"
-							options="vm.houseOptions" change-action=""></div>
+							model="vm.eggProd.houseId" readonly="true" required="true"
+							options="vm.houseOptions"></div>
 					</div>
 					<div class="row">
 						<div standard-number class="col-md-6" header="Feeds" 
@@ -42,10 +42,10 @@
 					</div>
 					<div class="row">
 						<div standard-number class="col-md-6" header="Cull" 
-							model="vm.eggProd.cull" readonly="false" required="true"
+							model="vm.eggProd.cull" readonly="false" required="false"
 							change-action="vm.computeEndingBirdBalance()"></div>
 						<div standard-number class="col-md-6" header="Mortality" 
-							model="vm.eggProd.mortality" readonly="false" required="true"
+							model="vm.eggProd.mortality" readonly="false" required="false"
 							change-action="vm.computeEndingBirdBalance()"></div>
 					</div>
 					<div class="row">
