@@ -8,6 +8,14 @@
 
 	function LoginCtrl() {
 		var vm = this;
-		console.log("hi");
+		
+		vm.loading = false;
+
+		vm.$onInit = init();
+
+		function init() {
+
+
+		}
 	}
 })();

@@ -1,1 +1,64 @@
-﻿<h4>Customers</h4>
+﻿<div class="page-header">
+	<h4>Customers</h4>
+</div>
+<div class="row" ng-if="!(vm.editingCustomer || vm.addingCustomer)">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<p class="card-description" ng-if="!vm.loading">
+					{{vm.customers && vm.customers.length == 0 ? "No customers found. Click on Add to add a new customer." :
+					  vm.customers && vm.customers.length > 0 ? "Click on Add to add a new customer." : null}}
+				</p>
+				<div class="col-xs-12">
+					<standard-table ng-if="vm.customers && vm.customers.length > 0"
+						table-defn="vm.customerTableDefn"
+						data="vm.customers"></standard-table>
+					<button class="btn btn-dark" ng-click="vm.addCustomer()">
+						Add
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-if="vm.editingCustomer || vm.addingCustomer">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					{{vm.editingCustomer ? "Edit Customer" : vm.addingCustomer ? "Add Customer" : null}}
+				</h4>
+				<p class="card-description">
+					{{vm.editingCustomer ? "Complete required input below and click on Submit to edit customer details." : 
+					  vm.addingCustomer ? "Complete required input below and click on Submit to add a new customer." : null}}
+					
+				</p>
+				<form name="customerForm" class="form-sample" novalidate>
+					<div class="row">
+						<div standard-text class="col-md-6" header="First Name" 
+							model="vm.customerInfo.firstName" required="true"></div>
+						<div standard-text class="col-md-6" header="Last Name" 
+							model="vm.customerInfo.lastName" required="true"></div>
+					</div>
+					<div class="row">
+						<div standard-text class="col-md-6" header="Address" 
+							model="vm.customerInfo.address"></div>
+						<div standard-text class="col-md-6" header="Email" 
+							model="vm.customerInfo.email"></div>
+					</div>
+					<div class="row">
+						<div standard-text class="col-md-6" header="Phone Number" 
+							model="vm.customerInfo.phoneNumber"></div>
+						<div standard-text class="col-md-6" header="Company Name" 
+							model="vm.customerInfo.companyName"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button class="btn btn-dark" ng-click="vm.verifyFields(customerForm)">Submit</button>
+						<button class="btn btn-secondary" ng-click="vm.back()">Back</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

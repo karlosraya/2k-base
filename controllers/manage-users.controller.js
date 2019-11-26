@@ -9,5 +9,13 @@
 	function ManageUsersCtrl() {
 		var vm = this;
 		
+		vm.loading = false;
+
+		vm.$onInit = init();
+
+		function init() {
+
+
+		}
 	}
 })();

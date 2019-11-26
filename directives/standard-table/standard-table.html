@@ -7,10 +7,19 @@
   <tbody>
     <tr ng-repeat="row in data" ng-init="parentIndex = $index">
       <td ng-repeat="column in tableDefn">
-        {{column.isButton ? null : row[column.name]}}
-        <button class="btn btn-sm btn-dark" ng-if="column.isButton" ng-click="column.buttonAction(parentIndex)">
-          {{column.buttonLabel}}
-        </button>
+        <span ng-if="!column.isButton && !column.isLink">
+          {{ filter(row[column.name], column.filter) }}
+        </span>
+        <span ng-if="column.isButton">
+            <button class="btn btn-sm btn-dark" ng-click="column.buttonAction(parentIndex)">
+              {{column.buttonLabel}}
+            </button>
+        </span>
+        <span ng-if="column.isLink">
+            <a href ng-click="column.linkAction(parentIndex)">
+              {{row[column.name] ? row[column.name] : column.default}}
+            </a>
+        </span>
       </td>
     </tr>
   </tbody>

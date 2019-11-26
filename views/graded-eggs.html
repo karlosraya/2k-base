@@ -1,1 +1,87 @@
-﻿<h4>Graded Eggs</h4>
+﻿<div class="page-header">
+	<h4>Input</h4>
+</div>
+<div class="row" ng-show="!vm.editing">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Graded Eggs</h4>
+				<p class="card-description">Click on Edit to input/update data</p>
+				<div class="col-xs-12">
+					<table class="table" id="gradedEggsTable">
+						<thead>
+							<tr>
+								<th class="text-right"></th>
+								<th class="text-center">PWW</th>
+								<th class="text-center">PW</th>
+								<th class="text-center">Pullets</th>
+								<th class="text-center">Small</th>
+								<th class="text-center">Medium</th>
+								<th class="text-center">Large</th>
+								<th class="text-center">Extra Large</th>
+								<th class="text-center">Jumbo</th>
+								<th class="text-center">Crack</th>
+								<th class="text-center">Spoiled</th>
+								<th class="text-center">Totals</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Beginning</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.pww}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.pw}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.pullets}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.small}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.medium}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.large}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.extraLarge}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.jumbo}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.crack}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.spoiled}}</td>
+								<td class="text-center">{{vm.getTotal(vm.gradedEggsBeginning)}}</td>
+							</tr>
+							<tr>
+								<td>Production</td>
+								<td id="prod1" class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.pww"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.pw"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.pullets"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.small"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.medium"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.large"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.extraLarge"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.jumbo"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.crack"></td>
+								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.spoiled"></td>
+								<td class="text-center">{{vm.getTotal(vm.gradedEggsProd)}}</td>
+							</tr>
+							<tr>
+								<td>Available</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.pww + vm.gradedEggsProd.pww}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.pw + vm.gradedEggsProd.pw}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.pullets + vm.gradedEggsProd.pullets}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.small + vm.gradedEggsProd.small}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.medium + vm.gradedEggsProd.medium}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.large + vm.gradedEggsProd.large}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.extraLarge + vm.gradedEggsProd.extraLarge}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.jumbo + vm.gradedEggsProd.jumbo}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.crack + vm.gradedEggsProd.crack}}</td>
+								<td class="text-center">{{vm.gradedEggsBeginning.spoiled + vm.gradedEggsProd.spoiled}}</td>
+								<td class="text-center">{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd)}}</td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<div class="text-right">
+						<button class="btn btn-dark" ng-click="vm.editGradedEggs()" ng-if="!vm.editingGradedEggs">
+							Edit
+						</button>
+						<button class="btn btn-dark" ng-click="vm.submitGradedEggs()" ng-if="vm.editingGradedEggs">
+							Submit
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

@@ -5,13 +5,15 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title">Please select house</h4>
+				<h4 class="card-title">
+					Please select house
+				</h4>
 				<p class="card-description"></p>
 				<form>
 					<div class="col-xs-12">
 						<div class="col-md-6" standard-dropdown header="House" 
 							model="vm.selectedHouse" options="vm.houseOptions" 
-							change-action="vm.displayHouseReport()"></div>
+							change-action="vm.getProductionReports()"></div>
 					</div>
 				</form>
 			</div>
@@ -22,14 +24,101 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title">{{vm.houseInfo.name}}</h4>
-				<p class="card-description">Farm Head: {{vm.houseInfo.head}} <br> {{vm.houseInfo.batch}}</p>
-				<div class="col-xs-12" ng-if="vm.houseReport">
-					<standard-table
-						table-defn="vm.historicalReportTableDefn"
-						data="vm.houseReport"></standard-table>
+				<h4 class="card-title">
+					{{vm.houseInfo.name}}
+				</h4>
+				<div class="row"> 
+					<div class="col-md-6">
+						<p class="card-description">
+							<b>Stockman: </b> {{vm.houseInfo.stockman}} 
+							<br> {{vm.houseInfo.batch}}
+						</p>
+					</div>
+
+					<div class="col-md-6 float-right">
+						<p class="card-description float-right">
+							<b> Initial Bird Balance: </b> {{vm.houseInfo.initialBirdBalance}} <br>
+							<b> Eggs Per HH - Target: </b> {{vm.maxTarget | number : 2}} <br>
+							<b> Eggs Per HH - Actual: </b> {{vm.maxActual | number : 2}}
+						</p>
+					</div>
+				</div>
+
+				<table class="table" ng-if="vm.productionReports && vm.productionReports.length > 0">
+					<thead>
+						<tr>
+							<th>Date</th>
+							<th>Age</th>
+							<th>Cull</th>
+							<th>Mortality</th>
+							<th>Actual Bird Balance</th>
+							<th>Target Bird Balance</th>
+							<th>Actual Production</th>
+							<th>Actual Percentage</th>
+							<th>Target Percentage</th>
+							<th>Target Production</th>
+							<th>Feeds</th>
+							<th>Grams</th>
+							<th>Target</th>
+							<th>Actual</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="report in vm.productionReports">
+							<td>{{report.reportDate | dateFormat}}</td>
+							<td>{{report.age}}</td>
+							<td>{{report.cull}}</td>
+							<td>{{report.mortality}}</td>
+							<td>{{report.birdBalance}}</td>
+							<td>{{report.targetBirdBalance}}</td>
+							<td>{{report.eggProduction}}</td>
+							<td>{{report.actualPercentage | number : 2}}%</td>
+							<td>{{report.targetPercentage || report.targetPercentage  == 0 ? report.targetPercentage + "%" : null}}</td>
+							<td>{{report.targetProduction}}</td>
+							<td>{{report.feeds}}</td>
+							<td>{{report.grams | number : 2}}</td>
+							<td>{{report.target | number : 2}}</td>
+							<td>{{report.actual | number : 2}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" ng-if="vm.displayStats">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					Statistics
+				</h4>
+				<p class="card-description">
+					<button class="btn btn-sm" ng-click="vm.toggleChart(0)"
+						ng-class="{'btn-dark': vm.displayChart == 0, 'btn-inverse-dark': vm.displayChart != 0}">
+						Percentage
+					</button>
+					<button class="btn btn-sm" ng-click="vm.toggleChart(1)"
+						ng-class="{'btn-dark': vm.displayChart == 1, 'btn-inverse-dark': vm.displayChart != 1}">
+						Production
+					</button>
+					<button class="btn btn-sm" ng-click="vm.toggleChart(2)"
+						ng-class="{'btn-dark': vm.displayChart == 2, 'btn-inverse-dark': vm.displayChart != 2}">
+						Remaining
+					</button>
+				</p>
+				<div class="col-xs-12" ng-if="vm.displayChart == 0">
+					 <div id="percentageChart" style="height: 370px; width: 100%;"></div>
+				</div>
+				<div class="col-xs-12" ng-if="vm.displayChart == 1">
+					 <div id="productionChart" style="height: 370px; width: 100%;"></div>
+				</div>
+				<div class="col-xs-12" ng-if="vm.displayChart == 2">
+					 <div id="remainingChart" style="height: 370px; width: 100%;"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

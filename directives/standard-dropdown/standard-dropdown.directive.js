@@ -22,7 +22,8 @@
         }
 
         function link(scope, element, attrs, form) {
-			
+            scope.parentForm = form.form;
+            scope.form = scope.parentForm[scope.header];
         }
     };
 })();

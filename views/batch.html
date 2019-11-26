@@ -1,0 +1,73 @@
+﻿<div class="page-header">
+    <h4>Batch</h4>
+</div>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Please select house</h4>
+				<p class="card-description"></p>
+				<form>
+					<div class="row">
+						<div class="col-md-6" standard-dropdown header="House" 
+	                        model="vm.house.id" readonly="false"
+	                        options="vm.houseOptions"
+	                        change-action="vm.selectHouse()"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-if="vm.house.id">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					{{vm.hasActiveBatch ? 'Edit Batch' : 'Start New Batch'}}
+				</h4>
+				<p class="card-description" >
+					{{vm.hasActiveBatch ? 
+					'Complete required input below and click on Submit to edit batch details.' : 
+					'Complete required input below and click on Submit to start a new batch.'}}
+				</p>
+				<form name="vm.startBatchForm" class="form-sample" novalidate>
+					<div class="row" >
+                        <div class="col-md-6" standard-text class="col-md-12" header="Batch Name" 
+                            model="vm.batch.batch" readonly="false" required="true"></div>
+						<div class="col-md-6" standard-datepicker header="Batch Start Date" 
+                            model="vm.batch.startDate" readonly="false" required="true"></div>
+					</div>
+					<div class="row">
+						<div class="col-md-6" standard-number class="col-md-12" header="Start Age" 
+                            model="vm.batch.startAge" readonly="false" required="true"></div>
+						<div standard-number class="col-md-6" header="Beginning Bird Balance" 
+							model="vm.batch.initialBirdBalance" readonly="false" required="true"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button type="submit" class="btn btn-dark" ng-click="vm.completeBatch()" ng-if="vm.hasActiveBatch">Complete Batch</button>
+						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(vm.startBatchForm)">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-if="vm.house.id">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					Archive
+				</h4>
+				<p class="card-description" >
+					Click on the batch to see archived data.
+				</p>
+				<standard-table ng-if="vm.archivedBatches && vm.archivedBatches.length > 0"
+					table-defn="vm.batchTableDefn"
+					data="vm.archivedBatches"></standard-table>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

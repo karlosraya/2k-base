@@ -3,7 +3,9 @@
 		.module('2kApp')
         .directive("standardTable", standardTable);
 
-    function standardTable() {
+    standardTable.$inject = ['$filter']
+
+    function standardTable($filter) {
         return {
         	restrict: 'E',
         	templateUrl: "directives/standard-table/standard-table.html",
@@ -14,8 +16,17 @@
             link: link
         }
 
-        function link(scope, element, attrs, form) {
-			
+        function link(scope, element, attrs) {
+
+            scope.filter = filter;
+
+			function filter(field, filter) {
+                if(filter) {
+                    return $filter(filter)(field);
+                } else {
+                    return field;
+                }
+            }
         }
     };
 })();

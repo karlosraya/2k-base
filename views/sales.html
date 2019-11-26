@@ -1,0 +1,169 @@
+﻿<div class="page-header">
+	<h4>Input</h4>
+</div>
+<div class="row" ng-show="!vm.editing">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Sales</h4>
+				<p class="card-description">Click on Add to add a sale</p>
+				<div class="col-xs-12">
+					<table class="table" id="gradedEggsTable">
+						<thead>
+							<tr>
+								<th class="text-right"></th>
+								<th class="text-center">PWW</th>
+								<th class="text-center">PW</th>
+								<th class="text-center">Pullets</th>
+								<th class="text-center">Small</th>
+								<th class="text-center">Medium</th>
+								<th class="text-center">Large</th>
+								<th class="text-center">Extra Large</th>
+								<th class="text-center">Jumbo</th>
+								<th class="text-center">Crack</th>
+								<th class="text-center">Spoiled</th>
+								<th class="text-center">Totals</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Available</td>
+								<td class="text-center" ng-repeat="eggSize in vm.eggSizes">{{vm.available[eggSize]}}</td>
+								<td class="text-center">{{vm.getTotal(vm.available)}}</td>
+							</tr>
+							<tr ng-repeat="customer in vm.customers">
+								<td>{{customer.name}}</td>
+								<td class="text-center" ng-repeat="eggSize in vm.eggSizes">{{$parent.customer[eggSize]}}</td>
+								<td class="text-center">{{vm.getTotal(customer)}}</td>
+							</tr>
+							<tr>
+								<td>Total Out</td>
+								<td class="text-center">{{vm.getTotalOut("pww")}}</td>
+								<td class="text-center">{{vm.getTotalOut("pw")}}</td>
+								<td class="text-center">{{vm.getTotalOut("pullets")}}</td>
+								<td class="text-center">{{vm.getTotalOut("small")}}</td>
+								<td class="text-center">{{vm.getTotalOut("medium")}}</td>
+								<td class="text-center">{{vm.getTotalOut("large")}}</td>
+								<td class="text-center">{{vm.getTotalOut("extraLarge")}}</td>
+								<td class="text-center">{{vm.getTotalOut("jumbo")}}</td>
+								<td class="text-center">{{vm.getTotalOut("crack")}}</td>
+								<td class="text-center">{{vm.getTotalOut("spoiled")}}</td>
+								<td class="text-center">{{vm.getTotalOut("all")}}</td>
+                            </tr>
+                            
+							<tr>
+                                <td>Ending</td>
+                                <td class="text-center">{{vm.available.pww - vm.getTotalOut("pww")}}</td>
+                                <td class="text-center">{{vm.available.pw - vm.getTotalOut("pw")}}</td>
+                                <td class="text-center">{{vm.available.pullets - vm.getTotalOut("pullets")}}</td>
+                                <td class="text-center">{{vm.available.small - vm.getTotalOut("small")}}</td>
+                                <td class="text-center">{{vm.available.medium - vm.getTotalOut("medium")}}</td>
+                                <td class="text-center">{{vm.available.large - vm.getTotalOut("large")}}</td>
+                                <td class="text-center">{{vm.available.extraLarge - vm.getTotalOut("extraLarge")}}</td>
+                                <td class="text-center">{{vm.available.jumbo - vm.getTotalOut("jumbo")}}</td>
+                                <td class="text-center">{{vm.available.crack - vm.getTotalOut("crack")}}</td>
+                                <td class="text-center">{{vm.available.spoiled - vm.getTotalOut("spoiled")}}</td>
+                                <td class="text-center">{{vm.getTotal(vm.available) - vm.getTotalOut("all")}}</td>
+                            </tr>
+						</tbody>
+					</table>
+					
+					<div class="text-right">
+						<button class="btn btn-dark" ng-click="vm.addSale()" ng-if="!vm.addingSale">
+							Add
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" ng-if="vm.addingSale">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Add</h4>
+				<p class="card-description">Complete required input below</p>
+				<form name="addSaleForm" class="form-sample" novalidate>
+					<div class="row">
+						<div class="col-md-6" standard-datepicker header="Date" 
+							model="vm.sale.date" readonly="true" required="true"></div>
+						<div class="col-md-6" standard-dropdown header="House" 
+							model="vm.sale.customer" options="vm.customersList"></div>
+					</div>
+					<table class="table" ng-if="vm.sale.customer">
+						<thead>
+							<tr>
+								<th class="text-right"></th>
+								<th class="text-center">PWW</th>
+								<th class="text-center">PW</th>
+								<th class="text-center">Pullets</th>
+								<th class="text-center">Small</th>
+								<th class="text-center">Medium</th>
+								<th class="text-center">Large</th>
+								<th class="text-center">Extra Large</th>
+								<th class="text-center">Jumbo</th>
+								<th class="text-center">Crack</th>
+								<th class="text-center">Spoiled</th>
+								<th class="text-center">Totals</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Available</td>
+								<td class="text-center">{{vm.available.pww}}</td>
+								<td class="text-center">{{vm.available.pw}}</td>
+								<td class="text-center">{{vm.available.pullets}}</td>
+								<td class="text-center">{{vm.available.small}}</td>
+								<td class="text-center">{{vm.available.medium}}</td>
+								<td class="text-center">{{vm.available.large}}</td>
+								<td class="text-center">{{vm.available.extraLarge}}</td>
+								<td class="text-center">{{vm.available.jumbo}}</td>
+								<td class="text-center">{{vm.available.crack}}</td>
+								<td class="text-center">{{vm.available.spoiled}}</td>
+								<td class="text-center">{{vm.getTotal(vm.available)}}</td>
+							</tr>
+							<tr>
+								<td>{{customer.name}}</td>
+								<td class="text-center">{{customer.pww}}</td>
+								<td class="text-center">{{customer.pw}}</td>
+								<td class="text-center">{{customer.pullets}}</td>
+								<td class="text-center">{{customer.small}}</td>
+								<td class="text-center">{{customer.medium}}</td>
+								<td class="text-center">{{customer.large}}</td>
+								<td class="text-center">{{customer.extraLarge}}</td>
+								<td class="text-center">{{customer.jumbo}}</td>
+								<td class="text-center">{{customer.crack}}</td>
+								<td class="text-center">{{customer.spoiled}}</td>
+								<td class="text-center">{{vm.getTotal(customer)}}</td>
+							</tr>
+							<tr>
+                                <td>Ending</td>
+                                <td class="text-center">{{vm.available.pww - vm.getTotalOut("pww")}}</td>
+                                <td class="text-center">{{vm.available.pw - vm.getTotalOut("pw")}}</td>
+                                <td class="text-center">{{vm.available.pullets - vm.getTotalOut("pullets")}}</td>
+                                <td class="text-center">{{vm.available.small - vm.getTotalOut("small")}}</td>
+                                <td class="text-center">{{vm.available.medium - vm.getTotalOut("medium")}}</td>
+                                <td class="text-center">{{vm.available.large - vm.getTotalOut("large")}}</td>
+                                <td class="text-center">{{vm.available.extraLarge - vm.getTotalOut("extraLarge")}}</td>
+                                <td class="text-center">{{vm.available.jumbo - vm.getTotalOut("jumbo")}}</td>
+                                <td class="text-center">{{vm.available.crack - vm.getTotalOut("crack")}}</td>
+                                <td class="text-center">{{vm.available.spoiled - vm.getTotalOut("spoiled")}}</td>
+                                <td class="text-center">{{vm.getTotal(vm.available) - vm.getTotalOut("all")}}</td>
+                            </tr>
+						</tbody>
+					</table>
+					<div class="col-xs-12 text-right">
+						<button type="button" class="btn btn-secondary" ng-click="vm.back()">
+							Back
+						</button>
+						<button class="btn btn-dark" ng-click="vm.submitSale(addSaleForm)">
+							Submit
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

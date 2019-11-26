@@ -241,21 +241,5 @@
 	            NaN
 	        );
 		}
-
-		/*function getHouses() {
-			return $http.post(baseUrl)
-			.then(successCallback, errorCallback);
-
-	        function successCallback(appeals) {
-	            $log.info('INFO: getHouses - Success: ', appeals);
-	            return appeals.data;
-	        }
-	
-	        function errorCallback(error) {
-	            $log.error('ERROR: getHouses - Error: ', error);
-	            return $q.reject(error);
-	        }
-		}*/
-		
 	}
 })();

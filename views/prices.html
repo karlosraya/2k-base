@@ -1,0 +1,134 @@
+﻿<div class="page-header">
+	<h4>Prices</h4>
+</div>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title"></h4>
+				<p class="card-description">
+					{{vm.editingPrices ? "Click on Submit to update default prices." : "Click on Edit to edit default prices."}}
+				</p>
+				<div class="col-xs-12">
+					<form name="pricesForm" novalidate> 
+						<table class="table" id="priceTable">
+							<thead>
+								<tr>
+									<th>PWW</th>
+									<th>PW</th>
+									<th>Pullets</th>
+									<th>Small</th>
+									<th>Medium</th>
+									<th>Large</th>
+									<th>Extra Large</th>
+									<th>Jumbo</th>
+									<th>Crack</th>
+									<th>Spoiled</th>
+									<th ng-if="!vm.editingPrices">Last Update By</th>
+									<th ng-if="!vm.editingPrices">Last Update Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<div standard-currency header="PWW" hide-header="true"
+											model="vm.prices.pww" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.pww | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="PW" hide-header="true"
+											model="vm.prices.pw" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.pw | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Pullets" hide-header="true"
+											model="vm.prices.pullets" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.pullets | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Small" hide-header="true"
+											model="vm.prices.small" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.small | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Medium" hide-header="true"
+											model="vm.prices.medium" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.medium | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Large" hide-header="true"
+											model="vm.prices.large" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.large | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Extra Large" hide-header="true"
+											model="vm.prices.extraLarge" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.extraLarge | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Jumbo" hide-header="true"
+											model="vm.prices.jumbo" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.jumbo | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Crack" hide-header="true"
+											model="vm.prices.crack" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.crack | currency : "₱"}}
+										</span>
+									</td>
+									<td>
+										<div standard-currency header="Spoiled" hide-header="true"
+											model="vm.prices.spoiled" ng-if="vm.editingPrices"></div>
+										<span ng-if="!vm.editingPrices"> 
+											{{vm.prices.spoiled | currency : "₱"}}
+										</span>
+									</td>
+									<td ng-if="!vm.editingPrices">
+										<span> 
+											{{vm.prices.lastInsertUpdateBy}}
+										</span>
+									</td>
+									<td ng-if="!vm.editingPrices">
+										<span> 
+											{{vm.prices.lastInsertUpdateTS | dateFormat}}
+										</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="text-right">
+							<button class="btn btn-dark" ng-click="vm.editPrices(pricesForm)" ng-if="!vm.editingPrices">
+								Edit
+							</button>
+							<button class="btn btn-dark" ng-click="vm.verifyFields(pricesForm)" ng-if="vm.editingPrices">
+								Submit
+							</button>
+							<button class="btn btn-secondary" ng-click="vm.cancel()" ng-if="vm.editingPrices">
+								Cancel
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

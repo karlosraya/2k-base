@@ -7,6 +7,7 @@
         'pascalprecht.translate',
         'ngIdle',
         'ngSanitize',
-		'toaster'		
+		'toaster',
+        'ng-currency'
 	]);
 })();
