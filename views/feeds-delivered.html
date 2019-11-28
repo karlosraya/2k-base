@@ -5,8 +5,15 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title">History</h4>
-				<p class="card-description"></p>
+				<h4 class="card-title">Delivery History</h4>
+				<p class="card-description" ng-if="!vm.loading">
+					{{vm.feedsDeliveryHistory && vm.feedsDeliveryHistory.length == 0 ? "No deliveries found." : null}}
+				</p>
+				<div class="col-xs-12">
+					<standard-table ng-if="vm.feedsDeliveryHistory && vm.feedsDeliveryHistory.length > 0"
+						table-defn="vm.feedsDeliveredTableDefn"
+						data="vm.feedsDeliveryHistory"></standard-table>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,64 +1,63 @@
 ﻿<div class="page-header">
 	<h4>Feeds Delivery</h4>
 </div>
-<div class="row">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">
-					Delivery Date
-				</h4>
-				<p class="card-description">
-					Select a date to edit feeds delivery information for that date.
-				</p>
-				<form>
+
+<form name="deliveryForm" novalidate>
+	<div class="row">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">
+						Delivery Date
+					</h4>
+					<p class="card-description">
+						Select a date to edit feeds delivery information for that date.
+					</p>
 					<div class="col-xs-12">
 						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.delivery.deliveryDate" required="true" change-action="vm.getDeliveryByDate()"></div>
+							model="vm.deliveryDate" required="true" change-action="vm.selectDate(deliveryForm)"></div>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="row" ng-if="vm.displayFeedsDelivery">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">
-					Feeds Delivery
-				</h4>
-				<p class="card-description">
-					Complete required input below and click on Submit to add/edit feeds delivery information.
-				</p>
-				<form name="deliveryForm" novalidate>
+	<div class="row" ng-if="vm.displayFeedsDelivery">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">
+						Feeds Delivery
+					</h4>
+					<p class="card-description">
+						Complete required input below and click on Submit to add/edit feeds delivery information.
+					</p>
 					<div class="row">
 						<div standard-number class="col-md-6" header="Delivery Receipt Number" 
 							model="vm.delivery.deliveryReceiptNo" readonly="false" required="true"></div>
 					</div>
 					<div class="row">
-						<div standard-number class="col-md-6" header="Beginning" 
-							model="vm.delivery.available" readonly="true" required="false"></div>
+						<div standard-text class="col-md-6" header="Beginning" 
+							model="vm.beginningBalance" readonly="true" required="false"></div>
 					</div>
 					<div class="row">
 						<div standard-number class="col-md-6" header="Deliver" 
 							model="vm.delivery.delivery" readonly="false" required="true"
 							change-action="vm.computeBalance()"></div>
 						<div standard-number class="col-md-6" header="Out" 
-							model="vm.delivery.out" readonly="false" required="true"
+							model="vm.delivery.dailyConsumption" readonly="true"
 							change-action="vm.computeBalance()"></div>
 					</div>
 					<div class="row">
-						<div standard-number class="col-md-6" header="Balance" 
-							model="vm.balance" readonly="true" required="false"></div>
+						<div standard-text class="col-md-6" header="Balance" 
+							model="vm.endBalance" readonly="true" required="false"></div>
 					</div>
 					<div class="col-xs-12 text-right">
 						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(deliveryForm)">Submit</button>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</form>
 <loading-spinner is-loading="vm.loading"></loading-spinner>

@@ -204,7 +204,7 @@
 
 			productionService.createUpdateProductionReport(request)
 			.then(function(response) {
-				getProductions(); 
+				getProductionReports(); 
 				vm.editing = false;
 			})
 			.catch(function(error) {

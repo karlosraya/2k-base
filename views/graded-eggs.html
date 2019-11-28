@@ -1,84 +1,85 @@
 ﻿<div class="page-header">
 	<h4>Input</h4>
 </div>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					Graded Eggs Date
+				</h4>
+				<p class="card-description">
+					Select a date to edit graded eggs data for that date.
+				</p>
+				<form>
+					<div class="col-xs-12">
+						<div class="col-md-6" standard-datepicker header="Date" 
+							model="vm.gradedEggsDate" required="true" change-action="vm.selectDate()"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="row" ng-show="!vm.editing">
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
 				<h4 class="card-title">Graded Eggs</h4>
-				<p class="card-description">Click on Edit to input/update data</p>
+				<p class="card-description">
+					{{vm.editingGradedEggs ? "Click on Submit to insert/update graded eggs data.": "Click on Edit to input/update graded eggs data."}}
+				</p>
 				<div class="col-xs-12">
-					<table class="table" id="gradedEggsTable">
-						<thead>
-							<tr>
-								<th class="text-right"></th>
-								<th class="text-center">PWW</th>
-								<th class="text-center">PW</th>
-								<th class="text-center">Pullets</th>
-								<th class="text-center">Small</th>
-								<th class="text-center">Medium</th>
-								<th class="text-center">Large</th>
-								<th class="text-center">Extra Large</th>
-								<th class="text-center">Jumbo</th>
-								<th class="text-center">Crack</th>
-								<th class="text-center">Spoiled</th>
-								<th class="text-center">Totals</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Beginning</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.pww}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.pw}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.pullets}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.small}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.medium}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.large}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.extraLarge}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.jumbo}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.crack}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.spoiled}}</td>
-								<td class="text-center">{{vm.getTotal(vm.gradedEggsBeginning)}}</td>
-							</tr>
-							<tr>
-								<td>Production</td>
-								<td id="prod1" class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.pww"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.pw"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.pullets"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.small"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.medium"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.large"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.extraLarge"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.jumbo"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.crack"></td>
-								<td class="text-center" contenteditable="{{vm.editingGradedEggs}}" ng-model="vm.gradedEggsProd.spoiled"></td>
-								<td class="text-center">{{vm.getTotal(vm.gradedEggsProd)}}</td>
-							</tr>
-							<tr>
-								<td>Available</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.pww + vm.gradedEggsProd.pww}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.pw + vm.gradedEggsProd.pw}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.pullets + vm.gradedEggsProd.pullets}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.small + vm.gradedEggsProd.small}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.medium + vm.gradedEggsProd.medium}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.large + vm.gradedEggsProd.large}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.extraLarge + vm.gradedEggsProd.extraLarge}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.jumbo + vm.gradedEggsProd.jumbo}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.crack + vm.gradedEggsProd.crack}}</td>
-								<td class="text-center">{{vm.gradedEggsBeginning.spoiled + vm.gradedEggsProd.spoiled}}</td>
-								<td class="text-center">{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd)}}</td>
-							</tr>
-						</tbody>
-					</table>
-					
-					<div class="text-right">
-						<button class="btn btn-dark" ng-click="vm.editGradedEggs()" ng-if="!vm.editingGradedEggs">
-							Edit
-						</button>
-						<button class="btn btn-dark" ng-click="vm.submitGradedEggs()" ng-if="vm.editingGradedEggs">
-							Submit
-						</button>
-					</div>
+					<form name="gradedEggsForm">
+						<table class="table" id="gradedEggsTable">
+							<thead>
+								<tr>
+									<th ng-if="!vm.editingGradedEggs"></th>
+									<th ng-repeat="eggType in vm.eggTypes">
+										{{eggType.header}}
+									</th>
+									<th ng-if="!vm.editingGradedEggs">Totals</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-if="!vm.editingGradedEggs">
+									<td>Beginning</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{vm.gradedEggsBeginning[eggType.key]}}
+									</td>
+									<td>{{vm.getTotal(vm.gradedEggsBeginning)}}</td>
+								</tr>
+								<tr>
+									<td  ng-if="!vm.editingGradedEggs">Production</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										<div standard-number header="{{eggType.header}}" hide-header="true"
+												model="vm.gradedEggsProd[eggType.key]" ng-if="vm.editingGradedEggs"></div>
+										{{!vm.editingGradedEggs ? vm.gradedEggsProd[eggType.key] : null}}
+									</td>
+									<td ng-if="!vm.editingGradedEggs">{{vm.getTotal(vm.gradedEggsProd)}}</td>
+								</tr>
+								<tr ng-if="!vm.editingGradedEggs">
+									<td>Available</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{vm.gradedEggsBeginning[eggType.key] + vm.gradedEggsProd[eggType.key]}}
+									</td>
+									<td>{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd)}}</td>
+								</tr>
+							</tbody>
+						</table>
+						
+						<div class="text-right">
+							<button class="btn btn-dark" ng-click="vm.editGradedEggs(gradedEggsForm)" ng-if="!vm.editingGradedEggs">
+								Edit
+							</button>
+							<button class="btn btn-dark" ng-click="vm.verifyFields(gradedEggsForm)" ng-if="vm.editingGradedEggs">
+								Submit
+							</button>
+							<button class="btn btn-secondary" ng-click="vm.back()" ng-if="vm.editingGradedEggs">
+								Back
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

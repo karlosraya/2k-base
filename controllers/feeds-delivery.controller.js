@@ -11,43 +11,31 @@
 		
 		vm.loading = false;
 		vm.displayFeedsDelivery = true;
-		vm.balance = null;
-		vm.beginning = null;
+		vm.endBalance = null;
+		vm.beginningBalance = null;
 		vm.delivery = {};
-		vm.delivery.deliveryDate = new Date();
+		vm.deliveryDate = new Date();
 		vm.$onInit = init();
 
 		vm.computeBalance = computeBalance;
 		vm.verifyFields = verifyFields;
+		vm.selectDate = selectDate;
 
 		function init() {
-			checkExistingRecords();
+			getFeedsDeliveryByDate();
 		}
 
-		function checkExistingRecords() {
+		function getFeedsDeliveryByDate() {
+
 			vm.loading = true;
-
-			feedsDeliveryService.addInitialFeedsBalance()
-			.then(function(response) {
-				console.log(response)
-				if(response) {
-					getFeedsDeliveryByDate(new Date());
-				}
-			})
-			.catch(function(error) {
-				exceptionService.catcher(error);
-				vm.loading = false;
-			});
-		}
-
-		function getFeedsDeliveryByDate(deliveryDate) {
-
-			var requestDate = $filter('date')(deliveryDate, 'yyyy-MM-dd');
+			var requestDate = $filter('date')(vm.deliveryDate, 'yyyy-MM-dd');
 
 			feedsDeliveryService.getFeedsDeliveryByDate(requestDate)
 			.then(function(response) {
 				if(response) {
 					vm.delivery = response;
+					vm.beginningBalance = vm.delivery.totalAvailable - vm.delivery.totalConsumption;
+					computeBalance();
 				}
 				vm.loading = false;
 			})
@@ -57,8 +45,22 @@
 			});
 		}
 
-		function computeBalance() {
+		function selectDate(form) {
+			form.$submitted = false;
+			form.$setUntouched();
+			form.$setPristine();
+			$timeout(function() {
+				getFeedsDeliveryByDate();
+			});
+		}
 
+		function computeBalance() {
+			$timeout(function() {
+				var delivery = vm.delivery.delivery ? vm.delivery.delivery  : 0;
+				var totalAvailable = parseInt(vm.delivery.totalAvailable);
+				
+				vm.endBalance = totalAvailable + delivery - vm.delivery.totalConsumption - vm.delivery.dailyConsumption;
+			});
 		}
 
 		function verifyFields(form) {
@@ -72,7 +74,20 @@
 		}
 
 		function submitDelivery() {
+			vm.loading = true;
 
+			var request = angular.copy(vm.delivery);
+			request.deliveryDate = $filter('date')(vm.deliveryDate, 'yyyy-MM-dd');
+			request.lastInsertUpdateBy = "Antonio Raya";
+
+			feedsDeliveryService.createUpdateFeedsDelivery(request)
+			.then(function(response) {
+				getFeedsDeliveryByDate();
+			})
+			.catch(function(error) {
+				exceptionService.catcher(error);
+				vm.loading = false;
+			});
 		}
 	}
 })();

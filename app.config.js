@@ -55,6 +55,7 @@
         var exceptionService = "services/exception.service.js";
         var pricesService = "services/prices.service.js";
         var customerService = "services/customer.service.js";
+        var gradedEggsService = "services/graded-eggs.service.js";
 
 		//templates
         var loginTemplate = "views/login.html";
@@ -185,7 +186,12 @@
 				resolve: {
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [contentEditable]
+                            files: [standardNumber, standardDatepicker]
+                        }]);
+                    }],
+                    loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [gradedEggsService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {

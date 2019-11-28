@@ -14,7 +14,8 @@
             	header:'@',
 				model:'=',
 				readonly: '=',
-				required: '='
+				required: '=',
+                changeAction: "&"
             },
             link: link
         }

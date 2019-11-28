@@ -19,10 +19,8 @@
 		return service;
 		
 		function getFeedsDeliveryByDate(deliveryDate) {
-			var request = {};
-			request.date = deliveryDate;
 
-			return $http.post(baseUrl + 'feeds-delivery/date', request)
+			return $http.get(baseUrl + 'feeds-delivery/' + deliveryDate)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {

@@ -12,6 +12,7 @@
         	templateUrl: "directives/standard-number/standard-number.html",
             scope: {
             	header:'@',
+                hideHeader: '=',
 				model:'=',
 				readonly: '=',
 				required: '=',
