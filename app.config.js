@@ -45,7 +45,6 @@
         var dateFilter = "filters/date-format.filter.js";
 
 		//services
-		var layersService = "services/layers.service.js";
 		var houseService = "services/house.service.js";
         var batchService = "services/batch.service.js";
         var productionService = "services/production.service.js";
@@ -56,6 +55,7 @@
         var pricesService = "services/prices.service.js";
         var customerService = "services/customer.service.js";
         var gradedEggsService = "services/graded-eggs.service.js";
+        var invoiceService = "services/invoice.service.js";
 
 		//templates
         var loginTemplate = "views/login.html";
@@ -211,6 +211,11 @@
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             files: [contentEditable, standardNumber, standardDatepicker, standardDropdown]
+                        }]);
+                    }],
+                    loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [customerService, pricesService, invoiceService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {

@@ -86,3 +86,36 @@ select.form-control {
 .fixed-top {
     position: absolute;
 }
+
+.invoice-wrapper {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #3e4b5b;
+    margin: .75rem 0px;
+}
+
+.invoice-header {
+    background-color: #3e4b5b;
+    color: #ffffff;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.invoice-body {
+    padding: 5px;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.table-input {
+    padding: 5px !important;
+    height: 2rem;
+}
+
+.select-is-invalid {
+    border: 1px solid #dc3545 !important;
+    background: #de778138;
+}

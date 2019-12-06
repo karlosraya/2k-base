@@ -68,7 +68,6 @@
 				vm.eggTypes.forEach(function(eggType) {
 					total += gradedEggs[eggType.key] ? gradedEggs[eggType.key] : 0;
 				});
-
 				return total;
 			} else {
 				return null;
@@ -91,7 +90,7 @@
 			if(form.$invalid) {
 				toasterService.error("Error", "There are incomplete required fields!");
 			} else if(form.$pristine) {
-				toasterService.error("Error", "No changes were made to the fields!");
+				toasterService.warning("warning", "No changes were made to the fields!");
 			} else {
 				submitGradedEggs();
 			}

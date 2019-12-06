@@ -155,8 +155,6 @@
 
 					initStat(); 
 				})
-				.catch(function(error) {
-					console.log(error);
 					vm.displayReport = false;
 					vm.loading = false;
 					exceptionService.catcher(error);

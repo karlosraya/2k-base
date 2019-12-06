@@ -67,7 +67,7 @@
 			if(form.$invalid) {
 				toasterService.error("Error", "There are incomplete required fields!");
 			} else if(form.$pristine) {
-				toasterService.error("Error", "No changes were made to the fields!");
+				toasterService.warning("Warning", "No changes were made to the fields!");
 			} else {
 				submitDelivery();
 			}

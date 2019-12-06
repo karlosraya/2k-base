@@ -11,13 +11,14 @@
 		
 		vm.loading = false;
 		vm.eggProdForm = null;
-		vm.prodReportDate = new Date();
+		vm.reportDate = new Date();
 		vm.houseOptions = {};
 		vm.eggsProductionData = [];
 		vm.productions = [];
 
 		vm.$onInit = init();
 		
+		vm.selectDate = selectDate;
 		vm.verifyFields = verifyFields;
 		vm.submitEggsProd = submitEggsProd;
 		vm.getEndingBirdBalance = getEndingBirdBalance;
@@ -26,7 +27,7 @@
 		function init() {
 			vm.editing = false;
 
-			getProductionReports();
+			getProductionReportsByDate();
 
 			vm.eggsProdTableDefn = [
 				{
@@ -87,18 +88,32 @@
 			];
 		}
 		
-		function getProductionReports() {
+		function getProductionReportsByDate(updated) {
 			vm.loading = true;
-			productionService.getProductionReports()
+
+			var reportDate = $filter('date')(vm.reportDate, "yyyy-MM-dd");
+
+			productionService.getProductionReportsByDate(reportDate)
 			.then(function(response) {
 				vm.productions = response;
 				getHouseOptions(response);
 				processEggsProductionData();
 				vm.loading = false;
+
+				if(updated) {
+					toasterService.success("Success", "Input data successfully updated!");
+				}
 			})
 			.catch(function(error) {
 				exceptionService.catcher(error);
 				vm.loading = false;
+			});
+		}
+
+		function selectDate() {
+			$timeout(function() {
+				getProductionReportsByDate();
+				vm.editing = false;
 			});
 		}
 
@@ -131,7 +146,7 @@
 				eggProdData.beginningBirdBalance = computeBeginningBirdBalance(prod.initialBirdBalance, prod.productions);
 				eggProdData.endingBirdBalance = computeEndingBirdBalance(eggProdData.beginningBirdBalance, eggProdData.cull, eggProdData.mortality);; 
 
-				eggProdData.reportDate = new Date();
+				eggProdData.reportDate = vm.reportDate;
 
 				vm.eggsProductionData.push(eggProdData);
 			});
@@ -152,7 +167,7 @@
 		}
 
 		function getDailyReport(array, property) {
-			var currentDate = new Date;
+			var currentDate = angular.copy(vm.reportDate);
 			currentDate.setHours(0,0,0,0);
 
 			if(array && array.length > 0) {
@@ -188,7 +203,7 @@
 			if(vm.eggProdForm.$invalid) {
 				toasterService.error("Error", "There are incomplete required fields!");
 			} else if(vm.eggProdForm.$pristine) {
-				toasterService.error("Error", "No changes were made to the fields!");
+				toasterService.warning("Warning", "No changes were made to the fields!");
 			} else {
 				submitEggsProd();
 			}
@@ -199,12 +214,11 @@
 
 			var request = angular.copy(vm.eggProd);
 			request.lastInsertUpdateBy = "Antonio Raya";
-			request.lastInsertUpdateTS =  $filter('date')(new Date(), 'yyyy-MM-dd hh:mm:ss');
 			request.reportDate = $filter('date')(request.reportDate, 'yyyy-MM-dd');
 
 			productionService.createUpdateProductionReport(request)
 			.then(function(response) {
-				getProductionReports(); 
+				getProductionReportsByDate(true); 
 				vm.editing = false;
 			})
 			.catch(function(error) {

@@ -11,6 +11,7 @@
 
 		var service = {
 			getProductionReports: getProductionReports,
+			getProductionReportsByDate: getProductionReportsByDate,
 			getProductionReportsByHouse: getProductionReportsByHouse,
 			createUpdateProductionReport: createUpdateProductionReport
 		};
@@ -28,6 +29,21 @@
 
 			function errorCallback(error) {
 				$log.error("ERROR: getProductionReports", error);
+				return $q.reject(error);
+			}
+		}
+
+		function getProductionReportsByDate(date) {
+			return $http.get(baseUrl + 'production/upto/' + date)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: getProductionReportsByDate", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: getProductionReportsByDate", error);
 				return $q.reject(error);
 			}
 		}

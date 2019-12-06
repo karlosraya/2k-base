@@ -1,169 +1,243 @@
 ﻿<div class="page-header">
 	<h4>Input</h4>
 </div>
-<div class="row" ng-show="!vm.editing">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">Sales</h4>
-				<p class="card-description">Click on Add to add a sale</p>
-				<div class="col-xs-12">
-					<table class="table" id="gradedEggsTable">
-						<thead>
-							<tr>
-								<th class="text-right"></th>
-								<th class="text-center">PWW</th>
-								<th class="text-center">PW</th>
-								<th class="text-center">Pullets</th>
-								<th class="text-center">Small</th>
-								<th class="text-center">Medium</th>
-								<th class="text-center">Large</th>
-								<th class="text-center">Extra Large</th>
-								<th class="text-center">Jumbo</th>
-								<th class="text-center">Crack</th>
-								<th class="text-center">Spoiled</th>
-								<th class="text-center">Totals</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Available</td>
-								<td class="text-center" ng-repeat="eggSize in vm.eggSizes">{{vm.available[eggSize]}}</td>
-								<td class="text-center">{{vm.getTotal(vm.available)}}</td>
-							</tr>
-							<tr ng-repeat="customer in vm.customers">
-								<td>{{customer.name}}</td>
-								<td class="text-center" ng-repeat="eggSize in vm.eggSizes">{{$parent.customer[eggSize]}}</td>
-								<td class="text-center">{{vm.getTotal(customer)}}</td>
-							</tr>
-							<tr>
-								<td>Total Out</td>
-								<td class="text-center">{{vm.getTotalOut("pww")}}</td>
-								<td class="text-center">{{vm.getTotalOut("pw")}}</td>
-								<td class="text-center">{{vm.getTotalOut("pullets")}}</td>
-								<td class="text-center">{{vm.getTotalOut("small")}}</td>
-								<td class="text-center">{{vm.getTotalOut("medium")}}</td>
-								<td class="text-center">{{vm.getTotalOut("large")}}</td>
-								<td class="text-center">{{vm.getTotalOut("extraLarge")}}</td>
-								<td class="text-center">{{vm.getTotalOut("jumbo")}}</td>
-								<td class="text-center">{{vm.getTotalOut("crack")}}</td>
-								<td class="text-center">{{vm.getTotalOut("spoiled")}}</td>
-								<td class="text-center">{{vm.getTotalOut("all")}}</td>
-                            </tr>
-                            
-							<tr>
-                                <td>Ending</td>
-                                <td class="text-center">{{vm.available.pww - vm.getTotalOut("pww")}}</td>
-                                <td class="text-center">{{vm.available.pw - vm.getTotalOut("pw")}}</td>
-                                <td class="text-center">{{vm.available.pullets - vm.getTotalOut("pullets")}}</td>
-                                <td class="text-center">{{vm.available.small - vm.getTotalOut("small")}}</td>
-                                <td class="text-center">{{vm.available.medium - vm.getTotalOut("medium")}}</td>
-                                <td class="text-center">{{vm.available.large - vm.getTotalOut("large")}}</td>
-                                <td class="text-center">{{vm.available.extraLarge - vm.getTotalOut("extraLarge")}}</td>
-                                <td class="text-center">{{vm.available.jumbo - vm.getTotalOut("jumbo")}}</td>
-                                <td class="text-center">{{vm.available.crack - vm.getTotalOut("crack")}}</td>
-                                <td class="text-center">{{vm.available.spoiled - vm.getTotalOut("spoiled")}}</td>
-                                <td class="text-center">{{vm.getTotal(vm.available) - vm.getTotalOut("all")}}</td>
-                            </tr>
-						</tbody>
-					</table>
-					
-					<div class="text-right">
-						<button class="btn btn-dark" ng-click="vm.addSale()" ng-if="!vm.addingSale">
-							Add
+<form name="addSaleForm" class="form-sample" novalidate>
+	<div class="row">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">
+						{{vm.addingInvoice ? "Add Invoice" : null}}
+						{{!vm.addingInvoice ? "Sales Date" : null}}
+					</h4>
+					<div class="row">
+						<div class="col-md-6" standard-datepicker header="Date" 
+							model="vm.selectedDate" required="true" readonly="vm.addingInvoice"
+							change-action="vm.selectDate()"></div>
+						<div class="col-md-6" ng-if="vm.addingInvoice" standard-dropdown header="Customer" 
+							model="vm.invoice.customerId" options="vm.customersList" required="true"
+							change-action="vm.setCustomer()"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" ng-show="!vm.addingInvoice && vm.displaySales">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">Sales</h4>
+					<p class="card-description">Click on Add to add an invoice or click on the Invoice Number to view/edit invoice.</p>
+					<div class="col-xs-12">
+						<table class="table" id="gradedEggsTable">
+							<thead>
+								<tr>
+									<th></th>
+									<th ng-repeat="eggType in vm.eggTypes">
+										{{eggType.header}}
+									</th>
+									<th>Totals</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Available</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{vm.available[eggType.key]}}
+									</td>
+									<td>
+										{{vm.getTotal(vm.available)}}
+									</td>
+								</tr>
+								<tr ng-repeat="invoice in vm.invoices">
+									<td>
+										{{invoice.firstName + " " + invoice.lastName}} 
+										(<a href ng-click="getInvoice(invoice.id)">{{invoice.invoiceNumber}}</a>)
+									</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{$parent.invoice.eggsSold[eggType.key]}}
+									</td>
+									<td>
+										{{vm.getInvoiceTotal(invoice.eggsSold)}}
+									</td>
+								</tr>
+								<tr>
+									<td>Total Out</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{vm.getTotalOut(eggType.key)}}
+									</td>
+									<td>
+										{{vm.getInvoicesTotalOut()}}
+									</td>
+	                            </tr>
+	                            
+								<tr>
+	                                <td>Ending</td>
+	                                <td ng-repeat="eggType in vm.eggTypes">
+	                                	{{vm.available[eggType.key] - vm.getTotalOut(eggType.key)}}
+	                                </td>
+	                                <td>{{0 - vm.getInvoicesTotalOut()}}</td>
+	                            </tr>
+							</tbody>
+						</table>
+						
+						<div class="text-right">
+							<button class="btn btn-dark" ng-click="vm.addInvoice(addSaleForm)" ng-if="!vm.addingInvoice">
+								Add
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row" ng-if="vm.addingInvoice && vm.invoice.customerId != null">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="invoice-wrapper col-sm-12 no-padding">
+							<div class="invoice-header">
+								INVOICE
+							</div>
+							<div class="invoice-body">
+								<div class="col-sm-12">
+									<h4>Bill To:</h4>
+									{{vm.customersList[vm.invoice.customerId]}} 
+									<br ng-if="vm.customer.address">
+									{{vm.customer.address}} 
+									<br ng-if="vm.customer.companyName">
+									{{vm.customer.companyName}}
+									<br ng-if="vm.customer.phoneNumber">
+									<br ng-if="vm.customer.phoneNumber">
+									{{vm.customer.phoneNumber ? "Phone: " + vm.customer.phoneNumber : null}}
+								</div>
+								<div class="col-sm-3 offset-sm-9">
+									<table class="table">
+										<tbody>
+											<tr>
+												<td>Invoice #</td>
+												<td>
+													<input type="number" class="form-control table-input"
+														ng-class="{'is-invalid': (!vm.invoice.invoiceNumber && addSaleForm.$invalid && addSaleForm.$submitted)}"  
+														ng-model="vm.invoice.invoiceNumber" required/>
+												</td>
+											</tr>
+											<tr>
+												<td>Date</td>
+												<td>{{vm.invoice.invoiceDate | dateFormat}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="col-sm-12">
+									<table class="table">
+										<tbody>
+											<tr>
+												<td>Item</td>
+												<td>Description</td>
+												<td>Quantity</td>
+												<td>Price</td>
+												<td>Total</td>
+												<td></td>
+											</tr>
+											<tr ng-repeat="items in vm.invoiceItems">
+												<td>
+													<select type="text" class="form-control table-input"
+														ng-class="{'select-is-invalid': (!vm.invoiceItems[$index].eggType && addSaleForm.$invalid && addSaleForm.$submitted)}"  
+														ng-model="vm.invoiceItems[$index].eggType"
+														ng-options="eggType.key as eggType.header for eggType in vm.eggTypes" 
+														ng-change="vm.setDefaultPrice($index)" required></select>
+												</td>
+												<td>
+													<input type="text" class="form-control table-input"
+														ng-model="vm.invoiceItems[$index].description"/>
+												</td>
+												<td>
+													<input type="number" class="form-control table-input"
+														ng-class="{'is-invalid': (!vm.invoiceItems[$index].quantity && addSaleForm.$invalid && addSaleForm.$submitted)}"  
+														ng-model="vm.invoiceItems[$index].quantity" 
+														ng-change="vm.getItemTotal($index)" required/>
+												</td>
+												<td>
+													<input type="text" class="form-control table-input"
+														ng-class="{'is-invalid': (!vm.invoiceItems[$index].price && addSaleForm.$invalid && addSaleForm.$submitted)}"
+														ng-model="vm.invoiceItems[$index].price" 
+														ng-currency currency-symbol="₱" required/>
+												</td>
+												<td>
+													<input type="text" class="form-control table-input"
+														ng-model="vm.invoiceItems[$index].total" 
+														ng-currency currency-symbol="₱" readonly disabled/>
+												</td>
+												<td>
+													<a href ng-click="vm.removeInvoiceItem($index)">
+														<i class="fa fa-remove"></i>
+													</a>
+												</td>	
+											</tr>
+											<tr>
+												<td colspan="6">
+													<a href ng-click="vm.addInvoiceItem()">
+														<b>Add Item</b>
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="col-sm-3 offset-sm-9">
+									<table class="table">
+										<tbody>
+											<tr>
+												<td>Subtotal</td>
+												<td>{{vm.invoice.subtotal | currency : "₱"}}</td>
+											</tr>
+											<tr>
+												<td>Discount</td>
+												<td>
+													<input type="text" class="form-control table-input"
+														ng-model="vm.invoice.discount"
+														ng-currency currency-symbol="₱"/>
+												</td>
+											</tr>
+											<tr>
+												<td>Total</td>
+												<td>{{vm.invoice.subtotal - vm.invoice.discount | currency : "₱"}}</td>
+											</tr>
+											<tr>
+												<td>Amount Paid</td>
+												<td>
+													<input type="text" class="form-control table-input"
+														ng-model="vm.invoice.amountPaid"
+														ng-currency currency-symbol="₱"/>
+												</td>
+											</tr>
+											<tr>
+												<td>Amount Due</td>
+												<td>{{vm.invoice.subtotal - vm.invoice.discount - vm.invoice.amountPaid | currency : "₱"}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button type="button" class="btn btn-secondary" ng-click="vm.back()">
+							Back
+						</button>
+						<button class="btn btn-dark" ng-click="vm.verifyFields(addSaleForm)">
+							Submit
 						</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</form>
 
-<div class="row" ng-if="vm.addingSale">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">Add</h4>
-				<p class="card-description">Complete required input below</p>
-				<form name="addSaleForm" class="form-sample" novalidate>
-					<div class="row">
-						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.sale.date" readonly="true" required="true"></div>
-						<div class="col-md-6" standard-dropdown header="House" 
-							model="vm.sale.customer" options="vm.customersList"></div>
-					</div>
-					<table class="table" ng-if="vm.sale.customer">
-						<thead>
-							<tr>
-								<th class="text-right"></th>
-								<th class="text-center">PWW</th>
-								<th class="text-center">PW</th>
-								<th class="text-center">Pullets</th>
-								<th class="text-center">Small</th>
-								<th class="text-center">Medium</th>
-								<th class="text-center">Large</th>
-								<th class="text-center">Extra Large</th>
-								<th class="text-center">Jumbo</th>
-								<th class="text-center">Crack</th>
-								<th class="text-center">Spoiled</th>
-								<th class="text-center">Totals</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Available</td>
-								<td class="text-center">{{vm.available.pww}}</td>
-								<td class="text-center">{{vm.available.pw}}</td>
-								<td class="text-center">{{vm.available.pullets}}</td>
-								<td class="text-center">{{vm.available.small}}</td>
-								<td class="text-center">{{vm.available.medium}}</td>
-								<td class="text-center">{{vm.available.large}}</td>
-								<td class="text-center">{{vm.available.extraLarge}}</td>
-								<td class="text-center">{{vm.available.jumbo}}</td>
-								<td class="text-center">{{vm.available.crack}}</td>
-								<td class="text-center">{{vm.available.spoiled}}</td>
-								<td class="text-center">{{vm.getTotal(vm.available)}}</td>
-							</tr>
-							<tr>
-								<td>{{customer.name}}</td>
-								<td class="text-center">{{customer.pww}}</td>
-								<td class="text-center">{{customer.pw}}</td>
-								<td class="text-center">{{customer.pullets}}</td>
-								<td class="text-center">{{customer.small}}</td>
-								<td class="text-center">{{customer.medium}}</td>
-								<td class="text-center">{{customer.large}}</td>
-								<td class="text-center">{{customer.extraLarge}}</td>
-								<td class="text-center">{{customer.jumbo}}</td>
-								<td class="text-center">{{customer.crack}}</td>
-								<td class="text-center">{{customer.spoiled}}</td>
-								<td class="text-center">{{vm.getTotal(customer)}}</td>
-							</tr>
-							<tr>
-                                <td>Ending</td>
-                                <td class="text-center">{{vm.available.pww - vm.getTotalOut("pww")}}</td>
-                                <td class="text-center">{{vm.available.pw - vm.getTotalOut("pw")}}</td>
-                                <td class="text-center">{{vm.available.pullets - vm.getTotalOut("pullets")}}</td>
-                                <td class="text-center">{{vm.available.small - vm.getTotalOut("small")}}</td>
-                                <td class="text-center">{{vm.available.medium - vm.getTotalOut("medium")}}</td>
-                                <td class="text-center">{{vm.available.large - vm.getTotalOut("large")}}</td>
-                                <td class="text-center">{{vm.available.extraLarge - vm.getTotalOut("extraLarge")}}</td>
-                                <td class="text-center">{{vm.available.jumbo - vm.getTotalOut("jumbo")}}</td>
-                                <td class="text-center">{{vm.available.crack - vm.getTotalOut("crack")}}</td>
-                                <td class="text-center">{{vm.available.spoiled - vm.getTotalOut("spoiled")}}</td>
-                                <td class="text-center">{{vm.getTotal(vm.available) - vm.getTotalOut("all")}}</td>
-                            </tr>
-						</tbody>
-					</table>
-					<div class="col-xs-12 text-right">
-						<button type="button" class="btn btn-secondary" ng-click="vm.back()">
-							Back
-						</button>
-						<button class="btn btn-dark" ng-click="vm.submitSale(addSaleForm)">
-							Submit
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

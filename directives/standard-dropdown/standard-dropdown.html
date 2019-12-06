@@ -1,7 +1,7 @@
 <div class="form-group row">
 	<label class="col-sm-12">{{header}} <span ng-if="required && !readonly" class="text-danger">*</span></label>
 	<div class="col-sm-12">
-		<select id="$index" class="form-control" ng-class="{'is-invalid': (form.$invalid && (form.$touched || parentForm.$submitted)) && required}" 
+		<select id="$index" class="form-control" ng-class="{'select-is-invalid': (form.$invalid && (form.$touched || parentForm.$submitted)) && required}" 
 			name="{{header}}" ng-readonly="readonly" ng-required="required" ng-model="model" ng-disabled="readonly" ng-change="changeAction()" 
 			ng-options="key as value for (key , value) in options">
 			<option value="" disabled></option>
