@@ -153,10 +153,19 @@
 					vm.houseInfo.initialBirdBalance = response.initialBirdBalance;
 					vm.productionReports = generateReport(response.productions, response.initialBirdBalance, response.startAge);
 
-					initStat(); 
+					if(vm.productionReports.length == 0) {
+						toasterService.info("Info", "No reports found for " + vm.houseInfo.name);
+						vm.displayReport = false;
+						vm.displayStats = false;
+					} else {
+						initStat(); 
+					}
+					
 				})
+				.catch(function(error) { 
 					vm.displayReport = false;
 					vm.loading = false;
+					vm.displayStats = false;
 					exceptionService.catcher(error);
 				});
 			});

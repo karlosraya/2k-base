@@ -215,7 +215,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [customerService, pricesService, invoiceService]
+                            files: [customerService, pricesService, invoiceService, gradedEggsService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
