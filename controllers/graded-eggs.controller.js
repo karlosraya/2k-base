@@ -24,6 +24,10 @@
 			{header: 'Crack', key: 'crack'}, 
 			{header: 'Spoiled', key: 'spoiled'}];
 
+		vm.gradedEggsProd = {};
+		vm.gradedEggsBeginning = {};
+		vm.gradedEggsTotalOut = {};
+
 		vm.$onInit = init();
 
 		vm.getTotal = getTotal;
@@ -50,7 +54,10 @@
 			.then(function(response) {
 				vm.loading = false;
 				vm.gradedEggsProd = response.gradedEggsProduction;
-				vm.gradedEggsBeginning = response.gradedEggsTotal;
+				vm.gradedEggsBeginning = computBeginningBalance(response.gradedEggsTotal, response.totalSales);
+				vm.gradedEggsDailySales = computeTotalOut(response.totalDailySales);
+
+				console.log(vm.gradedEggsBeginning);
 				vm.editingGradedEggs = false;
 				if(toaster) {
 					toasterService.success("Success", "Graded Eggs information updated successfully");
@@ -60,6 +67,56 @@
 				vm.loading = false;
 				exceptionService.catcher(error);
 			});
+		}
+
+		function computeTotalOut(totalSales) {
+			var totalOut = {};
+
+			vm.eggTypes.forEach(function(eggType) {
+				var total = totalOutSumByEggType(totalSales, eggType.key);
+				totalOut[eggType.key] = total ? total : 0;
+			});
+
+			return totalOut;
+		}
+
+		function totalOutSumByEggType(totalSales, eggType) {
+			var filteredSales = totalSales.filter(function(sale) {
+				return sale.item == eggType;
+			});
+
+			var total = 0;
+
+			filteredSales.forEach(function(sale) {
+				total = total + sale.quantity;
+			});
+
+			return total;
+		}
+
+		function computBeginningBalance(gradedEggsTotal, salesTotal) {
+			var beginningBalance = {};
+
+			vm.eggTypes.forEach(function(eggType) {
+				var beginning = gradedEggsTotal[eggType.key] ? gradedEggsTotal[eggType.key] : 0;
+
+				beginningBalance[eggType.key] = beginning - findTotalByEggType(salesTotal, eggType.key);
+			});
+
+			return beginningBalance;
+		}
+
+		function findTotalByEggType(salesTotal, eggType) {
+			var total = salesTotal.find(function(sale) {
+				return sale.item === eggType;
+			});
+
+			console.log(total);
+			if(total) {
+				return total.total;
+			} else {
+				return 0;
+			}
 		}
 
 		function getTotal(gradedEggs) {
@@ -72,7 +129,6 @@
 			} else {
 				return null;
 			}
-
 		}
 
 		function editGradedEggs(form) {

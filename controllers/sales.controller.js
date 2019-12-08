@@ -4,15 +4,17 @@
 	    .module('2kApp')
 	    .controller('SalesCtrl', SalesCtrl);
 
-	SalesCtrl.$inject = ['$timeout', '$filter', 'customerService', 'pricesService', 'invoiceService', 'exceptionService', 'toasterService'];
+	SalesCtrl.$inject = ['$timeout', '$filter', 'customerService', 'pricesService', 'invoiceService', 'gradedEggsService', 'exceptionService', 'toasterService', 'alertService'];
 
-	function SalesCtrl($timeout, $filter, customerService, pricesService, invoiceService, exceptionService, toasterService) {
+	function SalesCtrl($timeout, $filter, customerService, pricesService, invoiceService, gradedEggsService, exceptionService, toasterService, alertService) {
 		var vm = this;
 		
 		vm.loading = false;
 		vm.displaySales = false;
 		vm.addingInvoice = false;
+		vm.viewingInvoice = false;
 		vm.editingInvoice = false;
+
 		vm.eggTypes = [
 				{header: 'PWW', key: 'pww'}, 
 				{header: 'PW', key: 'pw'}, 
@@ -39,6 +41,9 @@
 		vm.$onInit = init();
 
 		vm.selectDate = selectDate;
+		vm.viewInvoice = viewInvoice;
+		vm.editInvoice = editInvoice;
+		vm.getEggTypeHeader = getEggTypeHeader;
 		vm.getInvoiceTotal = getInvoiceTotal;
 		vm.getTotalOut = getTotalOut;
 		vm.getInvoicesTotalOut = getInvoicesTotalOut;
@@ -52,9 +57,51 @@
 		vm.back = back;
 
 		function init() {
-			getInvoicesByDate(new Date());
+			getAvailable();
+			getInvoicesByDate(vm.selectedDate);
 			getCustomers();
 			getPrices();
+		}
+
+		function getAvailable() {
+			var dateRequest =  $filter('date')(vm.selectedDate, "yyyy-MM-dd");
+
+			gradedEggsService.getAvailableByDate(dateRequest)
+			.then(function(response) {
+				vm.available = computBeginningBalance(response.gradedEggsTotal, response.totalSales);
+
+				console.log(vm.available);
+			})
+			.catch(function(error) {
+				exceptionService.catcher(error);
+			});
+		}
+
+		function computBeginningBalance(gradedEggsTotal, salesTotal) {
+			var beginningBalance = {};
+			var total = 0;
+			vm.eggTypes.forEach(function(eggType) {
+				var beginning = gradedEggsTotal[eggType.key] ? gradedEggsTotal[eggType.key] : 0;
+
+				beginningBalance[eggType.key] = beginning - findTotalByEggType(salesTotal, eggType.key);
+				total = total + beginningBalance[eggType.key];
+			});
+
+			beginningBalance.total = total;
+
+			return beginningBalance
+		}
+
+		function findTotalByEggType(salesTotal, eggType) {
+			var total = salesTotal.find(function(sale) {
+				return sale.item === eggType;
+			});
+
+			if(total) {
+				return total.total;
+			} else {
+				return 0;
+			}
 		}
 
 		function getInvoicesByDate(date, back) {
@@ -78,6 +125,7 @@
 
 		function selectDate() {
 			$timeout(function() {
+				getAvailable();
 				getInvoicesByDate(vm.selectedDate); 
 			});
 		}
@@ -129,16 +177,30 @@
 			});
 		}
 
-		function viewInvoice() {
-
+		function viewInvoice(invoice) {
+			vm.invoice = invoice;
+			vm.invoiceItems = vm.invoice.items;
+			if(vm.invoiceItems && vm.invoiceItems.length > 0) {
+				vm.invoiceItems.forEach(function(item, index) {
+					item.eggType = item.item;
+					getItemTotal(index);
+				});
+			}
+			vm.invoice.customerId = vm.invoice.customerId.toString();
+			vm.viewingInvoice = true;
+			setCustomer();
 		}
 
-		function getInvoice() {
-			
+		function getEggTypeHeader(key) {
+			var eggType = vm.eggTypes.find(function(element) {
+				return element.key == key;
+			});
+			return eggType.header;
 		}
 
 		function editInvoice() {
-
+			vm.viewingInvoice = false;
+			vm.editingInvoice = true;
 		}
 
 		function getInvoiceTotal(items) {
@@ -250,9 +312,31 @@
 				} else if(verifyEggsAvailability()) {
 					toasterService.error("Error", "Not enough available eggs! Please review your invoice.");
 				} else {
-					submitSale();
+					if(vm.editingInvoice) {
+						confirmUpdateInvoice();
+					} else {
+						submitSale();
+					}
 				}
 			}
+		}
+
+		function confirmUpdateInvoice() {
+			var confirmUpdateInvoiceAlertObject = {
+			  	type: "warning",
+				title: 'Complete Batch',
+  				text: "Are you sure you want to update invoice information?",
+  				showCancelButton: true,
+  				confirmButtonText: 'Yes'
+			};
+
+			var confirmUpdateInvoiceAlertAction = function (result) {
+				if(result.value) {
+					submitSale();
+				}
+			};
+
+			alertService.custom(confirmUpdateInvoiceAlertObject, confirmUpdateInvoiceAlertAction);
 		}
 
 		function verifyItems() {
@@ -279,6 +363,7 @@
 			invoiceService.createUpdateInvoice(request)
 			.then(function(response) {
 				vm.loading = false;
+				getAvailable();
 				getInvoicesByDate(request.invoiceDate, back);
 			})
 			.catch(function(error) {
@@ -310,6 +395,8 @@
 
 		function back() {
 			vm.addingInvoice = false;
+			vm.editingInvoice = false;
+			vm.viewingInvoice = false;
 		}
 	}
 })();

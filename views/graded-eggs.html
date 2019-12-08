@@ -59,11 +59,20 @@
 									<td ng-if="!vm.editingGradedEggs">{{vm.getTotal(vm.gradedEggsProd)}}</td>
 								</tr>
 								<tr ng-if="!vm.editingGradedEggs">
+									<td>Total Out</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{!vm.editingGradedEggs ? vm.gradedEggsDailySales[eggType.key] : null}}
+									</td>
+									<td>
+										{{vm.getTotal(vm.gradedEggsDailySales)}}
+									</td>
+								</tr>
+								<tr ng-if="!vm.editingGradedEggs">
 									<td>Available</td>
 									<td ng-repeat="eggType in vm.eggTypes">
-										{{vm.gradedEggsBeginning[eggType.key] + vm.gradedEggsProd[eggType.key]}}
+										{{vm.gradedEggsBeginning[eggType.key] + vm.gradedEggsProd[eggType.key] - vm.gradedEggsDailySales[eggType.key]}}
 									</td>
-									<td>{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd)}}</td>
+									<td>{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd) - vm.getTotal(vm.gradedEggsDailySales)}}</td>
 								</tr>
 							</tbody>
 						</table>

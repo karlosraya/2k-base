@@ -12,18 +12,24 @@
 					</h4>
 					<div class="row">
 						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.selectedDate" required="true" readonly="vm.addingInvoice"
+							model="vm.selectedDate" required="true" readonly="vm.addingInvoice || vm.viewingInvoice || vm.editingInvoice"
 							change-action="vm.selectDate()"></div>
-						<div class="col-md-6" ng-if="vm.addingInvoice" standard-dropdown header="Customer" 
-							model="vm.invoice.customerId" options="vm.customersList" required="true"
+						<div class="col-md-6" ng-if="vm.addingInvoice || vm.viewingInvoice || vm.editingInvoice" standard-dropdown header="Customer" 
+							model="vm.invoice.customerId" options="vm.customersList" required="!vm.viewingInvoice" readonly="vm.viewingInvoice || vm.editingInvoice"
 							change-action="vm.setCustomer()"></div>
+					</div>
+
+					<div class="col-xs-12 text-right" ng-if="vm.addingInvoice && !vm.invoice.customerId">
+						<button type="button" class="btn btn-secondary" ng-click="vm.back()">
+							Back
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="row" ng-show="!vm.addingInvoice && vm.displaySales">
+	<div class="row" ng-show="!vm.addingInvoice && !vm.viewingInvoice && !vm.editingInvoice && vm.displaySales">
 		<div class="col-12 grid-margin stretch-card">
 			<div class="card">
 				<div class="card-body">
@@ -47,13 +53,13 @@
 										{{vm.available[eggType.key]}}
 									</td>
 									<td>
-										{{vm.getTotal(vm.available)}}
+										{{vm.available.total}}
 									</td>
 								</tr>
 								<tr ng-repeat="invoice in vm.invoices">
 									<td>
 										{{invoice.firstName + " " + invoice.lastName}} 
-										(<a href ng-click="getInvoice(invoice.id)">{{invoice.invoiceNumber}}</a>)
+										(<a href ng-click="vm.viewInvoice(invoice)">{{invoice.invoiceNumber}}</a>)
 									</td>
 									<td ng-repeat="eggType in vm.eggTypes">
 										{{$parent.invoice.eggsSold[eggType.key]}}
@@ -77,7 +83,7 @@
 	                                <td ng-repeat="eggType in vm.eggTypes">
 	                                	{{vm.available[eggType.key] - vm.getTotalOut(eggType.key)}}
 	                                </td>
-	                                <td>{{0 - vm.getInvoicesTotalOut()}}</td>
+	                                <td>{{vm.available.total - vm.getInvoicesTotalOut()}}</td>
 	                            </tr>
 							</tbody>
 						</table>
@@ -94,7 +100,7 @@
 	</div>
 
 
-	<div class="row" ng-if="vm.addingInvoice && vm.invoice.customerId != null">
+	<div class="row" ng-if="(vm.addingInvoice || vm.viewingInvoice || vm.editingInvoice) && vm.invoice.customerId">
 		<div class="col-12 grid-margin stretch-card">
 			<div class="card">
 				<div class="card-body">
@@ -123,7 +129,8 @@
 												<td>
 													<input type="number" class="form-control table-input"
 														ng-class="{'is-invalid': (!vm.invoice.invoiceNumber && addSaleForm.$invalid && addSaleForm.$submitted)}"  
-														ng-model="vm.invoice.invoiceNumber" required/>
+														ng-model="vm.invoice.invoiceNumber" required ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? vm.invoice.invoiceNumber : null}}
 												</td>
 											</tr>
 											<tr>
@@ -142,7 +149,7 @@
 												<td>Quantity</td>
 												<td>Price</td>
 												<td>Total</td>
-												<td></td>
+												<td ng-if="vm.editingInvoice || vm.addingInvoice"></td>
 											</tr>
 											<tr ng-repeat="items in vm.invoiceItems">
 												<td>
@@ -150,36 +157,42 @@
 														ng-class="{'select-is-invalid': (!vm.invoiceItems[$index].eggType && addSaleForm.$invalid && addSaleForm.$submitted)}"  
 														ng-model="vm.invoiceItems[$index].eggType"
 														ng-options="eggType.key as eggType.header for eggType in vm.eggTypes" 
-														ng-change="vm.setDefaultPrice($index)" required></select>
+														ng-change="vm.setDefaultPrice($index)" required ng-if="vm.editingInvoice || vm.addingInvoice"></select>
+													{{vm.viewingInvoice ? vm.getEggTypeHeader(vm.invoiceItems[$index].eggType) : null}}
 												</td>
 												<td>
 													<input type="text" class="form-control table-input"
-														ng-model="vm.invoiceItems[$index].description"/>
+														ng-model="vm.invoiceItems[$index].description" ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? vm.invoiceItems[$index].description : null}}
 												</td>
 												<td>
 													<input type="number" class="form-control table-input"
 														ng-class="{'is-invalid': (!vm.invoiceItems[$index].quantity && addSaleForm.$invalid && addSaleForm.$submitted)}"  
 														ng-model="vm.invoiceItems[$index].quantity" 
-														ng-change="vm.getItemTotal($index)" required/>
+														ng-change="vm.getItemTotal($index)" required ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? vm.invoiceItems[$index].quantity : null}}
 												</td>
 												<td>
 													<input type="text" class="form-control table-input"
 														ng-class="{'is-invalid': (!vm.invoiceItems[$index].price && addSaleForm.$invalid && addSaleForm.$submitted)}"
 														ng-model="vm.invoiceItems[$index].price" 
-														ng-currency currency-symbol="₱" required/>
+														ng-currency currency-symbol="₱"
+														ng-change="vm.getItemTotal($index)" required ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? (vm.invoiceItems[$index].price | currency : "₱" ): null}}
 												</td>
 												<td>
 													<input type="text" class="form-control table-input"
 														ng-model="vm.invoiceItems[$index].total" 
-														ng-currency currency-symbol="₱" readonly disabled/>
+														ng-currency currency-symbol="₱" readonly disabled ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? (vm.invoiceItems[$index].total | currency : "₱" ) : null}}
 												</td>
-												<td>
+												<td ng-if="vm.editingInvoice || vm.addingInvoice">
 													<a href ng-click="vm.removeInvoiceItem($index)">
 														<i class="fa fa-remove"></i>
 													</a>
 												</td>	
 											</tr>
-											<tr>
+											<tr ng-if="vm.editingInvoice || vm.addingInvoice">
 												<td colspan="6">
 													<a href ng-click="vm.addInvoiceItem()">
 														<b>Add Item</b>
@@ -201,7 +214,8 @@
 												<td>
 													<input type="text" class="form-control table-input"
 														ng-model="vm.invoice.discount"
-														ng-currency currency-symbol="₱"/>
+														ng-currency currency-symbol="₱" ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? (vm.invoice.discount | currency : "₱" ) : null}}
 												</td>
 											</tr>
 											<tr>
@@ -213,7 +227,8 @@
 												<td>
 													<input type="text" class="form-control table-input"
 														ng-model="vm.invoice.amountPaid"
-														ng-currency currency-symbol="₱"/>
+														ng-currency currency-symbol="₱" ng-if="vm.editingInvoice || vm.addingInvoice"/>
+													{{vm.viewingInvoice ? (vm.invoice.amountPaid | currency : "₱" ) : null}}
 												</td>
 											</tr>
 											<tr>
@@ -230,7 +245,10 @@
 						<button type="button" class="btn btn-secondary" ng-click="vm.back()">
 							Back
 						</button>
-						<button class="btn btn-dark" ng-click="vm.verifyFields(addSaleForm)">
+						<button class="btn btn-dark" ng-click="vm.editInvoice()" ng-if="vm.viewingInvoice">
+							Edit
+						</button>
+						<button class="btn btn-dark" ng-click="vm.verifyFields(addSaleForm)" ng-if="!vm.viewingInvoice">
 							Submit
 						</button>
 					</div>

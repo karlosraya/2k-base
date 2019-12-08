@@ -119,3 +119,11 @@ select.form-control {
     border: 1px solid #dc3545 !important;
     background: #de778138;
 }
+
+.swal2-styled.swal2-confirm {
+    background-color: #3e4b5b;
+}
+
+.swal2-styled.swal2-cancel {
+    background-color: #d8d8d8;
+}

@@ -30,6 +30,7 @@
 			  	type: "info",
 			  	title: title,
 			  	text: text,
+			  	allowOutsideClick: false,
 			  	customClass: {
 			    	confirmButton: 'btn btn-dark',
 				    cancelButton: 'btn btn-secondary'
@@ -42,6 +43,7 @@
 			  	type: "success",
 			  	title: title,
 			  	text: text,
+			  	allowOutsideClick: false,
 			  	customClass: {
 			    	confirmButton: 'btn btn-dark'
 				}	
@@ -53,6 +55,7 @@
 			 	type: "warning",
 			  	title: title,
 			  	text: text,
+			  	allowOutsideClick: false,
 			  	customClass: {
 			    	confirmButton: 'btn btn-dark'
 				}	
@@ -64,6 +67,7 @@
 			  	type: "error",
 			  	title: title,
 			  	text: text,
+			  	allowOutsideClick: false,
 			  	customClass: {
 			    	confirmButton: 'btn btn-dark'
 				}	
@@ -75,6 +79,8 @@
 			    confirmButton: 'btn btn-dark',
 			    cancelButton: 'btn btn-secondary'
 			};
+			alertObject.reverseButtons = true;
+			alertObject.allowOutsideClick = false;
 			Swal.fire(alertObject).then(alertAction);
 		}
 	}

@@ -11,6 +11,7 @@
 
 		var service = {
 			getGradedEggsyByDate: getGradedEggsyByDate,
+			getAvailableByDate: getAvailableByDate,
 			createUpdateGradedEggs: createUpdateGradedEggs
 		};
 
@@ -28,6 +29,22 @@
 
 			function errorCallback(error) {
 				$log.error("ERROR: getGradedEggsyByDate", error);
+				return $q.reject(error);
+			}
+		}
+
+		function getAvailableByDate(date) {
+
+			return $http.get(baseUrl + 'graded-eggs/available/' + date)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: getAvailableByDate", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: getAvailableByDate", error);
 				return $q.reject(error);
 			}
 		}
