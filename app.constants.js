@@ -3,7 +3,7 @@
 		.module('2kApp')
 		.constant('Constants',  {
 
-			LayersServiceBaseUrl: "https://karlos-raya.com/dev-layers-service/api/",
+			LayersServiceBaseUrl: "https://karlos-raya.com/layers-service-dev/api/",
 
 	    	StandardTargetPercentage: {
 	    		"18": 0,
