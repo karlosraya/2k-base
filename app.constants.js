@@ -3,7 +3,7 @@
 		.module('2kApp')
 		.constant('Constants',  {
 
-			LayersServiceBaseUrl: "http://localhost:8000/api/",
+			LayersServiceBaseUrl: "https://karlos-raya.com/dev-layers-service/api/",
 
 	    	StandardTargetPercentage: {
 	    		"18": 0,
