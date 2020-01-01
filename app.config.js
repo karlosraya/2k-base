@@ -5,16 +5,79 @@
         .config(config)
         .run(transitions);
     
-    transitions.$inject = ['$transitions', 'toasterService'];
+    transitions.$inject = ['$state', '$transitions', 'toasterService', 'exceptionService', 'appService', '$log'];
 
-    function transitions($transitions, toasterService) {
-        $transitions.onBefore({}, function() {
-            toasterService.clear();
+    function transitions($state, $transitions, toasterService, exceptionService, appService, $log) {
+        let requiresAuthCriteria = {
+            to: function (state) {
+                return state.data && state.data.requiresAuth;
+            }
+        };
+
+        $transitions.onStart(requiresAuthCriteria, function(transition) {
+            if(!transition.from().name) {
+                $log.info("Transition to " + transition.to().name);
+            } else {
+                $log.info("Transition from " + transition.from().name + " to " + transition.to().name);
+            }
+
+            return transition.injector().getAsync('authService')
+            .then(function(authService) {
+                $log.info("INFO: Checking Authorization");
+                return authService.auth()
+                .then(function(response) {
+                    if(response) {
+                        var userDetails = appService.getUserDetails();
+                        if(angular.equals(userDetails, {})) {
+                            appService.setUserDetails(response);
+                        }
+                        return true;
+                    } else {
+                        toasterService.error("Error", "You are not authorized to view this page. Please sign in to continue.");
+                        return transition.router.stateService.target('login');
+                    }
+                    
+                })
+                .catch(function(error) {
+                    $log.error("ERROR:", error);
+                    toasterService.error("Error", "You are not authorized to view this page! Please sign in to continue.");
+                    return transition.router.stateService.target('login');
+                });
+            })
+            .catch(function(error) {
+                $log.error("ERROR:", error);
+                toasterService.error("Error", "You are not authorized to view this page! Please sign in to continue.");
+                return transition.router.stateService.target('login');
+            });
         });
     }
 
-    function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, IdleProvider, KeepaliveProvider) {
-		
+    function config($httpProvider, $stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $provide) {
+
+        $httpProvider.interceptors.push(function($q, $state) {
+            let interceptor = {
+                request: request
+            };
+
+            return interceptor;
+
+            function request(config) {
+                var deferred = $q.defer();
+
+                var layersPortalToken = localStorage.getItem('layersPortalToken')
+
+                if(layersPortalToken) {
+                    config.headers = config.headers || {};
+                    config.headers.Authorization = "Bearer " + layersPortalToken;
+                    deferred.resolve(config);
+                } else {
+                    deferred.resolve(config);
+                }
+
+                return deferred.promise;
+            }
+        });
+
 		//controllers
         var loginCtrl = "controllers/login.controller.js";
         var navigationBarCtrl = "controllers/navbar.controller.js";
@@ -25,6 +88,7 @@
 		var customersCtrl = "controllers/customers.controller.js";
 		var historicalReportsCtrl = "controllers/historical-reports.controller.js";
 		var manageUsersCtrl = "controllers/manage-users.controller.js";
+        var dataLockCtrl = "controllers/data-lock.controller.js";
 	    var salesCtrl = "controllers/sales.controller.js";
         var batchCtrl = "controllers/batch.controller.js";
         var pricesCtrl = "controllers/prices.controller.js";
@@ -38,9 +102,9 @@
 		var standardDatepicker = "directives/standard-datepicker/standard-datepicker.directive.js";
         var standardDropdown = "directives/standard-dropdown/standard-dropdown.directive.js";
         var standardCurrency = "directives/standard-currency/standard-currency.directive.js";
-		var contentEditable = "directives/content-editable/content-editable.directive.js";
+        var standardPassword = "directives/standard-password/standard-password.directive.js";
         var loadingSpinner = "directives/loading-spinner/loading-spinner.directive.js";
-        
+
         //filters
         var dateFilter = "filters/date-format.filter.js";
 
@@ -49,13 +113,11 @@
         var batchService = "services/batch.service.js";
         var productionService = "services/production.service.js";
         var feedsDeliveryService = "services/feeds-delivery.service.js";
-        var alertService = "services/alert.service.js";
-        var toasterService = "services/toaster.service.js";
-        var exceptionService = "services/exception.service.js";
         var pricesService = "services/prices.service.js";
         var customerService = "services/customer.service.js";
         var gradedEggsService = "services/graded-eggs.service.js";
         var invoiceService = "services/invoice.service.js";
+        var dataLockService = "services/data-lock.service.js";
 
 		//templates
         var loginTemplate = "views/login.html";
@@ -66,6 +128,7 @@
         var customersTemplate = "views/customers.html";
         var historicalReportTemplate = "views/historical-reports.html";
         var manageUsersTemplate = "views/manage-users.html";
+        var dataLockTemplate = "views/data-lock.html";
         var salesTemplate = "views/sales.html";
         var batchTemplate = "views/batch.html";
         var pricesTemplate = "views/prices.html";
@@ -77,9 +140,22 @@
             .state("login", {
                 url: "/login",
                 templateUrl: loginTemplate,
+                data: {
+                    title: "Login"
+                },
                 controller: "LoginCtrl",
 	            controllerAs: "vm",
 				resolve: {
+                    loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [loadingSpinner]
+                        }]);
+                    }],
+                    loadFilters: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [dateFilter]
+                        }]);
+                    }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             name: "2kApp",
@@ -93,11 +169,6 @@
                 url: "/",
                 templateUrl: "views/content.html",
 				resolve: {
-                    loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
-                        return $ocLazyLoad.load([{
-                            files: [alertService, toasterService, exceptionService]
-                        }]);
-                    }],
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             files: [loadingSpinner]
@@ -119,6 +190,9 @@
 			.state("main.dashboard", {
                 url: "dashboard",
                 templateUrl: dashboardTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "DashboardCtrl",
 	            controllerAs: "vm",
 				resolve: {
@@ -133,12 +207,15 @@
             .state("main.feeds-delivery", {
                 url: "feeds-delivery",
                 templateUrl: feedsDeliveryTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "FeedsDeliveryCtrl",
                 controllerAs: "vm",
                 resolve: {
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [feedsDeliveryService]
+                            files: [feedsDeliveryService, productionService]
                         }]);
                     }],
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -157,12 +234,15 @@
 			.state("main.eggs-production", {
                 url: "eggs-production",
                 templateUrl: eggProductionTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "EggsProductionCtrl",
 	            controllerAs: "vm",
 				resolve: {
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardTable, standardNumber, standardDatepicker, standardDropdown]
+                            files: [standardNumber, standardDatepicker, standardDropdown]
                         }]);
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -181,6 +261,9 @@
 			.state("main.graded-eggs", {
                 url: "graded-eggs",
                 templateUrl: gradedEggsTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "GradedEggsCtrl",
 	            controllerAs: "vm",
 				resolve: {
@@ -191,7 +274,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [gradedEggsService]
+                            files: [gradedEggsService, productionService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -205,12 +288,15 @@
             .state("main.sales", {
                 url: "sales",
                 templateUrl: salesTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "SalesCtrl",
                 controllerAs: "vm",
                 resolve: {
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [contentEditable, standardNumber, standardDatepicker, standardDropdown]
+                            files: [standardNumber, standardDatepicker, standardDropdown]
                         }]);
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -229,17 +315,20 @@
 			.state("main.houses", {
                 url: "houses",
                 templateUrl: housesTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "HousesCtrl",
 	            controllerAs: "vm",
 				resolve: {
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardTable, standardNumber, standardText]
+                            files: [standardNumber, standardText]
                         }]);
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [houseService, batchService]
+                            files: [houseService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -253,12 +342,15 @@
             .state("main.batch", {
                 url: "batch",
                 templateUrl: batchTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "BatchCtrl",
 	            controllerAs: "vm",
 				resolve: {
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardTable, standardNumber, standardDatepicker, standardText, standardDropdown]
+                            files: [standardNumber, standardDatepicker, standardText, standardDropdown]
                         }]);
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -274,18 +366,21 @@
                     }]
                 },
                 params: {
-                    house: null
+                    houseId: null
                 }
             })
 			.state("main.customers", {
                 url: "customers",
                 templateUrl: customersTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "CustomersCtrl",
 	            controllerAs: "vm",
 				resolve: {
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardTable, standardNumber, standardText]
+                            files: [standardNumber, standardText]
                         }]);
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -304,6 +399,9 @@
             .state("main.prices", {
                 url: "prices",
                 templateUrl: pricesTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "PricesCtrl",
                 controllerAs: "vm",
                 resolve: {
@@ -328,12 +426,15 @@
 			.state("main.historical-reports", {
                 url: "historical-reports",
                 templateUrl: historicalReportTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "HistoricalReportsCtrl",
 	            controllerAs: "vm",
 				resolve: {
 					loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardTable, standardDropdown]
+                            files: [standardDropdown]
                         }]);
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -352,6 +453,9 @@
             .state("main.feeds-delivered", {
                 url: "feeds-delivered",
                 templateUrl: feedsDeliveredTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "FeedsDeliveredCtrl",
                 controllerAs: "vm",
                 resolve: {
@@ -376,9 +480,17 @@
 			.state("main.manage-users", {
                 url: "manage-users",
                 templateUrl: manageUsersTemplate,
+                data: {
+                    requiresAuth: true
+                },
                 controller: "ManageUsersCtrl",
 	            controllerAs: "vm",
 				resolve: {
+                    loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [standardText, standardPassword]
+                        }]);
+                    }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             name: "2kApp",
@@ -387,9 +499,34 @@
                     }]
                 }
             })
+            .state("main.data-lock", {
+                url: "data-lock",
+                templateUrl: dataLockTemplate,
+                data: {
+                    requiresAuth: true
+                },
+                controller: "DataLockCtrl",
+                controllerAs: "vm",
+                resolve: {
+                    loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [standardNumber, standardDatepicker, standardText, standardDropdown]
+                        }]);
+                    }],
+                    loadController: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: "2kApp",
+                            files: [dataLockCtrl]
+                        }]);
+                    }]
+                }
+            })
 			.state("main.contact-us", {
                 url: "contact-us",
-                templateUrl: "views/contact-us.html"
+                templateUrl: "views/contact-us.html",
+                data: {
+                    requiresAuth: true
+                }
             });
     }
 })();

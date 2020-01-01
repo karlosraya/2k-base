@@ -5,8 +5,8 @@
 				<img class="img-xs rounded-circle" src="images/profile.jpg" alt="profile image">
 				</div>
 				<div class="text-wrapper">
-					<p class="profile-name">Antonio Raya</p>
-					<p class="designation">President</p>
+					<p class="profile-name">{{nav.userInfo.firstName + " " + nav.userInfo.lastName}}</p>
+					<p class="designation">{{nav.userInfo.title}}</p>
 				</div>
 			</a>
 		</li>
@@ -89,12 +89,18 @@
 			</a>
 		</li>
 		<li class="nav-item nav-category">
-			<span class="nav-link">Users</span>
+			<span class="nav-link">Administrator</span>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link" ui-sref="main.manage-users">
 				<span class="menu-title">Manager Users</span>
 				<i class="fa fa-user-circle-o menu-icon"></i>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" ui-sref="main.data-lock">
+				<span class="menu-title">Data Lock</span>
+				<i class="icon-lock menu-icon"></i>
 			</a>
 		</li>
 		<li class="nav-item nav-category">

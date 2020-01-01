@@ -21,7 +21,7 @@
 		</div>
 	</div>
 </div>
-<div class="row" ng-show="!vm.editing">
+<div class="row">
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
@@ -29,12 +29,13 @@
 				<p class="card-description">
 					{{vm.editingGradedEggs ? "Click on Submit to insert/update graded eggs data.": "Click on Edit to input/update graded eggs data."}}
 				</p>
-				<div class="col-xs-12">
+				<div class="col-xs-12 scrollable">
 					<form name="gradedEggsForm">
-						<table class="table" id="gradedEggsTable">
+						<table class="table table-striped" id="gradedEggsTable">
 							<thead>
 								<tr>
 									<th ng-if="!vm.editingGradedEggs"></th>
+									<th ng-if="!vm.editingGradedEggs">Ungraded</th>
 									<th ng-repeat="eggType in vm.eggTypes">
 										{{eggType.header}}
 									</th>
@@ -44,13 +45,15 @@
 							<tbody>
 								<tr ng-if="!vm.editingGradedEggs">
 									<td>Beginning</td>
+									<td>{{vm.gradedEggsUngraded.beginning}}</td>
 									<td ng-repeat="eggType in vm.eggTypes">
 										{{vm.gradedEggsBeginning[eggType.key]}}
 									</td>
 									<td>{{vm.getTotal(vm.gradedEggsBeginning)}}</td>
 								</tr>
 								<tr>
-									<td  ng-if="!vm.editingGradedEggs">Production</td>
+									<td ng-if="!vm.editingGradedEggs">Production</td>
+									<td ng-if="!vm.editingGradedEggs">{{vm.gradedEggsUngraded.production}}</td>
 									<td ng-repeat="eggType in vm.eggTypes">
 										<div standard-number header="{{eggType.header}}" hide-header="true"
 												model="vm.gradedEggsProd[eggType.key]" ng-if="vm.editingGradedEggs"></div>
@@ -59,7 +62,18 @@
 									<td ng-if="!vm.editingGradedEggs">{{vm.getTotal(vm.gradedEggsProd)}}</td>
 								</tr>
 								<tr ng-if="!vm.editingGradedEggs">
+									<td>Available</td>
+									<td>{{vm.gradedEggsUngraded.available}}</td>
+									<td ng-repeat="eggType in vm.eggTypes">
+										{{vm.gradedEggsBeginning[eggType.key] + vm.gradedEggsProd[eggType.key]}}
+									</td>
+									<td>
+										{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd)}}
+									</td>
+								</tr>
+								<tr ng-if="!vm.editingGradedEggs">
 									<td>Total Out</td>
+									<td></td>
 									<td ng-repeat="eggType in vm.eggTypes">
 										{{!vm.editingGradedEggs ? vm.gradedEggsDailySales[eggType.key] : null}}
 									</td>
@@ -68,30 +82,99 @@
 									</td>
 								</tr>
 								<tr ng-if="!vm.editingGradedEggs">
-									<td>Available</td>
+									<td>End</td>
+									<td>{{vm.gradedEggsUngraded.available}}</td>
 									<td ng-repeat="eggType in vm.eggTypes">
 										{{vm.gradedEggsBeginning[eggType.key] + vm.gradedEggsProd[eggType.key] - vm.gradedEggsDailySales[eggType.key]}}
 									</td>
-									<td>{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd) - vm.getTotal(vm.gradedEggsDailySales)}}</td>
+									<td>
+										{{vm.getTotal(vm.gradedEggsBeginning) + vm.getTotal(vm.gradedEggsProd) - vm.getTotal(vm.gradedEggsDailySales)}}
+									</td>
 								</tr>
 							</tbody>
 						</table>
-						
-						<div class="text-right">
-							<button class="btn btn-dark" ng-click="vm.editGradedEggs(gradedEggsForm)" ng-if="!vm.editingGradedEggs">
-								Edit
-							</button>
-							<button class="btn btn-dark" ng-click="vm.verifyFields(gradedEggsForm)" ng-if="vm.editingGradedEggs">
-								Submit
-							</button>
-							<button class="btn btn-secondary" ng-click="vm.back()" ng-if="vm.editingGradedEggs">
-								Back
-							</button>
-						</div>
 					</form>
+				</div>
+				<div class="col-xs-12 text-right">
+					<button class="btn btn-dark" ng-click="vm.editGradedEggs(gradedEggsForm)" ng-if="!vm.editingGradedEggs">
+						Edit
+					</button>
+					<button class="btn btn-dark" ng-click="vm.verifyFields(gradedEggsForm)" ng-if="vm.editingGradedEggs">
+						Submit
+					</button>
+					<button class="btn btn-secondary" ng-click="vm.back()" ng-if="vm.editingGradedEggs">
+						Back
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<loading-spinner is-loading="vm.loading"></loading-spinner>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					Eggs Production
+				</h4>
+				<p class="card-description">
+					Eggs produced for each house on {{vm.gradedEggsDate | dateFormat}}
+				</p>
+				<div class="col-xs-12 scrollable">
+					<table st-table="vm.eggsProductionDataCopy" st-safe-src="vm.eggsProductionData" class="table table-striped">
+						<thead>
+							<tr>
+					      		<th st-sort="houseName">House</th>
+					      		<th st-sort="eggProduction">Eggs Produced</th>
+					      		<th st-sort="beginningBirdBalance">Beginning Bird Balance</th>
+					      		<th st-sort="cull">Culls</th>
+					      		<th st-sort="mortality">Mortality</th>
+					      		<th st-sort="endingBirdBalance">Ending Bird Balance</th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					    	<tr ng-repeat="data in vm.eggsProductionDataCopy">
+					      		<td>
+					      			{{data.houseName}}
+					      		</td>
+					      		<td>
+					      			{{data.eggProduction}}
+					      		</td>
+					      		<td>
+					      			{{data.beginningBirdBalance}}
+					      		</td>
+					      		<td>
+					      			{{data.cull}}
+					      		</td>
+					      		<td>	
+					      			{{data.mortality}}
+					      		</td>
+					      		<td>
+					      			{{data.endingBirdBalance}}
+					      		</td>
+					    	</tr>
+					  	</tbody>
+					  	<tfoot>
+					  		<tr>
+					      		<td>
+					      			<b>Total</b>
+					      		</td>
+					      		<td>
+					      			<b>{{vm.total.eggProduction}}</b>
+					      		</td>
+					      		<td>
+					      			<b>{{vm.total.beginningBirdBalance}}</b>
+					      		</td>
+					      		<td colspan="2"></td>
+					      		<td>
+					      			<b>{{vm.total.endingBirdBalance}}</b>
+					      		</td>
+					    	</tr>
+					  	</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading || vm.loadingProductions"></loading-spinner>

@@ -3,11 +3,11 @@
 		.module('2kApp')
 		.factory('feedsDeliveryService', feedsDeliveryService);
 
-	feedsDeliveryService.$inject = ['$http', '$log', '$q'];
+	feedsDeliveryService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function feedsDeliveryService($http, $log, $q) {
+	function feedsDeliveryService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getFeedsDeliveryByDate: getFeedsDeliveryByDate,

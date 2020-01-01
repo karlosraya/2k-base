@@ -31,10 +31,72 @@
 				<p class="card-description">
 					Click on Edit to input/update data.
 				</p>
-				<div class="col-xs-12">
-					<standard-table
-						table-defn="vm.eggsProdTableDefn"
-						data="vm.eggsProductionData"></standard-table>
+				<div class="col-xs-12 scrollable">
+					<table st-table="vm.eggsProductionDataCopy" st-safe-src="vm.eggsProductionData" class="table table-striped">
+						<thead>
+							<tr>
+					      		<th st-sort="houseName">House</th>
+					      		<th st-sort="feeds">Feeds</th>
+					      		<th st-sort="eggProduction">Eggs Produced</th>
+					      		<th st-sort="beginningBirdBalance">Beginning Bird Balance</th>
+					      		<th st-sort="cull">Culls</th>
+					      		<th st-sort="mortality">Mortality</th>
+					      		<th st-sort="endingBirdBalance">Ending Bird Balance</th>
+					      		<th></th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					    	<tr ng-repeat="data in vm.eggsProductionDataCopy">
+					      		<td>
+					      			{{data.houseName}}
+					      		</td>
+					      		<td>
+					      			{{data.feeds}}
+					      		</td>
+					      		<td>
+					      			{{data.eggProduction}}
+					      		</td>
+					      		<td>
+					      			{{data.beginningBirdBalance}}
+					      		</td>
+					      		<td>
+					      			{{data.cull}}
+					      		</td>
+					      		<td>	
+					      			{{data.mortality}}
+					      		</td>
+					      		<td>
+					      			{{data.endingBirdBalance}}
+					      		</td>
+					      		<td>
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.editEggsProd(data)">
+					      				Edit
+					      			</button>
+					      		</td>
+					    	</tr>
+					  	</tbody>
+					  	<tfoot>
+					  		<tr>
+					      		<td>
+					      			<b>Total</b>
+					      		</td>
+					      		<td>
+					      			<b>{{vm.total.feeds}}</b>
+					      		</td>
+					      		<td>
+					      			<b>{{vm.total.eggProduction}}</b>
+					      		</td>
+					      		<td>
+					      			<b>{{vm.total.beginningBirdBalance}}</b>
+					      		</td>
+					      		<td colspan="2"></td>
+					      		<td>
+					      			<b>{{vm.total.endingBirdBalance}}</b>
+					      		</td>
+					      		<td></td>
+					    	</tr>
+					  	</tfoot>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -56,7 +118,7 @@
 							model="vm.eggProd.reportDate" readonly="true" required="true"></div>
 						<div class="col-md-6" standard-dropdown header="House" 
 							model="vm.eggProd.houseId" readonly="true" required="true"
-							options="vm.houseOptions"></div>
+							options="vm.houseOptions" key="id" value="name" ></div>
 					</div>
 					<div class="row">
 						<div standard-number class="col-md-6" header="Feeds" 

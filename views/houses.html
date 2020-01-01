@@ -7,14 +7,55 @@
 			<div class="card-body">
 				<p class="card-description" ng-if="!vm.loading">
 					{{vm.houses && vm.houses.length == 0 ? "No houses found. Click on Add to add a new house." :
-					  vm.houses && vm.houses.length > 0 ? "Click on Add to add a new house." : null}}
+					  vm.houses && vm.houses.length > 0 ? "Click on Add/Edit to add new house or edit existing house information." : null}}
 				</p>
-				<div class="col-xs-12">
-					<standard-table ng-if="vm.houses && vm.houses.length > 0"
-						table-defn="vm.houseTableDefn"
-						data="vm.houses"></standard-table>
-					<button class="btn btn-dark" ng-click="vm.addHouse()">
-						Add
+				<div class="col-xs-12 scrollable" ng-if="vm.houses && vm.houses.length > 0">
+					<table st-table="vm.housesCopy" st-safe-src="vm.houses" class="table table-striped">
+						<thead>
+							<tr>
+								<th colspan="6"><input st-search="" class="form-control" placeholder="Search" type="text"/></th>
+							</tr>
+							<tr>
+					      		<th st-sort="name">House</th>
+					      		<th st-sort="stockman">Stockman</th>
+					      		<th st-sort="batch">Current Batch</th>
+					      		<th st-sort="lastInsertUpdateBy">Last Updated By</th>
+					      		<th st-sort="lastInsertUpdateTS">Last Update Date</th>
+					      		<th></th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					    	<tr ng-repeat="house in vm.housesCopy">
+					      		<td>
+					      			{{house.name}}
+					      		</td>
+					      		<td>
+					      			{{house.stockman}}
+					      		</td>
+					      		<td>
+					      			<a href ng-click="vm.viewBatch(house)" ng-if="house.batch">
+					      				{{house.batch}}
+					      			</a>
+					      			<a href ng-click="vm.viewBatch(house)" ng-if="!house.batch">
+					      				Start New Batch
+					      			</a>
+					      		</td>
+					      		<td>
+					      			{{house.lastInsertUpdateBy}}
+					      		</td>
+					      		<td>
+					      			{{house.lastInsertUpdateTS | dateFormat}}
+					      		</td>
+					      		<td>
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.editHouse(house)">
+					      				Edit
+					      			</button>
+					      		</td>
+					    	</tr>
+					  	</tbody>
+					</table>
+					<button class="btn btn-sm btn-dark" ng-click="vm.addHouse()">
+						Add House
 					</button>
 				</div>
 			</div>
@@ -31,7 +72,6 @@
 				<p class="card-description">
 					{{vm.editingHouse ? "Complete required input below and click on Submit to edit house details." : 
 					  vm.addingHouse ? "Complete required input below and click on Submit to add new house." : null}}
-					
 				</p>
 				<form name="houseForm" class="form-sample" novalidate>
 					<div class="row">

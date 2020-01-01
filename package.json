@@ -23,6 +23,8 @@
     "sweetalert2": "^8.13.3",
     "angular-translate": "^2.18.1",
     "ng-idle": "^1.3.2",
-    "ng-currency": "1.2.8"
+    "ng-currency": "^1.2.8",
+    "angular-smart-table": "^2.1.11",
+    "ng-mask": "3.1.1"
   }
 }

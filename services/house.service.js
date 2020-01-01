@@ -3,22 +3,21 @@
 		.module('2kApp')
 		.factory('houseService', houseService);
 
-	houseService.$inject = ['$http', '$log', '$q'];
+	houseService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function houseService($http, $log, $q) {
+	function houseService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getHouses: getHouses,
-			addHouse: addHouse,
-			updateHouse: updateHouse
+			createUpdateHouse: createUpdateHouse
 		};
 
 		return service;
 		
 		function getHouses() {
-			return $http.get(baseUrl + 'houses')
+			return $http.get(baseUrl + 'house')
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
@@ -32,32 +31,17 @@
 			}
 		}
 
-		function addHouse(house) {
+		function createUpdateHouse(house) {
 			return $http.post(baseUrl + 'house', house)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: addHouse", response);
+				$log.info("INFO: createUpdateHouse", response);
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: addHouse", error);
-				return $q.reject(error);
-			}
-		}
-
-		function updateHouse(houseId, house) {
-			return $http.put(baseUrl + 'house/' + houseId, house)
-			.then(successCallback, errorCallback);
-
-			function successCallback(response) {
-				$log.info("INFO: updateHouse", response);
-				return response.data;
-			}
-
-			function errorCallback(error) {
-				$log.error("ERROR: updateHouse", error);
+				$log.error("ERROR: createUpdateHouse", error);
 				return $q.reject(error);
 			}
 		}

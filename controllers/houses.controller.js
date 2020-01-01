@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('HousesCtrl', HousesCtrl);
 
-	HousesCtrl.$inject = ['$state', '$filter', 'houseService', 'batchService', 'toasterService'];
+	HousesCtrl.$inject = ['$state', '$filter', 'houseService', 'toasterService', 'exceptionService'];
 
-	function HousesCtrl($state, $filter, houseService, batchService, toasterService) {
+	function HousesCtrl($state, $filter, houseService, toasterService, exceptionService) {
 		var vm = this;
 		
 		vm.loading = false;
@@ -14,66 +14,27 @@
 		vm.addingHouse = false;
 
 		vm.houses = [];
+		vm.housesCopy = [];
 		vm.houseInfo = {};
 
 		vm.$onInit = init();
 		
+		vm.editHouse = editHouse;
+		vm.viewBatch = viewBatch;
 		vm.addHouse = addHouse;
 		vm.back = back;
 		vm.verifyFields = verifyFields;
 
 		function init() {
 			getHouses();
-			
-			vm.houseTableDefn = [
-				{
-					name: "name",
-					label: "House"
-				},
-				{
-					name: "stockman",
-					label: "Stockman"
-				},
-				{
-					name: "currentBatch",
-					label: "Current Batch",
-					isLink: true,
-					default: "Start New Batch",
-					linkAction: viewBatch
-				},
-				{
-					name: "lastInsertUpdateBy",
-					label: "Last Updated By"
-				},
-				{
-					name: "lastInsertUpdateTS",
-					label: "Last Update Date",
-					filter: "dateFormat"
-				},
-				{
-					isButton: true,
-					buttonLabel: "Edit",
-					buttonAction: editHouse
-				}
-			];
 		}
 		
 		function getHouses() {
 			vm.loading = true;
 			houseService.getHouses()
 			.then(function(houses) {
-				getActiveBatches(houses); 
-			})
-			.catch(function(error){
-				exceptionService.catcher(error);
-				vm.loading = false;
-			});
-		}
-
-		function getActiveBatches(houses) {
-			batchService.getActiveBatches()
-			.then(function(batches) {
-				setHouseBatch(houses, batches);
+				vm.houses = houses;
+				vm.housesCopy = [].concat(houses);
 				vm.loading = false;
 			})
 			.catch(function(error){
@@ -82,22 +43,6 @@
 			});
 		}
 
-		function setHouseBatch(houses, batches) {
-			if(houses && houses.length > 0) {
-				houses.forEach(function(house) {
-					if(batches && batches.length > 0) {
-						batches.forEach(function (batch) {
-							if(house.id == batch.houseId) {
-								house.currentBatch = batch.batch;
-								house.batch = batch;
-							}
-						});
-					}
-				});
-			}
-			vm.houses = houses;
-		}
-		
 		function addHouse() {
 			vm.addingHouse = true;
 			vm.houseInfo = {};
@@ -108,9 +53,9 @@
 			vm.addingHouse = false;
 		}
 		
-		function editHouse(index) {
+		function editHouse(house) {
 			vm.editingHouse = true;
-			vm.houseInfo = angular.copy(vm.houses[index]);
+			vm.houseInfo = angular.copy(house);
 		}
 		
 		function verifyFields(form) {
@@ -118,41 +63,28 @@
 				toasterService.error("Error", "There are incomplete required fields!");
 			} else {
 				if(vm.addingHouse) {
-					submitNewHouse();
+					submitHouse(true);
 				} else if(vm.editingHouse) {
-					submitEditedHouse();
+					submitHouse(false);
 				} else {
 					toasterService.error("Error", "The application has encountered an unknown error!");
 				}
 			}
 		}
 		
-		function submitNewHouse() {
+		function submitHouse(newHouse) {
 			vm.loading = true;
-			vm.houseInfo.lastInsertUpdateBy = "Antonio Raya";
-			vm.houseInfo.lastInsertUpdateTS =  $filter('date')(new Date(), 'yyyy-MM-dd hh:mm:ss');
 			
-			houseService.addHouse(vm.houseInfo)
+			houseService.createUpdateHouse(vm.houseInfo)
 			.then(function(response) {
 				vm.loading = false;
 				vm.addingHouse = false;
-				getHouses();
-			})
-			.catch(function(error){
-				exceptionService.catcher(error);
-				vm.loading = false;
-			});
-		}
-
-		function submitEditedHouse() {
-			vm.loading = true;
-			vm.houseInfo.lastInsertUpdateBy = "Antonio Raya";
-			vm.houseInfo.lastInsertUpdateTS = $filter('date')(new Date(), 'yyyy-MM-dd hh:mm:ss');
-
-			houseService.updateHouse(vm.houseInfo.id, vm.houseInfo)
-			.then(function(response) {
-				vm.loading = false;
 				vm.editingHouse = false;
+				if(newHouse) {
+					toasterService.success("Success", "House information successfully added!");
+				} else {
+					toasterService.success("Success", "House information successfully updated!");
+				}
 				getHouses();
 			})
 			.catch(function(error){
@@ -161,8 +93,8 @@
 			});
 		}
 
-		function viewBatch(index) {
-			$state.go("main.batch", {house: vm.houses[index]});
+		function viewBatch(house) {
+			$state.go("main.batch", {houseId: house.id});
 		}
 	}
 })();

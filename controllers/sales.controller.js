@@ -69,8 +69,6 @@
 			gradedEggsService.getAvailableByDate(dateRequest)
 			.then(function(response) {
 				vm.available = computBeginningBalance(response.gradedEggsTotal, response.totalSales);
-
-				console.log(vm.available);
 			})
 			.catch(function(error) {
 				exceptionService.catcher(error);
@@ -149,7 +147,9 @@
 				vm.customers = customers;
 				if(customers && customers.length > 0) {
 					customers.forEach(function(customer, index) {
-						vm.customersList[customer.id] = customer.firstName + " " + customer.lastName;
+						var firstName = customer.firstName;
+						var lastName = customer.lastName ? " " + customer.lastName : "";
+						customer.fullName = firstName + lastName;
 					});
 				}
 			})
@@ -324,7 +324,7 @@
 		function confirmUpdateInvoice() {
 			var confirmUpdateInvoiceAlertObject = {
 			  	type: "warning",
-				title: 'Complete Batch',
+				title: 'Update Invoice',
   				text: "Are you sure you want to update invoice information?",
   				showCancelButton: true,
   				confirmButtonText: 'Yes'

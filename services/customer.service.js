@@ -3,11 +3,11 @@
 		.module('2kApp')
 		.factory('customerService', customerService);
 
-	customerService.$inject = ['$http', '$log', '$q'];
+	customerService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function customerService($http, $log, $q) {
+	function customerService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getCustomers: getCustomers,

@@ -17,53 +17,13 @@
 
 		vm.$onInit = init();
 
+		vm.editCustomer = editCustomer;
 		vm.addCustomer = addCustomer;
 		vm.back = back;
 		vm.verifyFields = verifyFields;
 
 		function init() {
 			getCustomers();
-
-			vm.customerTableDefn = [
-				{
-					name: "firstName",
-					label: "First Name"
-				},
-				{
-					name: "lastName",
-					label: "Last Name"
-				},
-				{
-					name: "address",
-					label: "Address"
-				},
-				{
-					name: "email",
-					label: "Email"
-				},
-				{
-					name: "phoneNumber",
-					label: "Phone Number"
-				},
-				{
-					name: "companyName",
-					label: "Company Name"
-				},
-				{
-					name: "lastInsertUpdateBy",
-					label: "Last Updated By"
-				},
-				{
-					name: "lastInsertUpdateTS",
-					label: "Last Update Date",
-					filter: "dateFormat"
-				},
-				{
-					isButton: true,
-					buttonLabel: "Edit",
-					buttonAction: editCustomer
-				}
-			];
 		}
 
 		function getCustomers(back, id) {
@@ -100,9 +60,9 @@
 			vm.addingCustomer = false;
 		}
 		
-		function editCustomer(index) {
+		function editCustomer(customer) {
 			vm.editingCustomer = true;
-			vm.customerInfo = angular.copy(vm.customers[index]);
+			vm.customerInfo = angular.copy(customer);
 		}
 
 		function verifyFields(form) {
@@ -117,7 +77,6 @@
 
 		function submitCustomer() {
 			vm.loading = true;
-			vm.customerInfo.lastInsertUpdateBy = "Antonio Raya";
 			customerService.createUpdateCustomer(vm.customerInfo)
 			.then(function(response) {
 				vm.customers = response;

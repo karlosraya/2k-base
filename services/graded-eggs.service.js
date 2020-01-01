@@ -3,11 +3,11 @@
 		.module('2kApp')
 		.factory('gradedEggsService', gradedEggsService);
 
-	gradedEggsService.$inject = ['$http', '$log', '$q'];
+	gradedEggsService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function gradedEggsService($http, $log, $q) {
+	function gradedEggsService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getGradedEggsyByDate: getGradedEggsyByDate,

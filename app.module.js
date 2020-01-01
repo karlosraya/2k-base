@@ -4,10 +4,10 @@
 		'ui.router',
         'oc.lazyLoad',
         'ui.bootstrap',
-        'pascalprecht.translate',
-        'ngIdle',
         'ngSanitize',
 		'toaster',
-        'ng-currency'
+        'ng-currency',
+        'ngMask',
+        'smart-table'
 	]);
 })();

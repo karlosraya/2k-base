@@ -1,1 +1,102 @@
-﻿<h4>Manage Users</h4>
+﻿<div class="page-header">
+	<h4>Manage Users</h4>
+</div>
+<div class="row" ng-if="!vm.editingUser && !vm.addingUser">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<p class="card-description">
+					Click on Add/Edit to add new user or edit existing user information.
+				</p>
+				<div class="col-xs-12 scrollable">
+					<table st-table="vm.usersCopy" st-safe-src="vm.users" class="table table-striped">
+						<thead>
+							<tr>
+								<th colspan="8"><input st-search="" class="form-control" placeholder="Search" type="text"/></th>
+							</tr>
+							<tr>
+					      		<th st-sort="firstName">First Name</th>
+					      		<th st-sort="lastName">Last Name</th>
+					      		<th st-sort="username">Username</th>
+					      		<th st-sort="title">Title</th>
+					      		<th st-sort="enabled">Enabled</th>
+					      		<th st-sort="lastInsertUpdateBy">Last Updated By</th>
+					      		<th st-sort="updated_at">Last Update Date</th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					    	<tr ng-repeat="user in vm.usersCopy">
+					      		<td>
+					      			{{user.firstName}}
+					      		</td>
+					      		<td>
+					      			{{user.lastName}}
+					      		</td>
+					      		<td>
+					      			{{user.username}}
+					      		</td>
+					      		<td>
+					      			{{user.title}}
+					      		</td>
+					      		<td>
+					      			{{user.enabled ? "Yes" : "No"}}
+					      		</td>
+					      		<td>
+					      			{{user.lastInsertUpdateBy}}
+					      		</td>
+					      		<td>
+					      			{{user.updated_at | dateFormat}}
+					      		</td>
+					    	</tr>
+					  	</tbody>
+					</table>
+					<button class="btn btn-sm btn-dark" ng-click="vm.addUser()">
+						Add User
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" ng-if="vm.editingUser || vm.addingUser">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					{{vm.editingUser ? "Edit User" : vm.addingUser ? "Add User" : null}}
+				</h4>
+				<p class="card-description">
+					{{vm.editingUser ? "Complete required input below and click on Submit to edit user details." : 
+					  vm.addingUser ? "Complete required input below and click on Submit to add new user." : null}}
+				</p>
+				<form name="userForm" class="form-sample" novalidate>
+					<div class="row">
+						<div standard-text class="col-md-6" header="Title" 
+							model="vm.userInfo.title"></div>
+					</div>
+					<div class="row">
+						<div standard-text class="col-md-6" header="First Name" 
+							model="vm.userInfo.firstName" required="true"></div>
+						<div standard-text class="col-md-6" header="Last Name" 
+							model="vm.userInfo.lastName" required="true"></div>
+					</div>
+					<div class="row">
+						<div standard-text class="col-md-6" header="Username" 
+							model="vm.userInfo.username" required="true"></div>
+					</div>
+					<div class="row">
+						<div standard-password class="col-md-6" header="Password" 
+							model="vm.userInfo.password" required="true"></div>
+						<div standard-password class="col-md-6" header="Confirm Password" 
+							model="vm.userInfo.c_password" required="true"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button class="btn btn-dark" ng-click="vm.verifyFields(userForm)">Submit</button>
+						<button class="btn btn-secondary" ng-click="vm.back()">Back</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

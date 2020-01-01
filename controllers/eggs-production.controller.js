@@ -12,13 +12,15 @@
 		vm.loading = false;
 		vm.eggProdForm = null;
 		vm.reportDate = new Date();
-		vm.houseOptions = {};
+		vm.total = {};
+		vm.houseOptions = [];
 		vm.eggsProductionData = [];
-		vm.productions = [];
+		vm.eggsProductionDataCopy = [];
 
 		vm.$onInit = init();
 		
 		vm.selectDate = selectDate;
+		vm.editEggsProd = editEggsProd;
 		vm.verifyFields = verifyFields;
 		vm.submitEggsProd = submitEggsProd;
 		vm.getEndingBirdBalance = getEndingBirdBalance;
@@ -28,64 +30,6 @@
 			vm.editing = false;
 
 			getProductionReportsByDate();
-
-			vm.eggsProdTableDefn = [
-				{
-					name: "houseName",
-					attributes: {},
-					label: "House"
-					
-				},
-				{
-					name: "feeds",
-					attributes: {},
-					label: "Feeds"
-					
-				},
-				{
-					name: "eggProduction",
-					attributes: {},
-					label: "Eggs Produced"
-					
-				},
-				{
-					name: "beginningBirdBalance",
-					attributes: {
-						dataBreakpoints: "md"
-					},
-					label: "Beginning Bird Balance"
-					
-				},
-				{
-					name: "cull",
-					attributes: {},
-					label: "Culls"
-					
-				},
-				{
-					name: "mortality",
-					attributes: {},
-					label: "Mortality"
-					
-				},
-				{
-					name: "endingBirdBalance",
-					attributes: {
-						dataBreakpoints: "md"
-					},
-					label: "Ending Bird Balance"
-					
-				},
-				{
-					attributes: {
-						dataBreakpoints: "md",
-						columnType: "html"
-					},
-					isButton: true,
-					buttonLabel: "Edit",
-					buttonAction: editEggsProd
-				}
-			];
 		}
 		
 		function getProductionReportsByDate(updated) {
@@ -95,9 +39,8 @@
 
 			productionService.getProductionReportsByDate(reportDate)
 			.then(function(response) {
-				vm.productions = response;
 				getHouseOptions(response);
-				processEggsProductionData();
+				processEggsProductionData(response);
 				vm.loading = false;
 
 				if(updated) {
@@ -112,75 +55,66 @@
 
 		function selectDate() {
 			$timeout(function() {
-				getProductionReportsByDate();
-				vm.editing = false;
+				if(vm.reportDate) {
+					getProductionReportsByDate();
+					vm.editing = false;
+				}
 			});
 		}
 
 		function getHouseOptions(response) {
 			if(response && response.length > 0) {
 				response.forEach(function(batch) {
-					vm.houseOptions[batch.houseId] = batch.name;
+					var option = {};
+					option.id = batch.houseId + "";
+					option.name = batch.name;
+					vm.houseOptions.push(option);
 				});
 			}
 		}
 
-		function processEggsProductionData() {
+		function processEggsProductionData(data) {
 			vm.eggsProductionData = [];
 
-			vm.productions.forEach(function(prod) {
+			data.forEach(function(prodData) {
 				var eggProdData = {};
-				eggProdData.batchId = prod.id;
-				eggProdData.houseName = prod.name;
-				eggProdData.houseId = prod.houseId + "";
+				eggProdData.batchId = prodData.id;
+				eggProdData.houseName = prodData.name;
+				eggProdData.houseId = prodData.houseId + "";
 
-				var dailyReport = getDailyReport(prod.productions);
-				if(dailyReport) {
-					eggProdData.id = dailyReport.id;
-					eggProdData.feeds = dailyReport.feeds;
-					eggProdData.cull = dailyReport.cull;
-					eggProdData.mortality = dailyReport.mortality;
-					eggProdData.eggProduction = dailyReport.eggProduction;
+				if(prodData.productionByDate) {
+					eggProdData.id = prodData.productionByDate.id;
+					eggProdData.feeds = prodData.productionByDate.feeds;
+					eggProdData.cull = prodData.productionByDate.cull;
+					eggProdData.mortality = prodData.productionByDate.mortality;
+					eggProdData.eggProduction = prodData.productionByDate.eggProduction;
 				}
-
-				eggProdData.beginningBirdBalance = computeBeginningBirdBalance(prod.initialBirdBalance, prod.productions);
-				eggProdData.endingBirdBalance = computeEndingBirdBalance(eggProdData.beginningBirdBalance, eggProdData.cull, eggProdData.mortality);; 
+				
+				eggProdData.beginningBirdBalance = computeBalance(prodData.initialBirdBalance, prodData.totals.totalMortality, prodData.totals.totalCull);
+				eggProdData.endingBirdBalance = computeBalance(eggProdData.beginningBirdBalance, eggProdData.cull, eggProdData.mortality);
 
 				eggProdData.reportDate = vm.reportDate;
 
 				vm.eggsProductionData.push(eggProdData);
 			});
+
+			vm.eggsProductionDataCopy = angular.copy(vm.eggsProductionData);
+
+			var total = {};
+			total.houseName = "Total";
+			total.feeds = sum(vm.eggsProductionData, 'feeds');
+			total.eggProduction = sum(vm.eggsProductionData, 'eggProduction');
+			total.beginningBirdBalance = sum(vm.eggsProductionData, 'beginningBirdBalance');
+			total.endingBirdBalance = sum(vm.eggsProductionData, 'endingBirdBalance');
+
+			vm.total = total;
 		}
 
-		function computeBeginningBirdBalance(initialBirdBalance, prodReports) {
-			var culls = sum(prodReports, "cull");
-			var mortality = sum(prodReports, "mortality");
-
-			return initialBirdBalance - culls - mortality;
-		}
-
-		function computeEndingBirdBalance(beginningBirdBalance, cull, mortality) {
+		function computeBalance(balance, cull, mortality) {
 			var c = cull ? cull : 0;
 			var m = mortality ? mortality : 0;
 
-			return beginningBirdBalance - c - m;
-		}
-
-		function getDailyReport(array, property) {
-			var currentDate = angular.copy(vm.reportDate);
-			currentDate.setHours(0,0,0,0);
-
-			if(array && array.length > 0) {
-				var latestReportDate = new Date(array[array.length - 1].reportDate);
-				latestReportDate.setHours(0,0,0,0);
-				if(latestReportDate.getTime() === currentDate.getTime()) {
-					return array[array.length - 1];
-				} else {
-					return null;
-				}
-			} else {
-				return null;
-			}
+			return balance - c - m;
 		}
 
 		function sum(array, property) {
@@ -189,14 +123,13 @@
 			}, 0);
 		}
 
-
-		function editEggsProd(index) {
+		function editEggsProd(data) {
 			vm.eggProdForm.$submitted = false;
 			vm.eggProdForm.$setUntouched();
 			vm.eggProdForm.$setPristine();
 
 			vm.editing = true;
-			vm.eggProd = angular.copy(vm.eggsProductionData[index]);
+			vm.eggProd = angular.copy(data);
 		}
 
 		function verifyFields() {
@@ -213,7 +146,6 @@
 			vm.loading = true;
 
 			var request = angular.copy(vm.eggProd);
-			request.lastInsertUpdateBy = "Antonio Raya";
 			request.reportDate = $filter('date')(request.reportDate, 'yyyy-MM-dd');
 
 			productionService.createUpdateProductionReport(request)

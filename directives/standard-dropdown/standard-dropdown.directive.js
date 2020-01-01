@@ -16,7 +16,9 @@
 				readonly: '=',
 				required: '=',
 				changeAction: "&",
-				options: '='
+				options: '=',
+                key: '@',
+                value: '@'
             },
             link: link
         }

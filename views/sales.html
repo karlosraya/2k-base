@@ -15,7 +15,7 @@
 							model="vm.selectedDate" required="true" readonly="vm.addingInvoice || vm.viewingInvoice || vm.editingInvoice"
 							change-action="vm.selectDate()"></div>
 						<div class="col-md-6" ng-if="vm.addingInvoice || vm.viewingInvoice || vm.editingInvoice" standard-dropdown header="Customer" 
-							model="vm.invoice.customerId" options="vm.customersList" required="!vm.viewingInvoice" readonly="vm.viewingInvoice || vm.editingInvoice"
+							model="vm.invoice.customerId" options="vm.customers" key="id" value="fullName" required="!vm.viewingInvoice" readonly="vm.viewingInvoice || vm.editingInvoice"
 							change-action="vm.setCustomer()"></div>
 					</div>
 
@@ -35,8 +35,8 @@
 				<div class="card-body">
 					<h4 class="card-title">Sales</h4>
 					<p class="card-description">Click on Add to add an invoice or click on the Invoice Number to view/edit invoice.</p>
-					<div class="col-xs-12">
-						<table class="table" id="gradedEggsTable">
+					<div class="col-xs-12 scrollable">
+						<table class="table table-striped" id="gradedEggsTable">
 							<thead>
 								<tr>
 									<th></th>
@@ -112,7 +112,7 @@
 							<div class="invoice-body">
 								<div class="col-sm-12">
 									<h4>Bill To:</h4>
-									{{vm.customersList[vm.invoice.customerId]}} 
+									{{vm.customer.fullName}} 
 									<br ng-if="vm.customer.address">
 									{{vm.customer.address}} 
 									<br ng-if="vm.customer.companyName">

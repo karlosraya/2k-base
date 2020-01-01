@@ -1,0 +1,20 @@
+﻿<div class="page-header">
+    <h4>Data Lock</h4>
+</div>
+<div class="row">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">Please select a date</h4>
+				<p class="card-description"></p>
+				<form>
+					<div class="col-xs-12">
+						<div class="col-md-6" standard-datepicker header="Date" 
+							model="vm.lockDate" required="true" change-action="vm.selectDate()"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<loading-spinner is-loading="vm.loading"></loading-spinner>

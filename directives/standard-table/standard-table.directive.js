@@ -18,6 +18,8 @@
 
         function link(scope, element, attrs) {
 
+            scope.footableId = "footable-" + scope.$id;
+
             scope.filter = filter;
 
 			function filter(field, filter) {

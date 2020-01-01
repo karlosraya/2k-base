@@ -11,7 +11,7 @@
 }
 
 table {
-	font-size: 14px;
+	font-size: 0.8125rem;
 }
 
 .table td, .table th {
@@ -126,4 +126,55 @@ select.form-control {
 
 .swal2-styled.swal2-cancel {
     background-color: #d8d8d8;
+}
+
+.table thead th {
+    font-size: 14px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #e9ecef;
+}
+
+.table td, .table th {
+    height: 40px;
+}
+
+.scrollable {
+    overflow: auto;
+}
+
+tr .st-sort-ascent:before{
+    content: '\25B2';
+}
+
+tr .st-sort-descent:before{
+    content: '\25BC';
+}
+
+.pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #3e4b5b;
+    text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid #3e4b5b;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #3e4b5b;
+    border-color: #3e4b5b;
+}
+
+.pagination {
+    display: -webkit-inline-box;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
 }

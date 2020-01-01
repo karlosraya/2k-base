@@ -7,46 +7,48 @@
 
 		<title>Layers Portal</title>
 		
-		<link href="node_modules/font-awesome/css/font-awesome.css" rel="stylesheet">
-		<link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link href="node_modules/angularjs-toaster/toaster.min.css" rel="stylesheet" />
-		<link href="node_modules/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet" />
+		<link href="http://karlos-raya.com/layers-cdn/font-awesome/css/font-awesome.css" rel="stylesheet">
+		<link href="http://karlos-raya.com/layers-cdn/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://karlos-raya.com/layers-cdn/angularjs-toaster/toaster.min.css" rel="stylesheet" />
+		<link href="http://karlos-raya.com/layers-cdn/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet" />
 		
 		<link href="styles/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
 		<link href="styles/2k-base.css" rel="stylesheet" />
 		<link href="styles/overrides.css" rel="stylesheet" />
 
-		<link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+		<link rel="shortcut icon" type="image/png" href="favicon.png"/>
 	</head>
 
 	<body>
-		<script src="node_modules/jquery/dist/jquery.min.js"></script>
-		<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-		
-		<script src="node_modules/angular/angular.min.js"></script>
-		<script src="node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
-		<script src="node_modules/oclazyload/dist/ocLazyLoad.min.js"></script>
-		<script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
-		<script src="node_modules/angular-translate/dist/angular-translate.min.js"></script>
-		<script src="node_modules/angular-translate/dist/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
-		<script src="node_modules/angular-translate/dist/angular-translate-handler-log/angular-translate-handler-log.min.js"></script>  
-		<script src="node_modules/ng-idle/angular-idle.min.js"></script>
-		<script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
-		<script src="node_modules/angularjs-toaster/toaster.min.js"></script>
-		<script src="node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
-		<script src="node_modules/ng-currency/dist/ng-currency.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/jquery/dist/jquery.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/angular/angular.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/angular-ui-router/release/angular-ui-router.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/oclazyload/dist/ocLazyLoad.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/angularjs-toaster/toaster.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/sweetalert2/dist/sweetalert2.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/ng-currency/dist/ng-currency.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/angular-smart-table/dist/smart-table.min.js"></script>
+		<script src="http://karlos-raya.com/layers-cdn/ng-mask/dist/ngMask.min.js"></script>
 		<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	
 		<script src="app.module.js"></script>
+		<script src="app.constants.js"></script>
 		<script src="app.config.js"></script>
 		<script src="app.controller.js"></script>
 		<script src="app.service.js"></script>
 
 		<script src="services/toaster.service.js"></script>
+		<script src="services/auth.service.js"></script>
+		<script src="services/alert.service.js"></script>
+		<script src="services/exception.service.js"></script>
 
 		<script src="plugins/off-canvas.js"></script>
 		<script src="plugins/vendor.bundle.base.js"></script>
 		
 		<div ui-view></div>
+        <toaster-container toaster-options="{'toaster-id': 'default-toast', 'time-out': 8000, 'limit': 1}"></toaster-container>
 	</body>
 </html>

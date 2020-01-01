@@ -11,7 +11,7 @@
 					<div class="row">
 						<div class="col-md-6" standard-dropdown header="House" 
 	                        model="vm.house.id" readonly="false"
-	                        options="vm.houseOptions"
+	                        options="vm.houseOptions" key="id" value="name"
 	                        change-action="vm.selectHouse()"></div>
 					</div>
 				</form>
@@ -61,11 +61,53 @@
 					Archive
 				</h4>
 				<p class="card-description" >
-					Click on the batch to see archived data.
+					{{vm.archivedBatches && vm.archivedBatches.length > 0 ? "Click on the batch to see archived data." : "No batches found in archive."}}
 				</p>
-				<standard-table ng-if="vm.archivedBatches && vm.archivedBatches.length > 0"
-					table-defn="vm.batchTableDefn"
-					data="vm.archivedBatches"></standard-table>
+				<div class="col-xs-12 scrollable" ng-if="vm.archivedBatches && vm.archivedBatches.length > 0">
+					<table st-table="vm.archivedBatchesCopy" st-safe-src="vm.archivedBatches" class="table table-striped">
+						<thead>
+							<tr>
+								<th colspan="7"><input st-search="" class="form-control" placeholder="Search" type="text"/></th>
+							</tr>
+							<tr>
+					      		<th st-sort="batch">Batch</th>
+					      		<th st-sort="startAge">Start Age</th>
+					      		<th st-sort="initialBirdBalance">Initial Bird Balance</th>
+					      		<th st-sort="startDate">Start Date</th>
+					      		<th st-sort="endDate">End Date</th>
+					      		<th st-sort="lastInsertUpdateBy">Last Updated By</th>
+					      		<th st-sort="lastInsertUpdateTS">Last Update Date</th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					    	<tr ng-repeat="batch in vm.archivedBatchesCopy">
+					      		<td>
+					      			<a href ng-click="vm.viewBatch($index)">
+					      				{{batch.batch}}
+					      			</a>
+					      		</td>
+					      		<td>
+					      			{{batch.startAge}}
+					      		</td>
+					      		<td>
+					      			{{batch.initialBirdBalance}}
+					      		</td>
+					      		<td>
+					      			{{batch.startDate | dateFormat}}
+					      		</td>
+					      		<td>
+					      			{{batch.endDate | dateFormat}}
+					      		</td>
+					      		<td>
+					      			{{batch.lastInsertUpdateBy}}
+					      		</td>
+					      		<td>
+					      			{{batch.lastInsertUpdateTS | dateFormat}}
+					      		</td>
+					    	</tr>
+					  	</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

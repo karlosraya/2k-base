@@ -3,11 +3,11 @@
 		.module('2kApp')
 		.factory('productionService', productionService);
 
-	productionService.$inject = ['$http', '$log', '$q'];
+	productionService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function productionService($http, $log, $q) {
+	function productionService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getProductionReports: getProductionReports,

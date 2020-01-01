@@ -22,35 +22,31 @@
 		</div>
 	</div>
 
-	<div class="row" ng-if="vm.displayFeedsDelivery">
-		<div class="col-12 grid-margin stretch-card">
+	<div class="row">
+		<div class="col-md-6 col-sm-12 grid-margin stretch-card" ng-if="vm.displayFeedsDelivery">
 			<div class="card">
 				<div class="card-body">
 					<h4 class="card-title">
-						Feeds Delivery
+						Delivery
 					</h4>
 					<p class="card-description">
 						Complete required input below and click on Submit to add/edit feeds delivery information.
 					</p>
 					<div class="row">
-						<div standard-number class="col-md-6" header="Delivery Receipt Number" 
-							model="vm.delivery.deliveryReceiptNo" readonly="false" required="true"></div>
-					</div>
-					<div class="row">
-						<div standard-text class="col-md-6" header="Beginning" 
-							model="vm.beginningBalance" readonly="true" required="false"></div>
-					</div>
-					<div class="row">
-						<div standard-number class="col-md-6" header="Deliver" 
-							model="vm.delivery.delivery" readonly="false" required="true"
-							change-action="vm.computeBalance()"></div>
-						<div standard-number class="col-md-6" header="Out" 
-							model="vm.delivery.dailyConsumption" readonly="true"
-							change-action="vm.computeBalance()"></div>
-					</div>
-					<div class="row">
-						<div standard-text class="col-md-6" header="Balance" 
-							model="vm.endBalance" readonly="true" required="false"></div>
+						<div class="col-md-12">
+							<div standard-number class="col-md-12" header="Delivery Receipt Number" 
+								model="vm.delivery.deliveryReceiptNo" readonly="false" required="true"></div>
+							<div standard-text class="col-md-12" header="Beginning" 
+								model="vm.beginningBalance" readonly="true" required="false"></div>
+							<div standard-number class="col-md-12" header="Deliver" 
+								model="vm.delivery.delivery" readonly="false" required="true"
+								change-action="vm.computeBalance()"></div>
+							<div standard-number class="col-md-12" header="Out" 
+								model="vm.delivery.dailyConsumption" readonly="true"
+								change-action="vm.computeBalance()"></div>
+							<div standard-text class="col-md-12" header="Balance" 
+								model="vm.endBalance" readonly="true" required="false"></div>
+						</div>
 					</div>
 					<div class="col-xs-12 text-right">
 						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(deliveryForm)">Submit</button>
@@ -58,6 +54,48 @@
 				</div>
 			</div>
 		</div>
+		<div class="col-md-6 col-sm-12 grid-margin stretch-card" ng-if="vm.displayFeedsDelivery">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">
+						Consumption
+					</h4>
+					<p class="card-description">
+						Displays all feeds consumed by each house on {{vm.deliveryDate | dateFormat}}.
+					</p>
+					<div class="col-md-12 scrollable">
+						<table st-table="vm.eggsProductionDataCopy" st-safe-src="vm.eggsProductionData" class="table table-striped">
+							<thead>
+								<tr>
+						      		<th st-sort="houseName">House</th>
+						      		<th st-sort="feeds">Feeds</th>
+						    	</tr>
+						  	</thead>
+						  	<tbody>
+						    	<tr ng-repeat="data in vm.eggsProductionDataCopy">
+						      		<td>
+						      			{{data.houseName}}
+						      		</td>
+						      		<td>
+						      			{{data.feeds}}
+						      		</td>
+						    	</tr>
+						  	</tbody>
+						  	<tfoot>
+						  		<tr>
+						      		<td>
+						      			<b>Total</b>
+						      		</td>
+						      		<td>
+						      			<b>{{vm.total}}</b>
+						      		</td>
+						    	</tr>
+						  	</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </form>
-<loading-spinner is-loading="vm.loading"></loading-spinner>
+<loading-spinner is-loading="vm.loading || vm.loadingProduction"></loading-spinner>

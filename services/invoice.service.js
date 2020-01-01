@@ -3,11 +3,11 @@
 		.module('2kApp')
 		.factory('invoiceService', invoiceService);
 
-	invoiceService.$inject = ['$http', '$log', '$q'];
+	invoiceService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function invoiceService($http, $log, $q) {
+	function invoiceService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getInvoicesByDate: getInvoicesByDate,

@@ -3,50 +3,25 @@
 		.module('2kApp')
 		.factory('appService', appService);
 
-	appService.$inject = ['$http', '$log', '$q', 'toaster', '$uibModal'];
+	appService.$inject = ['authService'];
 
-	function appService($http, $log, $q, toaster, $uibModal) {
+	function appService(authService) {
+
+		var userDetails = {};
 
 		var service = {
-			alert: alert,
-			customAlert: customAlert,
-			toast: toast,
-			clearToast: clearToast
+			setUserDetails: setUserDetails,
+			getUserDetails: getUserDetails
 		};
 
 		return service;
-		
-		function alert(type, title, text) {
-			Swal.fire({
-			  type: type,
-			  title: title,
-			  text: text
-			});
+
+		function setUserDetails(newUserDetails) {
+			userDetails = newUserDetails;
 		}
-		
-		function customAlert(alertObject, alertAction) {
-			Swal.fire(alertObject).then(alertAction);
-		}
-		
-		function toast(type, title, body, toastId) {
-			var target = 'app-toaster';
-			if(toastId) {
-				target = toastId;
-			}		
-			toaster.pop({
-				'type': type,
-				'title': title,
-				'body': body,
-				'toasterId': target,
-				'onShowCallback': function () {
-					document.getElementById(target).scrollIntoView();			
-				},
-				bodyOutputType: 'trustedHtml'
-			});
-		}
-		
-		function clearToast(){
-			toaster.clear('*');
+
+		function getUserDetails() {
+			return userDetails;
 		}
 	}
 })();

@@ -28,7 +28,8 @@
 			
 			scope.dateOptions = {
 				showWeeks:false,
-				maxDate: scope.maxDate
+				maxDate: scope.maxDate,
+                formatYear: 'yyyy'
 			}
         }
     };

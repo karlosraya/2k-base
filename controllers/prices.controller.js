@@ -66,7 +66,6 @@
 
 		function updatePrices() {
 			vm.loading = true;
-			vm.prices.lastInsertUpdateBy = "Antonio Raya";
 			pricesService.updatePrices(vm.prices)
 			.then(function(response) {
 				if(response) {

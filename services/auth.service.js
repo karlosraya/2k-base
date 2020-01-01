@@ -3,27 +3,33 @@
 		.module('2kApp')
 		.factory('authService', authService);
 
-        authService.$inject = ['$http', '$log', '$q'];
+        authService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function authService($http, $log, $q) {
+	function authService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost/layers-portal/api";
+		var baseUrl = Constants.LayersServiceBaseUrl + "auth";
+		var userBaseUrl = Constants.LayersServiceBaseUrl + "user";
 
 		var service = {
             login: login,
             logout: logout,
-            addUser: addUser,
-            removeUser: removeUser,
-            setUserGroup: setUserGroup
+            auth: auth,
+            registerUser: registerUser,
+            getUsers: getUsers,
+            updateUser: updateUser,
+            setUserRoles: setUserRoles
 		};
 
 		return service;
 		
-		function login() {
-			return $http.post(baseUrl + 'test')
+		function login(credentials) {
+			return $http.post(baseUrl + '/login', credentials)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
+				if(response.data && response.data.success) {
+					localStorage.setItem('layersPortalToken', response.data.success.token);
+				}
 				$log.info("INFO: login", response)
 				return response.data;
 			}
@@ -35,10 +41,11 @@
 		}
 		
 		function logout() {
-			return $http.post(baseUrl + 'test')
+			return $http.post(baseUrl + '/logout')
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
+				localStorage.removeItem('layersPortalToken');
 				$log.info("INFO: logout", response)
 				return response.data;
 			}
@@ -48,48 +55,82 @@
 				return $q.reject(error);
 			}
         }
-        
-        function addUser() {
-			return $http.post(baseUrl + 'test')
+
+        function auth() {
+        	var deferred = $q.defer();
+			$http.post(baseUrl)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: login", response)
+				$log.info("INFO: auth", response)
+				deferred.resolve(response.data);
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: auth", error)
+				var retVal = false;
+				deferred.resolve(retVal);
+			}
+
+			return deferred.promise;
+        }
+
+        function registerUser(user) {
+			return $http.post(baseUrl + '/register', user)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: registerUser", response)
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: login", error)
+				$log.error("ERROR: registerUser", error)
 				return $q.reject(error);
 			}
         }
         
-        function removeUser() {
-			return $http.post(baseUrl + 'test')
+        function getUsers() {
+			return $http.get(userBaseUrl)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: login", response)
+				$log.info("INFO: getUsers", response)
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: login", error)
+				$log.error("ERROR: getUsers", error)
+				return $q.reject(error);
+			}
+        }
+
+        function updateUser(user) {
+			return $http.post(userBaseUrl, user)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: updateUser", response)
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: updateUser", error)
 				return $q.reject(error);
 			}
         }
         
-        function setUserGroup() {
+        function setUserRoles() {
 			return $http.post(baseUrl + 'test')
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: login", response)
+				$log.info("INFO: setUserRoles", response)
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: login", error)
+				$log.error("ERROR: setUserRoles", error)
 				return $q.reject(error);
 			}
 		}

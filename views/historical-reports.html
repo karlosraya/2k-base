@@ -12,7 +12,8 @@
 				<form>
 					<div class="col-xs-12">
 						<div class="col-md-6" standard-dropdown header="House" 
-							model="vm.selectedHouse" options="vm.houseOptions" 
+							model="vm.selectedHouse"  
+							options="vm.houseOptions" key="id" value="name" 
 							change-action="vm.getProductionReports()"></div>
 					</div>
 				</form>
@@ -25,7 +26,7 @@
 		<div class="card">
 			<div class="card-body">
 				<h4 class="card-title">
-					{{vm.houseInfo.name}}
+					HSE: {{vm.houseInfo.name}}
 				</h4>
 				<div class="row"> 
 					<div class="col-md-6">
@@ -43,45 +44,55 @@
 						</p>
 					</div>
 				</div>
-
-				<table class="table" ng-if="vm.productionReports && vm.productionReports.length > 0">
-					<thead>
-						<tr>
-							<th>Date</th>
-							<th>Age</th>
-							<th>Cull</th>
-							<th>Mortality</th>
-							<th>Actual Bird Balance</th>
-							<th>Target Bird Balance</th>
-							<th>Actual Production</th>
-							<th>Actual Percentage</th>
-							<th>Target Percentage</th>
-							<th>Target Production</th>
-							<th>Feeds</th>
-							<th>Grams</th>
-							<th>Target</th>
-							<th>Actual</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="report in vm.productionReports">
-							<td>{{report.reportDate | dateFormat}}</td>
-							<td>{{report.age}}</td>
-							<td>{{report.cull}}</td>
-							<td>{{report.mortality}}</td>
-							<td>{{report.birdBalance}}</td>
-							<td>{{report.targetBirdBalance}}</td>
-							<td>{{report.eggProduction}}</td>
-							<td>{{report.actualPercentage | number : 2}}%</td>
-							<td>{{report.targetPercentage || report.targetPercentage  == 0 ? report.targetPercentage + "%" : null}}</td>
-							<td>{{report.targetProduction}}</td>
-							<td>{{report.feeds}}</td>
-							<td>{{report.grams | number : 3}}</td>
-							<td>{{report.target | number : 2}}</td>
-							<td>{{report.actual | number : 2}}</td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="row">
+					<div class="col-xs-12 scrollable" ng-if="vm.productionReports && vm.productionReports.length > 0">
+						<table st-table="vm.productionReportsCopy" st-safe-src="vm.productionReports" class="table table-striped">
+							<thead>
+								<tr>
+						      		<th st-sort="reportDate">Date</th>
+									<th st-sort="age">Age</th>
+									<th st-sort="cull">Cull</th>
+									<th st-sort="mortality">Mortality</th>
+									<th st-sort="birdBalance">Actual Bird Balance</th>
+									<th st-sort="targetBirdBalance">Target Bird Balance</th>
+									<th st-sort="eggProduction">Actual Production</th>
+									<th st-sort="actualPercentage">Actual Percentage</th>
+									<th st-sort="targetPercentage">Target Percentage</th>
+									<th st-sort="targetProduction">Target Production</th>
+									<th st-sort="feeds">Feeds</th>
+									<th st-sort="grams">Grams</th>
+									<th st-sort="target">Target</th>
+									<th st-sort="actual">Actual</th>
+						    	</tr>
+						  	</thead>
+						  	<tbody>
+						    	<tr ng-repeat="report in vm.productionReportsCopy">
+						      		<td>{{report.reportDate | dateFormat}}</td>
+									<td>{{report.age}}</td>
+									<td>{{report.cull}}</td>
+									<td>{{report.mortality}}</td>
+									<td>{{report.birdBalance}}</td>
+									<td>{{report.targetBirdBalance}}</td>
+									<td>{{report.eggProduction}}</td>
+									<td>{{report.actualPercentage | number : 2}}%</td>
+									<td>{{report.targetPercentage || report.targetPercentage  == 0 ? report.targetPercentage + "%" : null}}</td>
+									<td>{{report.targetProduction}}</td>
+									<td>{{report.feeds}}</td>
+									<td>{{report.grams | number : 3}}</td>
+									<td>{{report.target | number : 2}}</td>
+									<td>{{report.actual | number : 2}}</td>
+						    	</tr>
+						  	</tbody>
+							<tfoot ng-if="vm.productionReports.length > 20">
+								<tr>
+									<td colspan="14" class="text-center">
+										<div st-pagination="" st-items-by-page="20" st-displayed-pages="5"></div>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

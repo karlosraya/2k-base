@@ -13,6 +13,7 @@
 		vm.hasActiveBatch = false;
 		vm.house = null;
 		vm.archivedBatches = [];
+		vm.archivedBatchesCopy = [];
 		vm.startBatchForm = {};
 		vm.houseOptions = {};
 		vm.batch = {};
@@ -24,78 +25,28 @@
 		vm.completeBatch = completeBatch;
 
 		function init() {
-			vm.house = $stateParams.house;
-			if(vm.house) {
-				vm.house.id = vm.house.id + "";
-				vm.batch = vm.house.batch;
+			vm.houseId = $stateParams.houseId;
 
-				if(vm.batch) {
-					vm.batch.startDate = new Date(vm.batch.lastInsertUpdateTS);
-					vm.hasActiveBatch = true;
-				} else {
-					vm.hasActiveBatch = false;
-				}
+			if(vm.houseId) {
+				vm.house = {};
+				vm.house.id = vm.houseId;
+
+				selectHouse(true);
 			}
+			
 			getHouses();
-
-			vm.batchTableDefn = [
-				{
-					name: "batch",
-					attributes: {},
-					label: "Batch",
-					isLink: true,
-					linkAction: viewBatch
-				},
-				{
-					name: "startAge",
-					attributes: {},
-					label: "Start Age"
-				},
-				{
-					name: "initialBirdBalance",
-					attributes: {},
-					label: "Initial Bird Balance"
-				},
-				{
-					name: "startDate",
-					attributes: {},
-					label: "Start Date",
-					filter: "dateFormat"
-				},
-				{
-					name: "endDate",
-					attributes: {},
-					label: "End Date",
-					filter: "dateFormat"
-				},
-				{
-					name: "lastInsertUpdateBy",
-					attributes: {},
-					label: "Last Updated By"
-				},
-				{
-					name: "lastInsertUpdateTS",
-					attributes: {},
-					label: "Last Update Date",
-					filter: "dateFormat"
-				}
-			];
 		}
 
 		function getHouses() {
 			vm.loading = true;
 			houseService.getHouses()
 			.then(function(houses) {
-				if(houses && houses.length > 0) {
-					houses.forEach(function(house) {
-						vm.houseOptions[house.id] = house.name;
-					});
-				}
+				vm.houseOptions = houses;
 				vm.loading = false;
 			})
 			.catch(function(error){
 				vm.loading = false;
-				exceptionService.catcher(catcher);
+				exceptionService.catcher(error);
 			});
 		}
 
@@ -108,20 +59,20 @@
 
 				batchService.getActiveBatchByHouseId(vm.house.id)
 				.then(function(response) {
-					if(angular.equals(response, {})) {
+					if(response) {
+						vm.hasActiveBatch = true;
+						vm.batch = response;
+						vm.batch.startDate = new Date(response.startDate);
+					} else {
 						if(!disableToaster) {
 							toasterService.info("Info", "No active batch found!");
 						}
 						vm.hasActiveBatch = false;
 						vm.batch = {};
-					} else {
-						vm.hasActiveBatch = true;
-						vm.batch = response;
-						vm.batch.startDate = new Date(response.startDate);
 					}
 				})
 				.catch(function(error) {
-					exceptionService.catcher(catcher);
+					exceptionService.catcher(error);
 					vm.loading = false;
 				});
 
@@ -133,10 +84,12 @@
 			batchService.getBatchesByHouseId(vm.house.id)
 				.then(function(response) {
 					vm.archivedBatches = response;
+
+					vm.archivedBatchesCopy = angular.copy(response);
 					vm.loading = false;
 				})
 				.catch(function(error) {
-					exceptionService.catcher(catcher);
+					exceptionService.catcher(error);
 					vm.loading = false;
 				});
 		}
@@ -163,7 +116,6 @@
 			var request = angular.copy(vm.batch);
 
 			request.houseId = vm.house.id;
-			request.lastInsertUpdateBy = "Antonio Raya";
 			request.startDate = $filter('date')(vm.batch.startDate, 'yyyy-MM-dd');
 
 			batchService.startBatch(request)
@@ -172,7 +124,7 @@
 				selectHouse();
 			})
 			.catch(function(error) {
-				exceptionService.catcher(catcher);
+				exceptionService.catcher(error);
 				vm.loading = false;
 			});
 		}
@@ -181,8 +133,6 @@
 			vm.loading = true;
 
 			var request = angular.copy(vm.batch);
-
-			request.lastInsertUpdateBy = "Antonio Raya";
 			request.startDate = $filter('date')(vm.batch.startDate, 'yyyy-MM-dd');
 
 			batchService.editBatch(vm.batch.id, request)
@@ -191,7 +141,7 @@
 				getArchivedBatches();
 			})
 			.catch(function(error) {
-				exceptionService.catcher(catcher);
+				exceptionService.catcher(error);
 				vm.loading = false;
 			});
 		}
@@ -210,7 +160,6 @@
 					vm.loading = true;
 					var request = {};
 					request.endDate = $filter('date')(new Date(), 'yyyy-MM-dd');
-					request.lastInsertUpdateBy = "Antonio Raya";
 
 					batchService.endBatch(vm.batch.id, request)
 					.then(function(response) {

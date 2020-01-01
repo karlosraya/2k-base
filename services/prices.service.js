@@ -3,11 +3,11 @@
 		.module('2kApp')
 		.factory('pricesService', pricesService);
 
-	pricesService.$inject = ['$http', '$log', '$q'];
+	pricesService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function pricesService($http, $log, $q) {
+	function pricesService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
 			getPrices: getPrices,

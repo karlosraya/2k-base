@@ -4,11 +4,15 @@
 	    .module('2kApp')
 	    .controller('HistoricalReportsCtrl', HistoricalReportsCtrl);
 
-	HistoricalReportsCtrl.$inject = ['$timeout', 'houseService', 'productionService', 'toasterService', 'exceptionService'];
+	HistoricalReportsCtrl.$inject = ['$timeout', 'houseService', 'productionService', 'toasterService', 'exceptionService', 'Constants'];
 
-	function HistoricalReportsCtrl($timeout, houseService, productionService, toasterService, exceptionService) {
+	function HistoricalReportsCtrl($timeout, houseService, productionService, toasterService, exceptionService, Constants) {
 		var vm = this;
 		
+		/*vm.standardTargetPercentage = Constants.StandardTargetPercentage;
+		vm.standardTargetBirdBalancePercentage = Constants.StandardTargetBirdBalancePercentage;
+		vm.standardWeeklyPercentage = Constants.StandardWeeklyPercentage;*/
+		vm.standard
 		vm.displayChart = 0;
 		vm.loading = false;
 		vm.displayStats = false;
@@ -26,6 +30,7 @@
 		vm.remainingActualDataset = [];
 
 		vm.productionReports = [];
+		vm.productionReportsCopy = [];
 		vm.maxTarget = 0;
 		vm.maxActual = 0;
 
@@ -38,100 +43,13 @@
 			vm.displayReport = false;
 			
 			getHouses();
-			
-			vm.historicalReportTableDefn = [
-				{
-					name: "reportDate",
-					attributes: {},
-					label: "Date",
-					filter: "dateFormat"
-				},
-				{
-					name: "age",
-					attributes: {},
-					label: "Age"
-					
-				},
-				{
-					name: "cull",
-					attributes: {},
-					label: "Culls"
-					
-				},
-				{
-					name: "mortality",
-					attributes: {},
-					label: "Mortality"
-					
-				},
-				{
-					name: "birdBalance",
-					attributes: {},
-					label: "Actual Bird Balance"
-					
-				},
-				{
-					name: "targetBirdBalance",
-					attributes: {},
-					label: "Target Bird Balance"
-					
-				},
-				{
-					name: "eggProduction",
-					attributes: {},
-					label: "Actual Production"
-					
-				},
-				{
-					name: "actualPercentage",
-					attributes: {},
-					label: "Actual Percentage"
-					
-				},
-				{
-					name: "targetPercentage",
-					attributes: {},
-					label: "Target Percentage"
-					
-				},
-				{
-					name: "targetProduction",
-					attributes: {},
-					label: "Target Production"
-					
-				},
-				{
-					name: "feeds",
-					attributes: {},
-					label: "Feeds"
-				},
-				{
-					name: "grams",
-					attributes: {},
-					label: "Grams"
-				},
-				{
-					name: "target",
-					attributes: {},
-					label: "Target"
-				},
-				{
-					name: "actual",
-					attributes: {},
-					label: "Actual"
-				}
-			];
 		}
 		
 		function getHouses() {
 			vm.loading = true;
 			houseService.getHouses()
 			.then(function(houses) {
-				if(houses && houses.length > 0) {
-					houses.forEach(function(house) {
-						vm.houseOptions[house.id] = house.name;
-					});
-				}
+				vm.houseOptions = houses;
 				vm.loading = false;
 			})
 			.catch(function(error){
@@ -152,9 +70,10 @@
 					vm.houseInfo.stockman = response.stockman;
 					vm.houseInfo.initialBirdBalance = response.initialBirdBalance;
 					vm.productionReports = generateReport(response.productions, response.initialBirdBalance, response.startAge);
+					vm.productionReportsCopy = angular.copy(vm.productionReports );
 
 					if(vm.productionReports.length == 0) {
-						toasterService.info("Info", "No reports found for " + vm.houseInfo.name);
+						toasterService.info("Info", "No reports found for House: " + vm.houseInfo.name);
 						vm.displayReport = false;
 						vm.displayStats = false;
 					} else {
@@ -163,6 +82,7 @@
 					
 				})
 				.catch(function(error) { 
+					console.log(error);
 					vm.displayReport = false;
 					vm.loading = false;
 					vm.displayStats = false;
@@ -173,12 +93,14 @@
 
 		function generateReport(productionReports, initialBirdBalance, startAge) {
 			if(productionReports && productionReports.length > 0) {
+				vm.maxTarget = 0;
+				vm.maxActual = 0;
 
 				var previousReport = null;
 				var previousTarget = 0;
 				var previousActual = 0;
 				var weeklyTotalProd = 0;
-
+				
 				productionReports.forEach(function(report, index) {
 					if(previousReport) {
 						report.birdBalance = calculateActualBirdBalance(previousReport.birdBalance, report.cull, report.mortality);
@@ -195,6 +117,8 @@
 
 						report.targetPercentage = getTargetPercentage(index/7);
 						report.targetBirdBalance = calculateTargetBirdBalance(initialBirdBalance, index/7);
+						//report.targetPercentage = getTargetPercentage(report.age);
+						//report.targetBirdBalance = calculateTargetBirdBalance(initialBirdBalance, report.age);
 						report.targetProduction = calculateTargetProd(report.targetPercentage, report.targetBirdBalance);
 						report.target = calculateTarget(report.eggProduction, report.targetProduction, initialBirdBalance, previousTarget);
 						report.actual = calculateActual(weeklyTotalProd, report.eggProduction, initialBirdBalance, previousActual);
@@ -235,6 +159,11 @@
 		}
 
 		function calculateTargetBirdBalance(initialTargetBirdBalance, weekNo) {
+			/*if(vm.standardTargetBirdBalancePercentage[weekNo]) {
+				return initialTargetBirdBalance * vm.standardTargetBirdBalancePercentage[weekNo];
+			} else {
+				return null;
+			}*/
 			var target = 1 - weekNo * 0.001;
 			return Math.round(initialTargetBirdBalance * target);
 		}
@@ -248,14 +177,33 @@
 			var targetPercentage = [0, 6, 43, 66, 82, 88, 91.4, 93, 94.5, 95.3, 96, 96, 96, 95.8, 95.6, 95.4, 95.2, 94.9, 94.6, 94.3, 94, 
 			93.7, 93.4, 93.1, 92.8, 92.5, 92.2, 91.9, 91.5, 91.1, 90.7, 90.3, 89.9, 89.5, 89.1, 88.7, 88.3, 87.9, 87.5, 87.1, 86.7, 86.3, 
 			85.9, 85.5, 85.1, 84.7, 84.3, 83.9, 83.5, 83.1, 82.7, 82.3, 81.9, 81.5, 81.1, 80.7, 80.3, 79.9, 79.5, 79.1, 78.7, 78.3, 77.9];
+			
 			return targetPercentage[weekNo];
+
+			/*if(vm.standardTargetPercentage[weekNo] || vm.standardTargetPercentage[weekNo] == 0) {
+				return vm.standardTargetPercentage[weekNo];
+			} else {
+				return null;
+			}*/
 		}
 
 		function calculateTargetProd(targetPercentage, targetBirdBalance) {
+			/*if(targetPercentage == null) {
+				return null;
+			} else if(targetPercentage >= 0) {
+				return Math.round(((targetPercentage/100) * targetBirdBalance));
+			}*/
 			return Math.round(((targetPercentage/100) * targetBirdBalance));
 		}
 
 		function calculateTarget(actualProd, targetProd, initialBirdBalance, previousTarget) {
+			/*if(targetProd == null) {
+				return null
+			}else if(!actualProd || actualProd == 0 || (targetProd * 7) == 0) {
+				return 0;
+			} else {
+				return ((targetProd * 7) / initialBirdBalance) + previousTarget;
+			}*/
 			if(!actualProd || actualProd == 0 || (targetProd * 7) == 0) {
 				return 0;
 			} else {
@@ -264,6 +212,11 @@
 		}
 
 		function calculateActual(weeklyTotalProd, actualProd, initialBirdBalance, previousActual) {
+			/*if(!actualProd || actualProd == 0 || weeklyTotalProd == 0) {
+				return 0;
+			} else {
+				return (weeklyTotalProd / initialBirdBalance) + previousActual;
+			}*/
 			if(!actualProd || actualProd == 0 || weeklyTotalProd == 0) {
 				return 0;
 			} else {

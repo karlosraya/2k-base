@@ -4,14 +4,17 @@
 	    .module('2kApp')
 	    .controller('GradedEggsCtrl', GradedEggsCtrl);
 
-	GradedEggsCtrl.$inject = ['$state', '$filter', '$timeout', 'gradedEggsService', 'exceptionService', 'toasterService'];
+	GradedEggsCtrl.$inject = ['$state', '$filter', '$timeout', 'gradedEggsService', 'productionService', 'exceptionService', 'toasterService'];
 
-	function GradedEggsCtrl($state, $filter, $timeout, gradedEggsService, exceptionService, toasterService) {
+	function GradedEggsCtrl($state, $filter, $timeout, gradedEggsService, productionService, exceptionService, toasterService) {
 		var vm = this;
 
 		vm.loading = false;
+		vm.loadingProductions = false;
 		vm.editingGradedEggs = false;
+
 		vm.gradedEggsDate = new Date();
+		
 		vm.eggTypes = [
 			{header: 'PWW', key: 'pww'}, 
 			{header: 'PW', key: 'pw'}, 
@@ -25,8 +28,10 @@
 			{header: 'Spoiled', key: 'spoiled'}];
 
 		vm.gradedEggsProd = {};
+		vm.gradedEggsProdCopy = {};
 		vm.gradedEggsBeginning = {};
 		vm.gradedEggsTotalOut = {};
+		vm.gradedEggsUngraded = {};
 
 		vm.$onInit = init();
 
@@ -38,11 +43,15 @@
 
 		function init() {
 			getGradedEggsByDate();
+			getProductionReportsByDate();
 		}
 
 		function selectDate() {
 			$timeout(function() {
-				getGradedEggsByDate();
+				if(vm.gradedEggsDate) {
+					getGradedEggsByDate();
+					getProductionReportsByDate();
+				}
 			});
 		}
 
@@ -56,17 +65,92 @@
 				vm.gradedEggsProd = response.gradedEggsProduction;
 				vm.gradedEggsBeginning = computBeginningBalance(response.gradedEggsTotal, response.totalSales);
 				vm.gradedEggsDailySales = computeTotalOut(response.totalDailySales);
+				vm.gradedEggsUngraded = computeUngraded(response);
 
-				console.log(vm.gradedEggsBeginning);
 				vm.editingGradedEggs = false;
 				if(toaster) {
 					toasterService.success("Success", "Graded Eggs information updated successfully");
 				}
 			})
 			.catch(function(error) {
+				console.log(error);
 				vm.loading = false;
 				exceptionService.catcher(error);
 			});
+		}
+
+		function getProductionReportsByDate() {
+			vm.loadingProductions = true;
+
+			var reportDate = $filter('date')(vm.gradedEggsDate, "yyyy-MM-dd");
+
+			productionService.getProductionReportsByDate(reportDate)
+			.then(function(response) {
+				processEggsProductionData(response);
+				vm.loadingProductions = false;
+			})
+			.catch(function(error) {
+				console.log(error);
+				exceptionService.catcher(error);
+				vm.loadingProductions = false;
+			});
+		}
+
+		function processEggsProductionData(data) {
+			vm.eggsProductionData = [];
+
+			data.forEach(function(prodData) {
+				var eggProdData = {};
+				eggProdData.batchId = prodData.id;
+				eggProdData.houseName = prodData.name;
+				eggProdData.houseId = prodData.houseId + "";
+
+				if(prodData.productionByDate) {
+					eggProdData.id = prodData.productionByDate.id;
+					eggProdData.cull = prodData.productionByDate.cull;
+					eggProdData.mortality = prodData.productionByDate.mortality;
+					eggProdData.eggProduction = prodData.productionByDate.eggProduction;
+				}
+				
+				eggProdData.beginningBirdBalance = computeBalance(prodData.initialBirdBalance, prodData.totals.totalMortality, prodData.totals.totalCull);
+				eggProdData.endingBirdBalance = computeBalance(eggProdData.beginningBirdBalance, eggProdData.cull, eggProdData.mortality);
+
+				eggProdData.reportDate = vm.gradedEggsDate;
+
+				vm.eggsProductionData.push(eggProdData);
+			});
+
+			vm.eggsProductionDataCopy = angular.copy(vm.eggsProductionData);
+
+			var total = {};
+			total.houseName = "Total";
+			total.eggProduction = sum(vm.eggsProductionData, 'eggProduction');
+			total.beginningBirdBalance = sum(vm.eggsProductionData, 'beginningBirdBalance');
+			total.endingBirdBalance = sum(vm.eggsProductionData, 'endingBirdBalance');
+
+			vm.total = total;
+		}
+
+		function computeBalance(balance, cull, mortality) {
+			var c = cull ? cull : 0;
+			var m = mortality ? mortality : 0;
+
+			return balance - c - m;
+		}
+
+		function sum(array, property) {
+			return array.reduce(function(a, b) {
+				return a + (b[property] || 0);
+			}, 0);
+		}		
+
+		function computeUngraded(data) {
+			var ungradedEggs = {};
+			ungradedEggs.beginning = data.totalEggProductions - getTotal(data.gradedEggsTotal);
+			ungradedEggs.production = data.eggProductions - getTotal(data.gradedEggsProduction);
+			ungradedEggs.available = ungradedEggs.beginning + ungradedEggs.production;
+
+			return ungradedEggs;
 		}
 
 		function computeTotalOut(totalSales) {
@@ -111,7 +195,6 @@
 				return sale.item === eggType;
 			});
 
-			console.log(total);
 			if(total) {
 				return total.total;
 			} else {
@@ -132,6 +215,7 @@
 		}
 
 		function editGradedEggs(form) {
+			vm.gradedEggsProdCopy = angular.copy(vm.gradedEggsProd);
 			form.$submitted = false;
 			form.$setUntouched();
 			form.$setPristine();
@@ -139,6 +223,7 @@
 		}
 
 		function back() {
+			vm.gradedEggsProd = angular.copy(vm.gradedEggsProdCopy);
 			vm.editingGradedEggs = false;
 		}
 
@@ -154,8 +239,8 @@
 
 		function submitGradedEggs() {
 			vm.loading = true;
+
 			var request = angular.copy(vm.gradedEggsProd);
-			request.lastInsertUpdateBy = "Antonio Raya";
 			request.inputDate = $filter('date')(vm.gradedEggsDate, 'yyyy-MM-dd');
 
 			gradedEggsService.createUpdateGradedEggs(request)

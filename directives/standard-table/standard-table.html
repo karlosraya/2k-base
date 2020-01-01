@@ -1,11 +1,11 @@
-<table class="table">
+<table id="{{footableId}}" class="table table-striped">
   <thead>
     <tr>
       <th ng-repeat="column in tableDefn">{{column.label}}</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="row in data" ng-init="parentIndex = $index">
+    <tr ng-repeat="row in data" ng-init="parentIndex = $index" footable-repeat>
       <td ng-repeat="column in tableDefn">
         <span ng-if="!column.isButton && !column.isLink">
           {{ filter(row[column.name], column.filter) }}

@@ -3,14 +3,13 @@
 		.module('2kApp')
 		.factory('batchService', batchService);
 
-	batchService.$inject = ['$http', '$log', '$q'];
+	batchService.$inject = ['$http', '$log', '$q', 'Constants'];
 
-	function batchService($http, $log, $q) {
+	function batchService($http, $log, $q, Constants) {
 
-		var baseUrl = "http://localhost:8000/api/";
+		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
-			getActiveBatches: getActiveBatches,
 			getActiveBatchByHouseId: getActiveBatchByHouseId,
 			editBatch: editBatch,
 			startBatch: startBatch,
@@ -19,21 +18,6 @@
 		};
 
 		return service;
-		
-		function getActiveBatches() {
-			return $http.get(baseUrl + 'batch/active')
-			.then(successCallback, errorCallback);
-
-			function successCallback(response) {
-				$log.info("INFO: getActiveBatches", response);
-				return response.data;
-			}
-
-			function errorCallback(error) {
-				$log.error("ERROR: getActiveBatches", error);
-				return $q.reject(error);
-			}
-		}
 
 		function getActiveBatchByHouseId(houseId) {
 			return $http.get(baseUrl + 'batch/active/' + houseId)
