@@ -41,7 +41,7 @@
 		}
 		
 		function logout() {
-			return $http.post(baseUrl + '/logout')
+			return $http.get(baseUrl + '/logout')
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
@@ -58,7 +58,7 @@
 
         function auth() {
         	var deferred = $q.defer();
-			$http.post(baseUrl)
+			$http.get(baseUrl)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
