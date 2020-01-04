@@ -91,7 +91,7 @@
         }
         
         function getUsers() {
-			return $http.get(userBaseUrl)
+			return $http.get(baseUrl + '/list')
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
