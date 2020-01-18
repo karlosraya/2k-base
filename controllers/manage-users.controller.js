@@ -72,7 +72,7 @@
 		}
 		
 		function submitUser() {
-			if(vm.userInfo.password != vm.userInfo.c_password) {
+			if(vm.userInfo.password != vm.userInfo.password_confirmation) {
 				toasterService.error("Error", "The password you entered does not match! Please enter matching password");
 			} else {
 				vm.loading = true;
