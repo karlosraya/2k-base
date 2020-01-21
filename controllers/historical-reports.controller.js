@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('HistoricalReportsCtrl', HistoricalReportsCtrl);
 
-	HistoricalReportsCtrl.$inject = ['$timeout', 'houseService', 'productionService', 'toasterService', 'exceptionService', 'Constants'];
+	HistoricalReportsCtrl.$inject = ['$filter', '$timeout', 'houseService', 'productionService', 'toasterService', 'exceptionService', 'Constants'];
 
-	function HistoricalReportsCtrl($timeout, houseService, productionService, toasterService, exceptionService, Constants) {
+	function HistoricalReportsCtrl($filter, $timeout, houseService, productionService, toasterService, exceptionService, Constants) {
 		var vm = this;
 		
 		/*vm.standardTargetPercentage = Constants.StandardTargetPercentage;
@@ -38,6 +38,7 @@
 	
 		vm.getProductionReports = getProductionReports;
 		vm.toggleChart = toggleChart;
+		vm.exportData = exportData;
 
 		function init() {
 			vm.displayReport = false;
@@ -313,6 +314,50 @@
 				}]
 			});
 			chart.render();
+		}
+
+		function exportData() {
+			var csv = '';
+
+			csv +=  "HSE " + vm.houseInfo.name + "\r\n\n";
+
+			csv += vm.houseInfo.stockman + ", , , , , , , , , , , ,Eggs per HH" + "\r\n";
+			csv += "Batch: " + vm.houseInfo.batch + ", , , ,Actual, Target, Actual, Actual, Target, Target, , ," + vm.maxTarget + "," + vm.maxActual + "\r\n";
+			csv += "Date, Age, Mort, Cull, Brd Bal, Brd Bal, Prod, %, %, Prod, Fds., Grms., Target, Actual" + "\r\n";
+
+		    var fileName = "HSE_" + vm.houseInfo.name + "_BATCH_" + vm.houseInfo.batch + "_" + $filter('date')(new Date(), "MMMddyyyy");
+   
+		   	vm.productionReports.forEach(function(row) {
+		   		var string = row.reportDate + ","
+		   			+ (row.age ? row.age : "") + "," 
+		   			+ (row.cull ? row.cull : "")  + "," 
+		   			+ (row.mortality ? row.mortality : "") + "," 
+		   			+ row.birdBalance + ","
+		   			+ (row.targetBirdBalance ? row.targetBirdBalance : "") + "," 
+		   			+ row.eggProduction + ","  
+		   			+ row.actualPercentage + "," 
+		   			+ (row.targetPercentage ? row.targetPercentage : "") + "," 
+		   			+ (row.targetProduction ? row.targetProduction : "") + "," 
+		   			+ row.feeds + "," 
+		   			+ row.grams + "," 
+		   			+ (row.target ? row.target : "") + "," 
+		   			+ (row.actual ? row.actual : "")  + "\r\n";
+
+		   		csv += string;	
+		   	});
+		    
+		    var uri = 'data:text/csv;charset=utf-8,' + escape(csv);
+
+		    var link = document.createElement("a");    
+		    link.href = uri;
+		    link.style = "visibility:hidden";
+		    link.download = fileName + ".csv";
+		    
+		    document.body.appendChild(link);
+		    link.click();
+		    document.body.removeChild(link);
+
+		    toasterService.success("Success", "Data exported successfully!");
 		}
 	}
 })();

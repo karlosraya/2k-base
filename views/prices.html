@@ -9,7 +9,7 @@
 				<p class="card-description">
 					{{vm.editingPrices ? "Click on Submit to update default prices." : "Click on Edit to edit default prices."}}
 				</p>
-				<div class="col-xs-12">
+				<div class="col-xs-12 scrollable">
 					<form name="pricesForm" novalidate> 
 						<table class="table" id="priceTable">
 							<thead>
@@ -113,19 +113,20 @@
 								</tr>
 							</tbody>
 						</table>
-
-						<div class="text-right">
-							<button class="btn btn-dark" ng-click="vm.editPrices(pricesForm)" ng-if="!vm.editingPrices">
-								Edit
-							</button>
-							<button class="btn btn-dark" ng-click="vm.verifyFields(pricesForm)" ng-if="vm.editingPrices">
-								Submit
-							</button>
-							<button class="btn btn-secondary" ng-click="vm.cancel()" ng-if="vm.editingPrices">
-								Cancel
-							</button>
-						</div>
 					</form>
+				</div>
+				<div class="col-xs-12">
+					<div class="text-right">
+						<button class="btn btn-dark" ng-click="vm.editPrices(pricesForm)" ng-if="!vm.editingPrices">
+							Edit
+						</button>
+						<button class="btn btn-dark" ng-click="vm.verifyFields(pricesForm)" ng-if="vm.editingPrices">
+							Submit
+						</button>
+						<button class="btn btn-secondary" ng-click="vm.cancel()" ng-if="vm.editingPrices">
+							Cancel
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
