@@ -11,8 +11,10 @@
 
 		var service = {
 			getInvoicesByDate: getInvoicesByDate,
-			getInvoicesById: getInvoicesById,
-			createUpdateInvoice: createUpdateInvoice
+			getInvoiceById: getInvoiceById,
+			createUpdateInvoice: createUpdateInvoice,
+			getInvoicesBySearchParameters: getInvoicesBySearchParameters,
+			deleteInvoice: deleteInvoice
 		};
 
 		return service;
@@ -32,17 +34,32 @@
 			}
 		}
 
-		function getInvoicesById(id) {
+		function getInvoiceById(id) {
 			return $http.get(baseUrl + 'invoice/' + id)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: getInvoicesById", response);
+				$log.info("INFO: getInvoiceById", response);
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: getInvoicesById", error);
+				$log.error("ERROR: getInvoiceById", error);
+				return $q.reject(error);
+			}
+		}
+
+		function getInvoicesBySearchParameters(request) {
+			return $http.post(baseUrl + 'invoice/search/', request)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: getInvoicesBySearchParameters", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: getInvoicesBySearchParameters", error);
 				return $q.reject(error);
 			}
 		}
@@ -58,6 +75,21 @@
 
 			function errorCallback(error) {
 				$log.error("ERROR: createUpdateInvoice", error);
+				return $q.reject(error);
+			}
+		}
+
+		function deleteInvoice(invoiceId) {
+			return $http.get(baseUrl + 'invoice/delete/' + invoiceId)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: deleteInvoice", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: deleteInvoice", error);
 				return $q.reject(error);
 			}
 		}

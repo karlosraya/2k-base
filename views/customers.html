@@ -7,7 +7,7 @@
 			<div class="card-body">
 				<p class="card-description" ng-if="!vm.loading">
 					{{vm.customers && vm.customers.length == 0 ? "No customers found. Click on Add to add a new customer." :
-					  vm.customers && vm.customers.length > 0 ? "Click on Add to add a new customer." : null}}
+					  vm.customers && vm.customers.length > 0 && vm.editingPermission ? "Click on Add to add a new customer." : null}}
 				</p>
 				<div class="col-xs-12 scrollable" ng-if="vm.customers && vm.customers.length > 0">
 					<table st-table="vm.customersCopy" st-safe-src="vm.customers" class="table table-striped">
@@ -24,7 +24,7 @@
 					      		<th st-sort="companyName">Company Name</th>
 					      		<th st-sort="lastInsertUpdateBy">Last Updated By</th>
 					      		<th st-sort="lastInsertUpdateTS">Last Update Date</th>
-					      		<th></th>
+					      		<th ng-if="vm.editingPermission"></th>
 					    	</tr>
 					  	</thead>
 					  	<tbody>
@@ -53,15 +53,22 @@
 					      		<td>	
 					      			{{customer.lastInsertUpdateTS | dateFormat}}
 					      		</td>
-					      		<td>
+					      		<td ng-if="vm.editingPermission">
 					      			<button class="btn btn-sm btn-dark" ng-click="vm.editCustomer(customer)">
 					      				Edit
 					      			</button>
 					      		</td>
 					    	</tr>
+							<tfoot ng-if="vm.customers.length > 15">
+								<tr>
+									<td colspan="9" class="text-center">
+										<div st-pagination="" st-items-by-page="15" st-displayed-pages="5"></div>
+									</td>
+								</tr>
+							</tfoot>
 					  	</tbody>
 					</table>
-					<button class="btn btn-dark" ng-click="vm.addCustomer()">
+					<button class="btn btn-dark" ng-click="vm.addCustomer()" ng-if="vm.editingPermission">
 						Add
 					</button>
 				</div>

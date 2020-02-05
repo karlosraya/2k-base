@@ -6,7 +6,7 @@
 		<div class="card">
 			<div class="card-body">
 				<h4 class="card-title"></h4>
-				<p class="card-description">
+				<p class="card-description" ng-if="vm.editingPermission">
 					{{vm.editingPrices ? "Click on Submit to update default prices." : "Click on Edit to edit default prices."}}
 				</p>
 				<div class="col-xs-12 scrollable">
@@ -115,7 +115,7 @@
 						</table>
 					</form>
 				</div>
-				<div class="col-xs-12">
+				<div class="col-xs-12" ng-if="vm.editingPermission">
 					<div class="text-right">
 						<button class="btn btn-dark" ng-click="vm.editPrices(pricesForm)" ng-if="!vm.editingPrices">
 							Edit

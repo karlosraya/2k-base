@@ -1,7 +1,7 @@
 ﻿<div class="page-header">
 	<h4>Manage Users</h4>
 </div>
-<div class="row" ng-if="!vm.editingUser && !vm.addingUser">
+<div class="row" ng-if="!vm.editingUser && !vm.addingUser && !vm.resettingPassword">
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
@@ -22,6 +22,7 @@
 					      		<th st-sort="enabled">Enabled</th>
 					      		<th st-sort="lastInsertUpdateBy">Last Updated By</th>
 					      		<th st-sort="updated_at">Last Update Date</th>
+					      		<th></th>
 					    	</tr>
 					  	</thead>
 					  	<tbody>
@@ -39,13 +40,28 @@
 					      			{{user.title}}
 					      		</td>
 					      		<td>
-					      			{{user.enabled ? "Yes" : "No"}}
+					      			<span ng-if="user.enabled" class="text-success"> Yes <i class="fa fa-check-circle" aria-hidden="true"></i> </span>
+					      			<span ng-if="!user.enabled" class="text-danger"> No <i class="fa fa-times-circle" aria-hidden="true"></i> </span>
 					      		</td>
 					      		<td>
 					      			{{user.lastInsertUpdateBy}}
 					      		</td>
 					      		<td>
 					      			{{user.updated_at | dateFormat}}
+					      		</td>
+					      		<td>
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.editUser(user)">
+					      				Edit
+					      			</button>
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.disableUserAlert(user.id)" ng-if="user.enabled">
+					      				Disable
+					      			</button>
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.enableUserAlert(user.id)" ng-if="!user.enabled">
+					      				Enable
+					      			</button>
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.resetPassword(user, user.id)">
+					      				Reset Password
+					      			</button>
 					      		</td>
 					    	</tr>
 					  	</tbody>
@@ -84,14 +100,53 @@
 						<div standard-text class="col-md-6" header="Username" 
 							model="vm.userInfo.username" required="true"></div>
 					</div>
-					<div class="row">
+					<div class="row" ng-if="vm.addingUser">
 						<div standard-password class="col-md-6" header="Password" 
 							model="vm.userInfo.password" required="true"></div>
 						<div standard-password class="col-md-6" header="Confirm Password" 
 							model="vm.userInfo.password_confirmation" required="true"></div>
 					</div>
+
+					<div class="row">
+						<div class="col-md-6 col-sm-12 user-roles-label">
+							<label class="available-roles">Available Roles</label>
+							<label class="granted-roles float-right">Granted Roles</label>
+						</div>
+					</div>
+
+					<div class="row col-md-6 col-12 scrollable roles-multi-select" ng-if="vm.userRoles && vm.userRoles.length > 0">
+						<select multiple data-ng-options="option.key as option.value for option in vm.userRoles" data-ng-model="vm.userInfo.roles" data-multi-select="vm.userRoles"></select>
+					</div>
+
 					<div class="col-xs-12 text-right">
 						<button class="btn btn-dark" ng-click="vm.verifyFields(userForm)">Submit</button>
+						<button class="btn btn-secondary" ng-click="vm.back()">Back</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row" ng-if="vm.resettingPassword">
+	<div class="col-12 grid-margin stretch-card">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title">
+					Reset Password
+				</h4>
+				<p class="card-description">
+					Complete required input below and click on Submit to set user restrictions.
+				</p>
+				<form name="resetPasswordForm" class="form-sample" novalidate>
+					<div class="row">
+						<div standard-password class="col-md-6" header="New Password" 
+							model="vm.resetPasswordObject.password" required="true"></div>
+						<div standard-password class="col-md-6" header="Confirm New Password" 
+							model="vm.resetPasswordObject.password_confirmation" required="true"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button class="btn btn-dark" ng-click="vm.resetPassword(resetPasswordForm)">Submit</button>
 						<button class="btn btn-secondary" ng-click="vm.back()">Back</button>
 					</div>
 				</form>

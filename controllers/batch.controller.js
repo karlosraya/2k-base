@@ -4,14 +4,17 @@
 	    .module('2kApp')
 	    .controller('BatchCtrl', BatchCtrl);
 
-		BatchCtrl.$inject = ['$state', '$stateParams', '$filter', '$timeout', 'batchService', 'houseService', 'alertService', 'toasterService', 'exceptionService'];
+		BatchCtrl.$inject = ['$state', '$stateParams', '$filter', '$timeout', 'appService', 'batchService', 'houseService', 'alertService', 'toasterService', 'exceptionService'];
 
-	function BatchCtrl($state, $stateParams, $filter, $timeout, batchService, houseService, alertService, toasterService, exceptionService) {
+	function BatchCtrl($state, $stateParams, $filter, $timeout, appService, batchService, houseService, alertService, toasterService, exceptionService) {
 		var vm = this;
 
 		vm.loading = true;
 		vm.hasActiveBatch = false;
+		vm.editingPermission = false;
 		vm.house = null;
+
+		vm.editingRoles = ['administrator', 'editBatch'];
 		vm.archivedBatches = [];
 		vm.archivedBatchesCopy = [];
 		vm.startBatchForm = {};
@@ -23,6 +26,7 @@
 		vm.selectHouse = selectHouse;
 		vm.verifyFields = verifyFields;
 		vm.completeBatch = completeBatch;
+		vm.viewBatch = viewBatch;
 
 		function init() {
 			vm.houseId = $stateParams.houseId;
@@ -35,6 +39,8 @@
 			}
 			
 			getHouses();
+			
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
 		function getHouses() {
@@ -94,8 +100,8 @@
 				});
 		}
 
-		function viewBatch() {
-
+		function viewBatch(batchId) {
+			$state.go("main.historical-reports", {batchId: batchId})
 		}
 
 		function verifyFields(form) {

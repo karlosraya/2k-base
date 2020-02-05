@@ -4,15 +4,17 @@
 	    .module('2kApp')
 	    .controller('HousesCtrl', HousesCtrl);
 
-	HousesCtrl.$inject = ['$state', '$filter', 'houseService', 'toasterService', 'exceptionService'];
+	HousesCtrl.$inject = ['$state', '$filter', 'appService', 'houseService', 'toasterService', 'exceptionService'];
 
-	function HousesCtrl($state, $filter, houseService, toasterService, exceptionService) {
+	function HousesCtrl($state, $filter, appService, houseService, toasterService, exceptionService) {
 		var vm = this;
 		
 		vm.loading = false;
 		vm.editingHouse = false;
 		vm.addingHouse = false;
+		vm.editingPermission = false;
 
+		vm.editingRoles = ['administrator', 'editHouse'];
 		vm.houses = [];
 		vm.housesCopy = [];
 		vm.houseInfo = {};
@@ -27,6 +29,7 @@
 
 		function init() {
 			getHouses();
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 		
 		function getHouses() {

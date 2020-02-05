@@ -34,8 +34,8 @@
 			}
 		}
 
-		function getFeedsDelivered() {
-			return $http.get(baseUrl + 'feeds-delivery')
+		function getFeedsDelivered(request) {
+			return $http.post(baseUrl + 'feeds-delivery/search', request)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {

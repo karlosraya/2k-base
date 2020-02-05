@@ -5,7 +5,7 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<p class="card-description" ng-if="!vm.loading">
+				<p class="card-description" ng-if="!vm.loading && vm.editingPermission">
 					{{vm.houses && vm.houses.length == 0 ? "No houses found. Click on Add to add a new house." :
 					  vm.houses && vm.houses.length > 0 ? "Click on Add/Edit to add new house or edit existing house information." : null}}
 				</p>
@@ -21,7 +21,7 @@
 					      		<th st-sort="batch">Current Batch</th>
 					      		<th st-sort="lastInsertUpdateBy">Last Updated By</th>
 					      		<th st-sort="lastInsertUpdateTS">Last Update Date</th>
-					      		<th></th>
+					      		<th ng-if="vm.editingPermission"></th>
 					    	</tr>
 					  	</thead>
 					  	<tbody>
@@ -46,7 +46,7 @@
 					      		<td>
 					      			{{house.lastInsertUpdateTS | dateFormat}}
 					      		</td>
-					      		<td>
+					      		<td ng-if="vm.editingPermission">
 					      			<button class="btn btn-sm btn-dark" ng-click="vm.editHouse(house)">
 					      				Edit
 					      			</button>
@@ -54,7 +54,7 @@
 					    	</tr>
 					  	</tbody>
 					</table>
-					<button class="btn btn-sm btn-dark" ng-click="vm.addHouse()">
+					<button class="btn btn-sm btn-dark" ng-click="vm.addHouse()" ng-if="vm.editingPermission">
 						Add House
 					</button>
 				</div>

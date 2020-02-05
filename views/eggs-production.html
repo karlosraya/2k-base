@@ -69,7 +69,7 @@
 					      			{{data.endingBirdBalance}}
 					      		</td>
 					      		<td>
-					      			<button class="btn btn-sm btn-dark" ng-click="vm.editEggsProd(data)">
+					      			<button class="btn btn-sm btn-dark" ng-click="vm.editEggsProd(data)" ng-if="vm.editPermission(data.houseName)">
 					      				Edit
 					      			</button>
 					      		</td>

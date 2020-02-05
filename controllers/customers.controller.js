@@ -4,14 +4,17 @@
 	    .module('2kApp')
 	    .controller('CustomersCtrl', CustomersCtrl);
 
-	CustomersCtrl.$inject = ['customerService', 'exceptionService', 'toasterService'];
+	CustomersCtrl.$inject = ['appService', 'customerService', 'exceptionService', 'toasterService'];
 
-	function CustomersCtrl(customerService, exceptionService, toasterService) {
+	function CustomersCtrl(appService, customerService, exceptionService, toasterService) {
 		var vm = this;
 		
 		vm.loading = false;
 		vm.editingCustomer = false;
 		vm.addingCustomer = false;
+		vm.editingPermission = false;
+
+		vm.editingRoles = ['administrator', 'editCustomer'];
 		vm.customers = [];
 		vm.customerInfo = {};
 
@@ -24,6 +27,7 @@
 
 		function init() {
 			getCustomers();
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
 		function getCustomers(back, id) {

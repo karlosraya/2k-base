@@ -50,7 +50,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12 scrollable" ng-if="vm.productionReports && vm.productionReports.length > 0">
+					<div class="col-12 scrollable" ng-if="vm.productionReports && vm.productionReports.length > 0">
 						<table st-table="vm.productionReportsCopy" st-safe-src="vm.productionReports" class="table table-striped">
 							<thead>
 								<tr>
@@ -68,6 +68,7 @@
 									<th st-sort="grams">Grams</th>
 									<th st-sort="target">Target</th>
 									<th st-sort="actual">Actual</th>
+									<th ng-if="vm.deletePermission"></th>
 						    	</tr>
 						  	</thead>
 						  	<tbody>
@@ -86,11 +87,16 @@
 									<td>{{report.grams | number : 3}}</td>
 									<td>{{report.target | number : 2}}</td>
 									<td>{{report.actual | number : 2}}</td>
+									<td ng-if="vm.deletePermission">
+										<button class="btn btn-sm btn-dark" ng-click="vm.confirmDeleteReportAlert(report.id)" title="Delete">
+											<i class="fa fa-trash" aria-hidden="true"></i>
+										</button>
+									</td>
 						    	</tr>
 						  	</tbody>
 							<tfoot ng-if="vm.productionReports.length > 20">
 								<tr>
-									<td colspan="14" class="text-center">
+									<td colspan="15" class="text-center">
 										<div st-pagination="" st-items-by-page="20" st-displayed-pages="5"></div>
 									</td>
 								</tr>

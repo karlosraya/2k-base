@@ -4,18 +4,20 @@
 	    .module('2kApp')
 	    .controller('FeedsDeliveryCtrl', FeedsDeliveryCtrl);
 
-	FeedsDeliveryCtrl.$inject = ['$timeout', '$filter', 'feedsDeliveryService', 'productionService', 'toasterService', 'exceptionService'];
+	FeedsDeliveryCtrl.$inject = ['$timeout', '$filter','appService', 'feedsDeliveryService', 'productionService', 'toasterService', 'exceptionService', 'Constants'];
 
-	function FeedsDeliveryCtrl($timeout, $filter, feedsDeliveryService, productionService, toasterService, exceptionService) {
+	function FeedsDeliveryCtrl($timeout, $filter, appService, feedsDeliveryService, productionService, toasterService, exceptionService, Constants) {
 		var vm = this;
 		
 		vm.loading = false;
 		vm.loadingProduction = false;
 		vm.displayFeedsDelivery = false;
 		vm.displayFeedsConsumption = false;
+		vm.editingPermission = false;
 		vm.endBalance = null;
 		vm.beginningBalance = null;
 
+		vm.editingRoles = ['administrator', 'editFeedsDelivery'];
 		vm.eggsProductionData = [];
 		vm.eggsProductionDataCopy = [];
 		vm.delivery = {};
@@ -31,6 +33,7 @@
 		function init() {
 			getFeedsDeliveryByDate();
 			getProductionReportsByDate();
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
 		function getFeedsDeliveryByDate() {

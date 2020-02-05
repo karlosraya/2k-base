@@ -178,3 +178,65 @@ tr .st-sort-descent:before{
     margin: 20px 0;
     border-radius: 4px;
 }
+
+.ms-container {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.form-control, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead, .tt-query, .tt-hint {
+    font-size: 0.8725rem;
+}
+
+.ms-container .ms-list {
+    border: 1px solid #e8ecf1;
+    border-radius: unset;
+    padding: 0.94rem 1.375rem;
+    height: 300px;
+}
+
+.ms-container .ms-selectable, .ms-container .ms-selection {
+    background: #ffffff;
+    color: #495057;
+    font-size: 0.8725rem;
+}
+
+.ms-container .ms-selectable li.ms-elem-selectable, .ms-container .ms-selection li.ms-elem-selection {
+    border-bottom: 1px solid #e8ecf1;
+    padding: 0px;
+    color: #495057;
+    font-size: 0.8725rem;
+}
+
+.ms-container .ms-list.ms-focus {
+    border-color: #80bdff;
+    -webkit-box-shadow: unset;
+    -moz-box-shadow: unset;
+    box-shadow: unset;
+}
+
+.ms-container .ms-selectable li.ms-hover, .ms-container .ms-selection li.ms-hover {
+    background-color: #d8d8d8;
+    color: #495057;
+}
+
+.roles-multi-select {
+    padding-right: 0px;
+}
+
+.user-roles-label {
+    font-size: 0.875rem;
+    line-height: 1;
+    vertical-align: top;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.available-roles {
+    width: 45%;
+}
+
+.granted-roles {
+    width: 45%;
+}
+

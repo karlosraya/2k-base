@@ -1,6 +1,27 @@
 ﻿<div class="page-header">
 	<h4>Feeds Delivered</h4>
 </div>
+
+<form>
+	<div class="row">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">
+						Please Select Date Range
+					</h4>
+					<div class="row">
+						<div class="col-md-6" standard-datepicker header="Start Date" 
+							model="vm.startDate" change-action="vm.selectDate()"></div>
+						<div class="col-md-6" standard-datepicker header="End Date" 
+							model="vm.endDate"  change-action="vm.selectDate()"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
 <div class="row">
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
@@ -9,10 +30,36 @@
 				<p class="card-description" ng-if="!vm.loading">
 					{{vm.feedsDeliveryHistory && vm.feedsDeliveryHistory.length == 0 ? "No deliveries found." : null}}
 				</p>
-				<div class="col-xs-12">
-					<standard-table ng-if="vm.feedsDeliveryHistory && vm.feedsDeliveryHistory.length > 0"
-						table-defn="vm.feedsDeliveredTableDefn"
-						data="vm.feedsDeliveryHistory"></standard-table>
+				<div class="col-xs-12" ng-if="vm.feedsDeliveryHistoryCopy && vm.feedsDeliveryHistoryCopy.length > 0">
+					<table st-table="vm.feedsDeliveryHistoryCopy" st-safe-src="vm.feedsDeliveryHistory" class="table table-striped">
+						<thead>
+							<tr>
+					      		<th st-sort="deliveryDate">Delivery Date</th>
+					      		<th st-sort="deliveryReceiptNo">Delivery Receipt No</th>
+					      		<th st-sort="delivery">Feeds Delivered</th>
+					    	</tr>
+					  	</thead>
+					  	<tbody>
+					    	<tr ng-repeat="feeds in vm.feedsDeliveryHistoryCopy">
+					      		<td>
+					      			{{feeds.deliveryDate | dateFormat}}
+					      		</td>
+					      		<td>
+					      			{{feeds.deliveryReceiptNo}}
+					      		</td>
+					      		<td>
+					      			{{feeds.delivery}}
+					      		</td>
+					    	</tr>
+							<tfoot ng-if="vm.feedsDeliveryHistory.length > 15">
+								<tr>
+									<td colspan="4" class="text-center">
+										<div st-pagination="" st-items-by-page="15" st-displayed-pages="5"></div>
+									</td>
+								</tr>
+							</tfoot>
+					  	</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

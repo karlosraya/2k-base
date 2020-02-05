@@ -13,7 +13,9 @@
 			getProductionReports: getProductionReports,
 			getProductionReportsByDate: getProductionReportsByDate,
 			getProductionReportsByHouse: getProductionReportsByHouse,
-			createUpdateProductionReport: createUpdateProductionReport
+			getProductionReportsByBatch: getProductionReportsByBatch,
+			createUpdateProductionReport: createUpdateProductionReport,
+			deleteProductionReport: deleteProductionReport
 		};
 
 		return service;
@@ -63,6 +65,21 @@
 			}
 		}
 
+		function getProductionReportsByBatch(batchId) {
+			return $http.get(baseUrl + 'production/batch/' + batchId)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: getProductionReportsByBatch", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: getProductionReportsByBatch", error);
+				return $q.reject(error);
+			}
+		}
+
 		function createUpdateProductionReport(request) {
 			return $http.post(baseUrl + 'production', request)
 			.then(successCallback, errorCallback);
@@ -74,6 +91,21 @@
 
 			function errorCallback(error) {
 				$log.error("ERROR: createUpdateProductionReport", error);
+				return $q.reject(error);
+			}
+		}
+
+		function deleteProductionReport(reportId) {
+			return $http.get(baseUrl + 'production/delete/' + reportId)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: deleteProductionReport", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: deleteProductionReport", error);
 				return $q.reject(error);
 			}
 		}

@@ -4,21 +4,23 @@
 	    .module('2kApp')
 	    .controller('HistoricalReportsCtrl', HistoricalReportsCtrl);
 
-	HistoricalReportsCtrl.$inject = ['$filter', '$timeout', 'houseService', 'productionService', 'toasterService', 'exceptionService', 'Constants'];
+	HistoricalReportsCtrl.$inject = ['$stateParams', '$filter', '$timeout', 'appService', 'houseService', 'productionService', 'toasterService', 'exceptionService', 'alertService', 'Constants'];
 
-	function HistoricalReportsCtrl($filter, $timeout, houseService, productionService, toasterService, exceptionService, Constants) {
+	function HistoricalReportsCtrl($stateParams, $filter, $timeout, appService, houseService, productionService, toasterService, exceptionService, alertService, Constants) {
 		var vm = this;
 		
 		/*vm.standardTargetPercentage = Constants.StandardTargetPercentage;
 		vm.standardTargetBirdBalancePercentage = Constants.StandardTargetBirdBalancePercentage;
 		vm.standardWeeklyPercentage = Constants.StandardWeeklyPercentage;*/
-		vm.standard
 		vm.displayChart = 0;
 		vm.loading = false;
 		vm.displayStats = false;
 		vm.displayReport = false;
+		vm.deletePermission = false;
 
 		vm.selectedHouse = null;
+
+		vm.deleteRoles = ['administrator', 'deleteEggProduction'];
 		vm.houseOptions = {};
 		vm.houseInfo = {};
 
@@ -39,11 +41,18 @@
 		vm.getProductionReports = getProductionReports;
 		vm.toggleChart = toggleChart;
 		vm.exportData = exportData;
+		vm.confirmDeleteReportAlert = confirmDeleteReportAlert;
 
 		function init() {
 			vm.displayReport = false;
 			
 			getHouses();
+
+			if($stateParams.batchId) {
+				getProductionReportsByBatch();
+			}
+
+			vm.deletePermission = appService.checkMultipleUserRoles(vm.deleteRoles);
 		}
 		
 		function getHouses() {
@@ -83,12 +92,44 @@
 					
 				})
 				.catch(function(error) { 
-					console.log(error);
 					vm.displayReport = false;
 					vm.loading = false;
 					vm.displayStats = false;
 					exceptionService.catcher(error);
 				});
+			});
+		}
+
+		function getProductionReportsByBatch() {
+			vm.loading = true;
+			productionService.getProductionReportsByBatch($stateParams.batchId)
+			.then(function(response) {
+				vm.displayReport = true;
+				vm.loading = false;
+				vm.houseInfo.name = response.name;
+				vm.houseInfo.batch = response.batch;
+				vm.houseInfo.stockman = response.stockman;
+				vm.houseInfo.initialBirdBalance = response.initialBirdBalance;
+				vm.productionReports = generateReport(response.productions, response.initialBirdBalance, response.startAge);
+				vm.productionReportsCopy = angular.copy(vm.productionReports );
+
+
+				vm.selectedHouse = response.houseId;
+
+				if(vm.productionReports.length == 0) {
+					toasterService.info("Info", "No reports found for House: " + vm.houseInfo.name);
+					vm.displayReport = false;
+					vm.displayStats = false;
+				} else {
+					initStat(); 
+				}
+				
+			})
+			.catch(function(error) { 
+				vm.displayReport = false;
+				vm.loading = false;
+				vm.displayStats = false;
+				exceptionService.catcher(error);
 			});
 		}
 
@@ -358,6 +399,39 @@
 		    document.body.removeChild(link);
 
 		    toasterService.success("Success", "Data exported successfully!");
+		}
+
+		function confirmDeleteReportAlert(reportId) {
+
+			var deleteReportAlertObject = {
+			  	type: "warning",
+				title: 'Delete Record',
+  				text: "Are you sure you want to delete the record? Once deleted it can never be recovered.",
+  				showCancelButton: true,
+  				confirmButtonText: 'Yes'
+			};
+
+			var deleteReportAlertAction = function (result) {
+				if(result.value) {
+					deleteReport(reportId);
+				}
+			};
+
+			alertService.custom(deleteReportAlertObject, deleteReportAlertAction);
+		}
+
+		function deleteReport(reportId) {
+			vm.loading = true;
+			productionService.deleteProductionReport(reportId)
+			.then(function(response) {
+				vm.loading = false;
+				toasterService.success("Info", "Record deleted successfully!");
+				getProductionReports();
+			})
+			.catch(function(error) { 
+				vm.loading = false;
+				exceptionService.catcher(error);
+			});
 		}
 	}
 })();

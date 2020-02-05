@@ -1,4 +1,4 @@
-﻿<ul class="nav">
+<ul class="nav">
 	<li class="nav-item nav-profile">
 		<a class="nav-link">
 			<div class="profile-image">
@@ -19,85 +19,95 @@
 				<i class="icon-screen-desktop menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item nav-category">
+		<li class="nav-item nav-category" restrict-access 
+			access-key="viewFeedsDelivery,editFeedsDelivery,viewEggProduction,editEggProduction,viewGradedEggs,editGradedEggs,viewInvoice,editInvoice,administrator">
 			<span class="nav-link">Input</span>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewFeedsDelivery,editFeedsDelivery,administrator">
 			<a class="nav-link" ui-sref="main.feeds-delivery">
 				<span class="menu-title">Feeds Delivery</span>
 				<i class="fa fa-truck menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewEggProduction,editEggProduction,administrator">
 			<a class="nav-link" ui-sref="main.eggs-production">
 				<span class="menu-title">Eggs Production</span>
 				<i class="icon-layers menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewGradedEggs,editGradedEggs,administrator">
 			<a class="nav-link" ui-sref="main.graded-eggs">
 				<span class="menu-title">Graded Eggs</span>
 				<i class="icon-badge menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewInvoice,editInvoice,administrator">
 			<a class="nav-link" ui-sref="main.sales">
 				<span class="menu-title">Sales</span>
 				<i class="fa fa-money menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item nav-category">
+		<li class="nav-item nav-category" restrict-access 
+			access-key="viewHouse,editHouse,viewBatch,editBatch,viewCustomer,editCustomer,viewPrice,editPrice,administrator">
 			<span class="nav-link">Master</span>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewHouse,editHouse,administrator">
 			<a class="nav-link" ui-sref="main.houses">
 				<span class="menu-title">Houses</span>
 				<i class="icon-home menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewBatch,editBatch,administrator">
 			<a class="nav-link" ui-sref="main.batch">
 				<span class="menu-title">Batches</span>
 				<i class="fa fa-th-large menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewCustomer,editCustomer,administrator">
 			<a class="nav-link" ui-sref="main.customers">
 				<span class="menu-title">Customers</span>
 				<i class="fa fa-address-book menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewPrice,editPrice,administrator">
 			<a class="nav-link" ui-sref="main.prices">
 				<span class="menu-title">Prices</span>
 				<i class="fa fa-diamond menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item nav-category">
+		<li class="nav-item nav-category" restrict-access 
+			access-key="viewEggProduction,editEggProduction,deleteEggProduction,viewFeedsDelivery,editFeedsDelivery,viewInvoice,editInvoice,deleteInvoice,administrator">
 			<span class="nav-link">Reports</span>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewEggProduction,editEggProduction,deleteEggProduction,administrator">
 			<a class="nav-link" ui-sref="main.historical-reports">
 				<span class="menu-title">Historical Reports</span>
 				<i class="fa fa-book menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="viewFeedsDelivery,editFeedsDelivery,administrator">
 			<a class="nav-link" ui-sref="main.feeds-delivered">
 				<span class="menu-title">Feeds Delivered</span>
 				<i class="fa fa-cubes menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item nav-category">
+		<li class="nav-item" restrict-access access-key="viewInvoice,editInvoice,deleteInvoice,administrator">
+			<a class="nav-link" ui-sref="main.ledgers">
+				<span class="menu-title">Ledgers</span>
+				<i class="fa fa-calculator menu-icon"></i>
+			</a>
+		</li>
+		<li class="nav-item nav-category" restrict-access 
+			access-key="manageUsers,lockData,administrator">
 			<span class="nav-link">Administrator</span>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="manageUsers,administrator">
 			<a class="nav-link" ui-sref="main.manage-users">
 				<span class="menu-title">Manager Users</span>
 				<i class="fa fa-user-circle-o menu-icon"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" restrict-access access-key="lockData,administrator">
 			<a class="nav-link" ui-sref="main.data-lock">
 				<span class="menu-title">Data Lock</span>
 				<i class="icon-lock menu-icon"></i>

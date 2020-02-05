@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('SalesCtrl', SalesCtrl);
 
-	SalesCtrl.$inject = ['$timeout', '$filter', 'customerService', 'pricesService', 'invoiceService', 'gradedEggsService', 'exceptionService', 'toasterService', 'alertService'];
+	SalesCtrl.$inject = ['$timeout', '$filter', 'appService', 'customerService', 'pricesService', 'invoiceService', 'gradedEggsService', 'exceptionService', 'toasterService', 'alertService'];
 
-	function SalesCtrl($timeout, $filter, customerService, pricesService, invoiceService, gradedEggsService, exceptionService, toasterService, alertService) {
+	function SalesCtrl($timeout, $filter, appService, customerService, pricesService, invoiceService, gradedEggsService, exceptionService, toasterService, alertService) {
 		var vm = this;
 		
 		vm.loading = false;
@@ -14,6 +14,9 @@
 		vm.addingInvoice = false;
 		vm.viewingInvoice = false;
 		vm.editingInvoice = false;
+		vm.editingPermission = false;
+
+		vm.editingRoles = ['administrator', 'editInvoice'];
 
 		vm.eggTypes = [
 				{header: 'PWW', key: 'pww'}, 
@@ -61,6 +64,7 @@
 			getInvoicesByDate(vm.selectedDate);
 			getCustomers();
 			getPrices();
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
 		function getAvailable() {
@@ -388,7 +392,6 @@
 			});
 
 			request.total = request.subtotal - discount;
-			request.lastInsertUpdateBy = "Antonio Raya";
 
 			return request;
 		}

@@ -26,7 +26,7 @@
 		<div class="card">
 			<div class="card-body">
 				<h4 class="card-title">Graded Eggs</h4>
-				<p class="card-description">
+				<p class="card-description" ng-if="vm.editingPermission">
 					{{vm.editingGradedEggs ? "Click on Submit to insert/update graded eggs data.": "Click on Edit to input/update graded eggs data."}}
 				</p>
 				<div class="col-xs-12 scrollable">
@@ -95,7 +95,7 @@
 						</table>
 					</form>
 				</div>
-				<div class="col-xs-12 text-right">
+				<div class="col-xs-12 text-right" ng-if="vm.editingPermission">
 					<button class="btn btn-dark" ng-click="vm.editGradedEggs(gradedEggsForm)" ng-if="!vm.editingGradedEggs">
 						Edit
 					</button>

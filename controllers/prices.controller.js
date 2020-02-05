@@ -4,13 +4,16 @@
 	    .module('2kApp')
 	    .controller('PricesCtrl', PricesCtrl);
 
-	PricesCtrl.$inject = ['pricesService', 'exceptionService', 'toasterService'];
+	PricesCtrl.$inject = ['appService', 'pricesService', 'exceptionService', 'toasterService'];
 
-	function PricesCtrl(pricesService, exceptionService, toasterService) {
+	function PricesCtrl(appService, pricesService, exceptionService, toasterService) {
 		var vm = this;
 		
 		vm.loading = false;
 		vm.editingPrices = false;
+		vm.editingPermission = false;
+
+		vm.editingRoles = ['administrator', 'editPrice'];
 		vm.prices = {};
 
 		vm.$onInit = init();
@@ -22,6 +25,7 @@
 
 		function init() {
 			getPrices();
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
 		function getPrices() {

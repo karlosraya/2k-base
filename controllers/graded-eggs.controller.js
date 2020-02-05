@@ -4,17 +4,19 @@
 	    .module('2kApp')
 	    .controller('GradedEggsCtrl', GradedEggsCtrl);
 
-	GradedEggsCtrl.$inject = ['$state', '$filter', '$timeout', 'gradedEggsService', 'productionService', 'exceptionService', 'toasterService'];
+	GradedEggsCtrl.$inject = ['$state', '$filter', '$timeout', 'appService', 'gradedEggsService', 'productionService', 'exceptionService', 'toasterService'];
 
-	function GradedEggsCtrl($state, $filter, $timeout, gradedEggsService, productionService, exceptionService, toasterService) {
+	function GradedEggsCtrl($state, $filter, $timeout, appService, gradedEggsService, productionService, exceptionService, toasterService) {
 		var vm = this;
 
 		vm.loading = false;
 		vm.loadingProductions = false;
 		vm.editingGradedEggs = false;
+		vm.editingPermission = false;
 
 		vm.gradedEggsDate = new Date();
-		
+
+		vm.editingRoles = ['administrator', 'editGradedEggs'];
 		vm.eggTypes = [
 			{header: 'PWW', key: 'pww'}, 
 			{header: 'PW', key: 'pw'}, 
@@ -44,6 +46,7 @@
 		function init() {
 			getGradedEggsByDate();
 			getProductionReportsByDate();
+			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
 		function selectDate() {
@@ -73,7 +76,6 @@
 				}
 			})
 			.catch(function(error) {
-				console.log(error);
 				vm.loading = false;
 				exceptionService.catcher(error);
 			});

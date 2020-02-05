@@ -26,7 +26,7 @@
 				<h4 class="card-title">
 					{{vm.hasActiveBatch ? 'Edit Batch' : 'Start New Batch'}}
 				</h4>
-				<p class="card-description" >
+				<p class="card-description" ng-if="vm.editingPermission">
 					{{vm.hasActiveBatch ? 
 					'Complete required input below and click on Submit to edit batch details.' : 
 					'Complete required input below and click on Submit to start a new batch.'}}
@@ -34,19 +34,19 @@
 				<form name="vm.startBatchForm" class="form-sample" novalidate>
 					<div class="row" >
                         <div class="col-md-6" standard-text class="col-md-12" header="Batch Name" 
-                            model="vm.batch.batch" readonly="false" required="true"></div>
+                            model="vm.batch.batch" readonly="!vm.editingPermission" required="true"></div>
 						<div class="col-md-6" standard-datepicker header="Batch Start Date" 
-                            model="vm.batch.startDate" readonly="false" required="true"></div>
+                            model="vm.batch.startDate" readonly="!vm.editingPermission" required="true"></div>
 					</div>
 					<div class="row">
 						<div class="col-md-6" standard-number class="col-md-12" header="Start Age" 
-                            model="vm.batch.startAge" readonly="false" required="true"></div>
+                            model="vm.batch.startAge" readonly="!vm.editingPermission" required="true"></div>
 						<div standard-number class="col-md-6" header="Beginning Bird Balance" 
-							model="vm.batch.initialBirdBalance" readonly="false" required="true"></div>
+							model="vm.batch.initialBirdBalance" readonly="!vm.editingPermission" required="true"></div>
 					</div>
 					<div class="col-xs-12 text-right">
-						<button type="submit" class="btn btn-dark" ng-click="vm.completeBatch()" ng-if="vm.hasActiveBatch">Complete Batch</button>
-						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(vm.startBatchForm)">Submit</button>
+						<button type="submit" class="btn btn-dark" ng-click="vm.completeBatch()" ng-if="vm.hasActiveBatch && vm.editingPermission">Complete Batch</button>
+						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(vm.startBatchForm)" ng-if="vm.editingPermission">Submit</button>
 					</div>
 				</form>
 			</div>
@@ -82,7 +82,7 @@
 					  	<tbody>
 					    	<tr ng-repeat="batch in vm.archivedBatchesCopy">
 					      		<td>
-					      			<a href ng-click="vm.viewBatch($index)">
+					      			<a href ng-click="vm.viewBatch(batch.id)">
 					      				{{batch.batch}}
 					      			</a>
 					      		</td>

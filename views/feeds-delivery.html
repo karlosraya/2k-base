@@ -35,11 +35,11 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div standard-number class="col-md-12" header="Delivery Receipt Number" 
-								model="vm.delivery.deliveryReceiptNo" readonly="false" required="true"></div>
+								model="vm.delivery.deliveryReceiptNo" readonly="!vm.editingPermission" required="true"></div>
 							<div standard-text class="col-md-12" header="Beginning" 
 								model="vm.beginningBalance" readonly="true" required="false"></div>
 							<div standard-number class="col-md-12" header="Deliver" 
-								model="vm.delivery.delivery" readonly="false" required="true"
+								model="vm.delivery.delivery" readonly="!vm.editingPermission" required="true"
 								change-action="vm.computeBalance()"></div>
 							<div standard-number class="col-md-12" header="Out" 
 								model="vm.delivery.dailyConsumption" readonly="true"
@@ -48,7 +48,7 @@
 								model="vm.endBalance" readonly="true" required="false"></div>
 						</div>
 					</div>
-					<div class="col-xs-12 text-right">
+					<div class="col-xs-12 text-right" ng-if="vm.editingPermission">
 						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(deliveryForm)">Submit</button>
 					</div>
 				</div>

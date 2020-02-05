@@ -17,7 +17,9 @@
             registerUser: registerUser,
             getUsers: getUsers,
             updateUser: updateUser,
-            setUserRoles: setUserRoles
+            resetPassword: resetPassword,
+            enableUser: enableUser,
+            disableUser: disableUser
 		};
 
 		return service;
@@ -105,8 +107,8 @@
 			}
         }
 
-        function updateUser(user) {
-			return $http.post(userBaseUrl, user)
+        function updateUser(userId, user) {
+			return $http.post(baseUrl + '/update/'+ userId, user)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
@@ -120,19 +122,49 @@
 			}
         }
         
-        function setUserRoles() {
-			return $http.post(baseUrl + 'test')
+		function resetPassword(userId, user) {
+			return $http.post(baseUrl + '/reset-password/'+ userId, user)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: setUserRoles", response)
+				$log.info("INFO: resetPassword", response)
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: setUserRoles", error)
+				$log.error("ERROR: resetPassword", error)
 				return $q.reject(error);
 			}
-		}
+        }
+
+        function enableUser(userId) {
+        	return $http.get(baseUrl + "/enable/" + userId)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: enableUser", response)
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: enableUser", error)
+				return $q.reject(error);
+			}
+        }
+
+        function disableUser(userId) {
+        	return $http.get(baseUrl + "/disable/" + userId)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: disableUser", response)
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: disableUser", error)
+				return $q.reject(error);
+			}
+        }
 	}
 })();

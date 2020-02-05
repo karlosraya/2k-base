@@ -11,11 +11,15 @@
 		
 		vm.loading = false;
 		vm.eggProdForm = null;
+		vm.editingPermission = false;
+
+		vm.editingRoles = ['administrator', 'editInvoice'];
 		vm.reportDate = new Date();
 		vm.total = {};
 		vm.houseOptions = [];
 		vm.eggsProductionData = [];
 		vm.eggsProductionDataCopy = [];
+
 
 		vm.$onInit = init();
 		
@@ -24,6 +28,7 @@
 		vm.verifyFields = verifyFields;
 		vm.submitEggsProd = submitEggsProd;
 		vm.getEndingBirdBalance = getEndingBirdBalance;
+		vm.editPermission = editPermission;
 		vm.back = back;
 		
 		function init() {
@@ -170,6 +175,15 @@
 				var mortality = vm.eggProd.mortality ? vm.eggProd.mortality : 0;
 				vm.eggProd.endingBirdBalance = vm.eggProd.beginningBirdBalance - cull - mortality;
 			});
+		}
+
+		function editPermission(name) {
+			var userDetails = appService.getUserDetails();
+			var editPermission = userDetails.roles.find(function(role) {
+				return (role.role == "editEggProduction" && role.houseName == name) || role.role == "administrator";
+			});
+
+			return editPermission;
 		}
 	}
 })();
