@@ -4,16 +4,18 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate, max-age=0, private">
 		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="expires" content="0">
 		
 		<title>Layers Portal</title>
 		
-		<link href="http://karlos-raya.com/layers-cdn/font-awesome/css/font-awesome.css" rel="stylesheet">
-		<link href="http://karlos-raya.com/layers-cdn/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-		<link href="http://karlos-raya.com/layers-cdn/angularjs-toaster/toaster.min.css" rel="stylesheet" />
-		<link href="http://karlos-raya.com/layers-cdn/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet" />
-		
+		<link href="https://karlos-raya.com/layers-cdn/font-awesome/css/font-awesome.css" rel="stylesheet">
+		<link href="https://karlos-raya.com/layers-cdn/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://karlos-raya.com/layers-cdn/angularjs-toaster/toaster.min.css" rel="stylesheet" />
+		<link href="https://karlos-raya.com/layers-cdn/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet" />
+		<link href="https://karlos-raya.com/layers-cdn/multiselect/css/multi-select.css" rel="stylesheet" />
+
 		<link href="styles/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
 		<link href="styles/2k-base.css" rel="stylesheet" />
 		<link href="styles/overrides.css" rel="stylesheet" />
@@ -22,19 +24,22 @@
 	</head>
 
 	<body>
-		<script src="http://karlos-raya.com/layers-cdn/jquery/dist/jquery.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/bootstrap/dist/js/bootstrap.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/angular/angular.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/angular-ui-router/release/angular-ui-router.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/oclazyload/dist/ocLazyLoad.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/angular-sanitize/angular-sanitize.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/angularjs-toaster/toaster.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/sweetalert2/dist/sweetalert2.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/ng-currency/dist/ng-currency.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/angular-smart-table/dist/smart-table.min.js"></script>
-		<script src="http://karlos-raya.com/layers-cdn/ng-mask/dist/ngMask.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/jquery/dist/jquery.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/angular/angular.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/angular-ui-router/release/angular-ui-router.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/oclazyload/dist/ocLazyLoad.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/angularjs-toaster/toaster.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/sweetalert2/dist/sweetalert2.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/ng-currency/dist/ng-currency.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/angular-smart-table/dist/smart-table.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/ng-mask/dist/ngMask.min.js"></script>
 		<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/multiselect/js/jquery.multi-select.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/jquery.quicksearch/dist/jquery.quicksearch.min.js"></script>
+		<script src="https://karlos-raya.com/layers-cdn/multi-select-angularjs/dist/angular.multi-select.js"></script>
 	
 		<script src="app.module.js"></script>
 		<script src="app.constants.js"></script>
@@ -51,6 +56,6 @@
 		<script src="plugins/vendor.bundle.base.js"></script>
 		
 		<div ui-view></div>
-        <toaster-container toaster-options="{'toaster-id': 'default-toast', 'time-out': 8000, 'limit': 1}"></toaster-container>
+        <toaster-container toaster-options="{'toaster-id': 'default-toast', 'time-out': 8000, 'limit': 2}"></toaster-container>
 	</body>
 </html>

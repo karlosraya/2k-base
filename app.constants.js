@@ -201,6 +201,30 @@
 	    		"78": 70,
 	    		"79": 69,
 	    		"80": 69
+	    	},
+
+	    	UserRoles: {
+	    		administrator: "Administrator", 
+	        	manageUsers: "Manage Users", 
+	        	lockData: "Lock Data", 
+	         	viewFeedsDelivery: "View Feeds Delivery", 
+	         	editFeedsDelivery: "Edit Feeds Delivery", 
+	         	viewEggProduction: "View Egg Production", 
+	        	editEggProduction: "Edit Egg Production (houseName)", 
+	         	deleteEggProduction: "Delete Eggs Production", 
+	         	viewGradedEggs: "View Graded Eggs", 
+	         	editGradedEggs: "Edit Graded Eggs",
+	         	viewInvoice: "View Invoice",
+	         	editInvoice: "Edit Invoice",
+	         	deleteInvoice: "Delete Invoice",
+	         	viewHouse: "View House",
+	         	editHouse: "Edit House",
+	         	viewBatch: "View Batch",
+	         	editBatch: "Edit Batch",
+	         	viewCustomer: "View Customer",
+	         	editCustomer: "Edit Customer",
+	         	viewPrice: "View Price",
+	         	editPrice: "Edit Price"
 	    	}
 	    });
 })();

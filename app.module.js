@@ -8,6 +8,7 @@
 		'toaster',
         'ng-currency',
         'ngMask',
-        'smart-table'
+        'smart-table',
+        'jq-multi-select'
 	]);
 })();
