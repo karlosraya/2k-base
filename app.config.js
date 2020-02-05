@@ -54,7 +54,7 @@
         });
 
         function checkRoles(stateAllowedRoles) {
-            if(false) {
+            if(stateAllowedRoles) {
                 stateAllowedRoles = stateAllowedRoles.split(',');
                 for(var i=0; i<stateAllowedRoles.length; i++) {
                     if(appService.checkUserRoles(stateAllowedRoles[i])) {

@@ -50,7 +50,7 @@
 		}
 
 		function getInvoicesBySearchParameters(request) {
-			return $http.post(baseUrl + 'invoice/search/', request)
+			return $http.post(baseUrl + 'invoice/search', request)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
