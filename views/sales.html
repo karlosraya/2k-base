@@ -87,12 +87,11 @@
 	                            </tr>
 							</tbody>
 						</table>
-						
-						<div class="text-right" ng-if="vm.editingPermission">
-							<button class="btn btn-dark" ng-click="vm.addInvoice(addSaleForm)" ng-if="!vm.addingInvoice">
-								Add
-							</button>
-						</div>
+					</div>
+					<div class="text-right" ng-if="vm.editingPermission">
+						<button class="btn btn-dark" ng-click="vm.addInvoice(addSaleForm)" ng-if="!vm.addingInvoice">
+							Add
+						</button>
 					</div>
 				</div>
 			</div>
@@ -152,7 +151,7 @@
 												<td ng-if="vm.editingInvoice || vm.addingInvoice"></td>
 											</tr>
 											<tr ng-repeat="items in vm.invoiceItems">
-												<td>
+												<td class="cell-input-min-width">
 													<select type="text" class="form-control table-input"
 														ng-class="{'select-is-invalid': (!vm.invoiceItems[$index].eggType && addSaleForm.$invalid && addSaleForm.$submitted)}"  
 														ng-model="vm.invoiceItems[$index].eggType"
@@ -160,19 +159,19 @@
 														ng-change="vm.setDefaultPrice($index)" required ng-if="vm.editingInvoice || vm.addingInvoice"></select>
 													{{vm.viewingInvoice ? vm.getEggTypeHeader(vm.invoiceItems[$index].eggType) : null}}
 												</td>
-												<td>
+												<td class="cell-input-min-width">
 													<input type="text" class="form-control table-input"
 														ng-model="vm.invoiceItems[$index].description" ng-if="vm.editingInvoice || vm.addingInvoice"/>
 													{{vm.viewingInvoice ? vm.invoiceItems[$index].description : null}}
 												</td>
-												<td>
+												<td class="cell-input-min-width">
 													<input type="number" class="form-control table-input"
 														ng-class="{'is-invalid': (!vm.invoiceItems[$index].quantity && addSaleForm.$invalid && addSaleForm.$submitted)}"  
 														ng-model="vm.invoiceItems[$index].quantity" 
 														ng-change="vm.getItemTotal($index)" required ng-if="vm.editingInvoice || vm.addingInvoice"/>
 													{{vm.viewingInvoice ? vm.invoiceItems[$index].quantity : null}}
 												</td>
-												<td>
+												<td class="cell-input-min-width">
 													<input type="text" class="form-control table-input"
 														ng-class="{'is-invalid': (!vm.invoiceItems[$index].price && addSaleForm.$invalid && addSaleForm.$submitted)}"
 														ng-model="vm.invoiceItems[$index].price" 
@@ -180,7 +179,7 @@
 														ng-change="vm.getItemTotal($index)" required ng-if="vm.editingInvoice || vm.addingInvoice"/>
 													{{vm.viewingInvoice ? (vm.invoiceItems[$index].price | currency : "₱" ): null}}
 												</td>
-												<td>
+												<td class="cell-input-min-width">
 													<input type="text" class="form-control table-input"
 														ng-model="vm.invoiceItems[$index].total" 
 														ng-currency currency-symbol="₱" readonly disabled ng-if="vm.editingInvoice || vm.addingInvoice"/>

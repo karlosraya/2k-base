@@ -54,7 +54,7 @@
 								<tr>
 									<td ng-if="!vm.editingGradedEggs">Production</td>
 									<td ng-if="!vm.editingGradedEggs">{{vm.gradedEggsUngraded.production}}</td>
-									<td ng-repeat="eggType in vm.eggTypes">
+									<td ng-repeat="eggType in vm.eggTypes" class="cell-input-min-width">
 										<div standard-number header="{{eggType.header}}" hide-header="true"
 												model="vm.gradedEggsProd[eggType.key]" ng-if="vm.editingGradedEggs"></div>
 										{{!vm.editingGradedEggs ? vm.gradedEggsProd[eggType.key] : null}}

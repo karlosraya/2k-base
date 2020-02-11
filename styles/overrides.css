@@ -240,3 +240,10 @@ tr .st-sort-descent:before{
     width: 45%;
 }
 
+.cell-input-min-width {
+    min-width: 100px;
+}
+
+.cell-no-wrap {
+    white-space: nowrap;
+}
