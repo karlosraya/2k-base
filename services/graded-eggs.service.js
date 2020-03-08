@@ -12,7 +12,8 @@
 		var service = {
 			getGradedEggsyByDate: getGradedEggsyByDate,
 			getAvailableByDate: getAvailableByDate,
-			createUpdateGradedEggs: createUpdateGradedEggs
+			createUpdateGradedEggs: createUpdateGradedEggs,
+			getGradedEggsReportByDateRange: getGradedEggsReportByDateRange
 		};
 
 		return service;
@@ -60,6 +61,21 @@
 
 			function errorCallback(error) {
 				$log.error("ERROR: createUpdateGradedEggs", error);
+				return $q.reject(error);
+			}
+		}
+
+		function getGradedEggsReportByDateRange(request) {
+			return $http.post(baseUrl + 'graded-eggs/history', request)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: getGradedEggsReportByDateRange", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: getGradedEggsReportByDateRange", error);
 				return $q.reject(error);
 			}
 		}

@@ -92,7 +92,6 @@
 				vm.loadingProductions = false;
 			})
 			.catch(function(error) {
-				console.log(error);
 				exceptionService.catcher(error);
 				vm.loadingProductions = false;
 			});

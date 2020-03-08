@@ -247,3 +247,7 @@ tr .st-sort-descent:before{
 .cell-no-wrap {
     white-space: nowrap;
 }
+
+.padding-top-5 {
+	padding-top: 5px;
+}

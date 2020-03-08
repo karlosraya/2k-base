@@ -22,8 +22,8 @@
 
 		function init() {
 			var date = new Date();
-			vm.startDate = new Date(date.getFullYear(), date.getMonth(), 1);;
-			vm.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);;
+			vm.startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+			vm.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 			getFeedsDelivered();
 		}

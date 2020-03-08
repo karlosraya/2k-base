@@ -111,6 +111,7 @@
         var feedsDeliveryCtrl = "controllers/feeds-delivery.controller.js";
         var feedsDeliveredCtrl = "controllers/feeds-delivered.controller.js";
         var ledgersCtrl = "controllers/ledgers.controller.js";
+        var gradedEggsHistoryCtrl = "controllers/graded-eggs-history.controller.js";
 
 		//directives
 		var standardTable = "directives/standard-table/standard-table.directive.js";
@@ -153,6 +154,7 @@
         var feedsDeliveredTemplate = "views/feeds-delivered.html";
         var feedsDeliveryTemplate = "views/feeds-delivery.html";
         var ledgersTemplate = "views/ledgers.html";
+        var gradedEggsHistoryTemplate = "views/graded-eggs-history.html"
 		
     	$urlRouterProvider.otherwise("/login");
         $stateProvider
@@ -505,6 +507,34 @@
                         return $ocLazyLoad.load([{
                             name: "2kApp",
                             files: [feedsDeliveredCtrl]
+                        }]);
+                    }]
+                }
+            })
+            .state("main.graded-eggs-history", {
+                url: "graded-eggs-history",
+                templateUrl: gradedEggsHistoryTemplate,
+                data: {
+                    requiresAuth: true,
+                    allowedRoles: "viewGradedEggs,editGradedEggs,administrator"
+                },
+                controller: "GradedEggsHistoryCtrl",
+                controllerAs: "vm",
+                resolve: {
+                    loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [gradedEggsService]
+                        }]);
+                    }],
+                    loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [standardDatepicker]
+                        }]);
+                    }],
+                    loadController: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: "2kApp",
+                            files: [gradedEggsHistoryCtrl]
                         }]);
                     }]
                 }
