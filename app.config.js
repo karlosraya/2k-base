@@ -307,6 +307,9 @@
                             files: [gradedEggsCtrl]
                         }]);
                     }]
+                },
+                params: {
+                	gradedEggsDate: null
                 }
             })
             .state("main.sales", {

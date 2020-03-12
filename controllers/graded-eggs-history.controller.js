@@ -14,7 +14,8 @@
 		vm.endDate = null;
 
 		vm.gradedEggsReport = [];
-
+		vm.gradedEggsReportCopy = [];
+		
 		vm.eggTypes = [
 			{header: 'PWW', key: 'pww'}, 
 			{header: 'PW', key: 'pw'}, 
@@ -32,6 +33,7 @@
 		vm.selectDate = selectDate;
 		vm.exportData = exportData;
 		vm.getTotal = getTotal;
+		vm.viewGradedEggsReport = viewGradedEggsReport;
 		
 		function init() {
 			var date = new Date();
@@ -54,6 +56,7 @@
 			.then(function(response) {
 				vm.loading = false;
 				vm.gradedEggsReport = response;
+				vm.gradedEggsReportCopy = angular.copy(vm.gradedEggsReport);
 			})
 			.catch(function(error) {
 				vm.loading = false;
@@ -79,6 +82,11 @@
 			} else {
 				return null;
 			}
+		}
+		
+		function viewGradedEggsReport(date) {
+			vm.loading = true;
+			$state.go("main.graded-eggs", {gradedEggsDate: date});
 		}
 
 		function exportData() {
@@ -119,7 +127,5 @@
 
 		    toasterService.success("Success", "Data exported successfully!");
 		}
-
-
 	}
 })();

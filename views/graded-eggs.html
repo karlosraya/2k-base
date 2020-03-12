@@ -25,7 +25,14 @@
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title">Graded Eggs</h4>
+				<h4 class="card-title">
+					Graded Eggs
+					<span class="pull-right">
+						<button class="btn btn-sm btn-dark" ng-click="vm.exportData()">
+							<span class="fa fa-table"></span> Export
+						</button>
+					</span>
+				</h4>
 				<p class="card-description" ng-if="vm.editingPermission">
 					{{vm.editingGradedEggs ? "Click on Submit to insert/update graded eggs data.": "Click on Edit to input/update graded eggs data."}}
 				</p>

@@ -34,12 +34,15 @@
 						</button>
 					</span>
 				</h4>
+				<p class="card-description" >
+					Click on the production date to see detailed report.
+				</p>
 				<div class="col-xs-12 scrollable padding-top-5">
 					<form name="gradedEggsForm">
-						<table class="table table-striped" id="gradedEggsTable">
+						<table class="table table-striped" id="gradedEggsTable" st-table="vm.gradedEggsReportCopy" st-safe-src="vm.gradedEggsReport">
 							<thead>
 								<tr>
-									<th>
+									<th st-sort="inputDate">
 										Production Date
 									</th>
 									<th ng-repeat="eggType in vm.eggTypes">
@@ -51,9 +54,11 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="report in vm.gradedEggsReport">
+								<tr ng-repeat="report in vm.gradedEggsReportCopy">
 									<td>
-										<a ng-click="">{{report.inputDate | dateFormat}}</a>
+										<a href ng-click="vm.viewGradedEggsReport(report.inputDate)">
+											{{report.inputDate | dateFormat}}
+										</a>
 									</td>
 									<td ng-repeat="eggType in vm.eggTypes">
 										{{report[eggType.key]}}
@@ -63,6 +68,13 @@
 									</td>
 								</tr>
 							</tbody>
+							<tfoot ng-if="vm.gradedEggsReport.length > 20">
+								<tr>
+									<td colspan="12" class="text-center">
+										<div st-pagination="" st-items-by-page="10" st-displayed-pages="5"></div>
+									</td>
+								</tr>
+							</tfoot>
 						</table>
 					</form>
 				</div>

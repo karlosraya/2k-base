@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('GradedEggsCtrl', GradedEggsCtrl);
 
-	GradedEggsCtrl.$inject = ['$state', '$filter', '$timeout', 'appService', 'gradedEggsService', 'productionService', 'exceptionService', 'toasterService'];
+	GradedEggsCtrl.$inject = ['$stateParams', '$filter', '$timeout', 'appService', 'gradedEggsService', 'productionService', 'exceptionService', 'toasterService'];
 
-	function GradedEggsCtrl($state, $filter, $timeout, appService, gradedEggsService, productionService, exceptionService, toasterService) {
+	function GradedEggsCtrl($stateParams, $filter, $timeout, appService, gradedEggsService, productionService, exceptionService, toasterService) {
 		var vm = this;
 
 		vm.loading = false;
@@ -14,7 +14,7 @@
 		vm.editingGradedEggs = false;
 		vm.editingPermission = false;
 
-		vm.gradedEggsDate = new Date();
+		vm.gradedEggsDate = null;
 
 		vm.editingRoles = ['administrator', 'editGradedEggs'];
 		vm.eggTypes = [
@@ -42,8 +42,14 @@
 		vm.verifyFields = verifyFields;
 		vm.back = back;
 		vm.selectDate = selectDate;
-
+		vm.exportData = exportData;
+		
 		function init() {
+			if($stateParams.gradedEggsDate) {
+				vm.gradedEggsDate = new Date($stateParams.gradedEggsDate);
+			} else {
+				vm.gradedEggsDate = new Date();
+			}
 			getGradedEggsByDate();
 			getProductionReportsByDate();
 			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
@@ -252,6 +258,71 @@
 				vm.loading = false;
 				exceptionService.catcher(error);
 			});
+		}
+		
+		function exportData() {
+			var csv = '';
+
+			var gradedEggsDateFiltered = $filter('dateFormat')(vm.gradedEggsDate);
+			
+			csv +=  "Graded Eggs - " + gradedEggsDateFiltered + "\r\n\n";
+			csv += ",Ungraded, PWW, PW, Pullets, Small, Medium, Large, Extra Large, Jumbo, Crack, Spoiled, Totals" + "\r\n";
+
+		    csv += "Beginning, " + vm.gradedEggsUngraded.beginning + ",";
+		    vm.eggTypes.forEach(function(eggType) {
+		    	csv+= vm.gradedEggsBeginning[eggType.key] + ",";
+		    });
+		    csv += vm.getTotal(vm.gradedEggsBeginning) + "\r\n";
+		    
+		    csv += "Production, " + vm.gradedEggsUngraded.production + ",";
+		    console.log(vm.gradedEggsPro);
+		    vm.eggTypes.forEach(function(eggType) {
+		    	var production = vm.gradedEggsProd[eggType.key] ? vm.gradedEggsProd[eggType.key] : 0;
+		    	csv+= production + ",";
+		    });
+		    csv += vm.getTotal(vm.gradedEggsProd) + "\r\n";
+		    
+		    csv += "Available, " + vm.gradedEggsUngraded.available + ",";
+		    vm.eggTypes.forEach(function(eggType) {
+		    	var beginning = vm.gradedEggsBeginning[eggType.key] ? vm.gradedEggsBeginning[eggType.key] : 0;
+		    	var production = vm.gradedEggsProd[eggType.key] ? vm.gradedEggsProd[eggType.key] : 0;
+		    	csv+= beginning + production + ",";
+		    });
+		    var totalBeginning = vm.getTotal(vm.gradedEggsBeginning) ? vm.getTotal(vm.gradedEggsBeginning) : 0
+		    var totalProduction = vm.getTotal(vm.gradedEggsProd) ? vm.getTotal(vm.gradedEggsProd) : 0;
+		    csv += (totalBeginning + totalProduction) + "\r\n";
+		    
+		    csv += "Total Out, " + ",";
+		    vm.eggTypes.forEach(function(eggType) {
+		    	var totalOut = vm.gradedEggsDailySales[eggType.key] ? vm.gradedEggsDailySales[eggType.key] : 0;
+		    	csv+= totalOut + ",";
+		    });
+		    var totalSales = vm.getTotal(vm.gradedEggsDailySales) ? vm.getTotal(vm.gradedEggsDailySales) : 0; 
+		    csv += totalSales + "\r\n";
+		    
+		    csv += "End, " + vm.gradedEggsUngraded.available + ",";
+		    vm.eggTypes.forEach(function(eggType) {
+		    	var beginning = vm.gradedEggsBeginning[eggType.key] ? vm.gradedEggsBeginning[eggType.key] : 0;
+		    	var production = vm.gradedEggsProd[eggType.key] ? vm.gradedEggsProd[eggType.key] : 0;
+		    	var totalOut = vm.gradedEggsDailySales[eggType.key] ? vm.gradedEggsDailySales[eggType.key] : 0;
+		    	csv+= (beginning + production - totalOut) + ",";
+		    });
+		    csv += (totalBeginning + totalProduction - totalSales) + "\r\n";
+		    
+		    var fileName = "GradedEggs_" + gradedEggsDateFiltered;
+		    
+		    var uri = 'data:text/csv;charset=utf-8,' + escape(csv);
+
+		    var link = document.createElement("a");    
+		    link.href = uri;
+		    link.style = "visibility:hidden";
+		    link.download = fileName + ".csv";
+		    
+		    document.body.appendChild(link);
+		    link.click();
+		    document.body.removeChild(link);
+
+		    toasterService.success("Success", "Data exported successfully!");
 		}
 	}
 })();
