@@ -103,7 +103,7 @@
 					.then(function(response) {
 						if(response && response.length > 0) {
 							response.forEach(function(invoice) {
-								invoice.remainingBalance = invoice.total - invoice.amountPaid;
+								invoice.remainingBalance = invoice.total - invoice.discount - invoice.amountPaid;
 							});
 
 							vm.invoices = response;
