@@ -13,6 +13,7 @@
 		vm.standardTargetBirdBalancePercentage = Constants.StandardTargetBirdBalancePercentage;
 		vm.standardWeeklyPercentage = Constants.StandardWeeklyPercentage;*/
 		vm.displayChart = 0;
+		vm.rowsPerPage = "20";
 		vm.loading = false;
 		vm.displayStats = false;
 		vm.displayReport = false;
@@ -21,6 +22,12 @@
 		vm.selectedHouse = null;
 
 		vm.deleteRoles = ['administrator', 'deleteEggProduction'];
+		vm.rowsPerPageOptions = [
+			{key: 20, value: 20},
+			{key: 50, value: 50},
+			{key: 100, value: 100},
+			{key: 10000, value: "All"}
+		];
 		vm.houseOptions = {};
 		vm.houseInfo = {};
 

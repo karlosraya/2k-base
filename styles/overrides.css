@@ -251,3 +251,8 @@ tr .st-sort-descent:before{
 .padding-top-5 {
 	padding-top: 5px;
 }
+
+.historical-reports-table-div {
+	max-height: 1350px;
+    overflow-y: auto;
+}

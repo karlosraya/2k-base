@@ -49,9 +49,15 @@
 						</p>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-12 scrollable" ng-if="vm.productionReports && vm.productionReports.length > 0">
-						<table st-table="vm.productionReportsCopy" st-safe-src="vm.productionReports" class="table table-striped">
+				<div class="text-right no-padding">
+					Rows per page: 
+					<select name="rows-per-page" ng-model="vm.rowsPerPage" 
+						ng-options="option.key as option.value for option in vm.rowsPerPageOptions">
+					</select>
+				</div>				
+				<div class="row padding-top-5">
+					<div class="col-12 scrollable historical-reports-table-div" ng-if="vm.productionReports && vm.productionReports.length > 0">
+						<table st-table="vm.productionReportsCopy" st-safe-src="vm.productionReports" class="table table-striped " id="historical-reports">
 							<thead>
 								<tr>
 						      		<th st-sort="reportDate">Date</th>
@@ -97,7 +103,7 @@
 							<tfoot ng-if="vm.productionReports.length > 20">
 								<tr>
 									<td colspan="15" class="text-center">
-										<div st-pagination="" st-items-by-page="20" st-displayed-pages="5"></div>
+										<div st-pagination="" st-items-by-page="vm.rowsPerPage" st-displayed-pages="5"></div>
 									</td>
 								</tr>
 							</tfoot>
