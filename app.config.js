@@ -439,12 +439,12 @@
                 resolve: {
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [standardCurrency]
+                            files: [standardCurrency, standardDropdown]
                         }]);
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [pricesService]
+                            files: [pricesService, customerService,]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -559,7 +559,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [invoiceService, customerService]
+                            files: [invoiceService, customerService, pricesService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {

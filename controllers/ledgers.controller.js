@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('LedgersCtrl', LedgersCtrl);
 
-	LedgersCtrl.$inject = ['$filter', '$timeout', 'appService', 'invoiceService', 'customerService', 'exceptionService', 'toasterService', 'alertService'];
+	LedgersCtrl.$inject = ['$filter', '$timeout', 'appService', 'invoiceService', 'customerService', 'pricesService', 'exceptionService', 'toasterService', 'alertService'];
 
-	function LedgersCtrl($filter, $timeout, appService, invoiceService, customerService, exceptionService, toasterService, alertService) {
+	function LedgersCtrl($filter, $timeout, appService, invoiceService, customerService, pricesService, exceptionService, toasterService, alertService) {
 		var vm = this;
 		
 		vm.loading = false;
@@ -34,6 +34,7 @@
 			{header: 'Spoiled', key: 'spoiled'}];
 
 		vm.customers = [];
+		vm.prices = {};
 		vm.customerInfo = {};
 		vm.invoice = {};
 		vm.invoiceItems = [];
@@ -189,7 +190,7 @@
 			vm.loading = true;
 
 			invoiceService.deleteInvoice(invoiceId)
-			.then(function(response) {
+			.then(function() {
 				getCustomerAccount(false, true) 
 				vm.loading = false;
 			})
@@ -244,8 +245,29 @@
 		function editInvoice() {
 			vm.viewingInvoice = false;
 			vm.editingInvoice = true;
+			getPrices();
 		}
 
+		function getPrices() {
+			vm.prices = {};
+			pricesService.getPricesByCustomerId(vm.invoice.customerId)
+			.then(function(response) {
+				if(response) {
+					vm.prices = response;
+					var keys = Object.keys(vm.prices);
+
+					keys.forEach(function(key) {
+						if(!vm.prices[key]) {
+							vm.prices[key] = 0;
+						}
+					});
+				}
+			})
+			.catch(function(error) {
+				exceptionService.catcher(error);
+			});
+		}
+		
 		function addInvoiceItem() {
 			var invoiceItem = {};
 			vm.invoiceItems.push(invoiceItem);
@@ -271,8 +293,6 @@
 
 		function getSubtotal() {
 			if(vm.invoiceItems && vm.invoiceItems.length > 0) {
-				var total = 0;
-
 				if(sumByProperty(vm.invoiceItems, "total")) {
 					return sumByProperty(vm.invoiceItems, "total");
 				} else {
@@ -296,12 +316,8 @@
 			} else if(form.$pristine) {
 				toasterService.warning("Warning", "No changes were made to the fields!");
 			} else {
-				if(verifyItems()) {
+				if(vm.invoiceItems && vm.invoiceItems.length == 0) {
 					toasterService.error("Error", "No items found on the invoice. Please add at least one item.");
-				} else if(verifyNoSimilarItem()) {
-					toasterService.error("Error", "Invoice has two or more entries of the same item. Please combine entries of the same item.");
-				} else if(verifyEggsAvailability()) {
-					toasterService.error("Error", "Not enough available eggs! Please review your invoice.");
 				} else {
 					if(vm.editingInvoice) {
 						confirmUpdateInvoice();
@@ -329,31 +345,14 @@
 
 			alertService.custom(confirmUpdateInvoiceAlertObject, confirmUpdateInvoiceAlertAction);
 		}
-
-		function verifyItems() {
-			return vm.invoiceItems && vm.invoiceItems.length == 0;
-		}
-
-		function verifyNoSimilarItem() {
-			for(var i=0; i<vm.eggTypes.length; i++) {
-				if(vm.invoiceItems.filter(item => item.eggType === vm.eggTypes[i].key).length > 1) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		function verifyEggsAvailability() {
-			return false;
-		}
-
 		function submitSale() {
 			var request = generateRequest();
 
 			vm.loading = true;
 			invoiceService.createUpdateInvoice(request)
-			.then(function(response) {
+			.then(function() {
 				getCustomerAccount(true);
+				back();
 			})
 			.catch(function(error) {
 				vm.loading = false;

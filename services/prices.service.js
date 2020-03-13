@@ -10,23 +10,23 @@
 		var baseUrl = Constants.LayersServiceBaseUrl;
 
 		var service = {
-			getPrices: getPrices,
+				getPricesByCustomerId: getPricesByCustomerId,
 			updatePrices: updatePrices
 		};
 
 		return service;
 		
-		function getPrices() {
-			return $http.get(baseUrl + 'prices')
+		function getPricesByCustomerId(customerId) {
+			return $http.get(baseUrl + 'prices/' + customerId)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: getPrices", response);
+				$log.info("INFO: getPricesByCustomerId", response);
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: getPrices", error);
+				$log.error("ERROR: getPricesByCustomerId", error);
 				return $q.reject(error);
 			}
 		}

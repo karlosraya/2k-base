@@ -1,11 +1,32 @@
 ﻿<div class="page-header">
 	<h4>Prices</h4>
 </div>
-<div class="row">
+<form >
+	<div class="row">
+		<div class="col-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">
+						Select customer
+					</h4>
+					<p class="card-description">
+						Set default prices for a customer.
+					</p>
+					<div class="row">
+							<div class="col-md-6" standard-dropdown header="Customer" 
+								model="vm.customerId" options="vm.customers" key="id" value="fullName"
+								change-action="vm.setCustomer()"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<div class="row" ng-if="vm.customerSelected">
 	<div class="col-12 grid-margin stretch-card">
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title"></h4>
+				<h4 class="card-title">Default Prices</h4>
 				<p class="card-description" ng-if="vm.editingPermission">
 					{{vm.editingPrices ? "Click on Submit to update default prices." : "Click on Edit to edit default prices."}}
 				</p>

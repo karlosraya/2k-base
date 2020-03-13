@@ -63,7 +63,6 @@
 			getAvailable();
 			getInvoicesByDate(vm.selectedDate);
 			getCustomers();
-			getPrices();
 			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
@@ -138,7 +137,11 @@
 					invoice.eggsSold = {};
 					if(invoice.items && invoice.items.length > 0) {
 						invoice.items.forEach(function(item) {
-							invoice.eggsSold[item.item] = item.quantity;
+							if(invoice.eggsSold[item.item]) {
+								invoice.eggsSold[item.item] += item.quantity;
+							} else {
+								invoice.eggsSold[item.item] = item.quantity;
+							}
 						});
 					}
 				});
@@ -163,7 +166,8 @@
 		}
 
 		function getPrices() {
-			pricesService.getPrices()
+			vm.prices = {};
+			pricesService.getPricesByCustomerId(vm.invoice.customerId)
 			.then(function(response) {
 				if(response) {
 					vm.prices = response;
@@ -244,6 +248,7 @@
 				vm.customer = vm.customers.find(function(customer) {
 				  return customer.id == vm.invoice.customerId;
 				});
+				getPrices();
 			});
 		}
 
@@ -284,8 +289,6 @@
 
 		function getSubtotal() {
 			if(vm.invoiceItems && vm.invoiceItems.length > 0) {
-				var total = 0;
-
 				if(sumByProperty(vm.invoiceItems, "total")) {
 					return sumByProperty(vm.invoiceItems, "total");
 				} else {
@@ -309,12 +312,8 @@
 			} else if(form.$pristine) {
 				toasterService.warning("Warning", "No changes were made to the fields!");
 			} else {
-				if(verifyItems()) {
+				if(vm.invoiceItems && vm.invoiceItems.length == 0) {
 					toasterService.error("Error", "No items found on the invoice. Please add at least one item.");
-				} else if(verifyNoSimilarItem()) {
-					toasterService.error("Error", "Invoice has two or more entries of the same item. Please combine entries of the same item.");
-				} else if(verifyEggsAvailability()) {
-					toasterService.error("Error", "Not enough available eggs! Please review your invoice.");
 				} else {
 					if(vm.editingInvoice) {
 						confirmUpdateInvoice();
@@ -343,29 +342,12 @@
 			alertService.custom(confirmUpdateInvoiceAlertObject, confirmUpdateInvoiceAlertAction);
 		}
 
-		function verifyItems() {
-			return vm.invoiceItems && vm.invoiceItems.length == 0;
-		}
-
-		function verifyNoSimilarItem() {
-			for(var i=0; i<vm.eggTypes.length; i++) {
-				if(vm.invoiceItems.filter(item => item.eggType === vm.eggTypes[i].key).length > 1) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		function verifyEggsAvailability() {
-			return false;
-		}
-
 		function submitSale() {
 			var request = generateRequest();
 
 			vm.loading = true;
 			invoiceService.createUpdateInvoice(request)
-			.then(function(response) {
+			.then(function() {
 				vm.loading = false;
 				getAvailable();
 				getInvoicesByDate(request.invoiceDate, back);
