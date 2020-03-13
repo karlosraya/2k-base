@@ -13,7 +13,7 @@
 			getFeedsDeliveryByDate: getFeedsDeliveryByDate,
 			getFeedsDelivered: getFeedsDelivered,
 			createUpdateFeedsDelivery: createUpdateFeedsDelivery,
-			addInitialFeedsBalance: addInitialFeedsBalance
+			deleteFeedsDelivery: deleteFeedsDelivery
 		};
 
 		return service;
@@ -64,17 +64,17 @@
 			}
 		}
 
-		function addInitialFeedsBalance(request) {
-			return $http.post(baseUrl + 'feeds-delivery/initial', request)
+		function deleteFeedsDelivery(id) {
+			return $http.get(baseUrl + 'feeds-delivery/delete/' + id)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
-				$log.info("INFO: addInitialFeedsBalance", response);
+				$log.info("INFO: deleteFeedsDelivery", response);
 				return response.data;
 			}
 
 			function errorCallback(error) {
-				$log.error("ERROR: addInitialFeedsBalance", error);
+				$log.error("ERROR: deleteFeedsDelivery", error);
 				return $q.reject(error);
 			}
 		}

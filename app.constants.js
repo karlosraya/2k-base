@@ -209,6 +209,7 @@
 	        	lockData: "Lock Data", 
 	         	viewFeedsDelivery: "View Feeds Delivery", 
 	         	editFeedsDelivery: "Edit Feeds Delivery", 
+	         	deleteFeedsDelivery: "Delete Feeds Delivery", 
 	         	viewEggProduction: "View Egg Production", 
 	        	editEggProduction: "Edit Egg Production (houseName)", 
 	         	deleteEggProduction: "Delete Eggs Production", 

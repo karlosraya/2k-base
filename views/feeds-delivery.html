@@ -23,32 +23,131 @@
 	</div>
 
 	<div class="row">
+		<div class="col-md-12 grid-margin">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="d-sm-flex align-items-baseline report-summary-header">
+								<h5 class="font-weight-semibold">Daily Summary</h5>
+							</div>
+						</div>
+					</div>
+					<div class="row report-inner-cards-wrapper">
+						<div class=" col-md -6 col-xl report-inner-card">
+							<div class="inner-card-text">
+								<span class="report-title">Beginning Balance</span>
+								<h4>{{vm.beginningBalance}}</h4>
+								<span class="report-count text-warning"></span>
+							</div>
+							<div class="inner-card-icon bg-primary">
+								<i class="fa fa-rocket" aria-hidden="true"></i>
+							</div>
+						</div>
+						<div class="col-md-6 col-xl report-inner-card">
+							<div class="inner-card-text">
+								<span class="report-title">Feeds Delivered</span>
+								<h4>{{vm.totalDelivered}}</h4>
+							</div>
+							<div class="inner-card-icon bg-success">
+								<i class="fa fa-truck" aria-hidden="true"></i>
+							</div>
+						</div>
+						<div class="col-md-6 col-xl report-inner-card">
+							<div class="inner-card-text">
+								<span class="report-title">Total Out</span>
+								<h4>{{vm.totalConsumption}}</h4>
+								<span class="report-count text-warning"></span>
+							</div>
+							<div class="inner-card-icon bg-danger">
+								<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+							</div>
+						</div>
+						<div class="col-md-6 col-xl report-inner-card">
+							<div class="inner-card-text">
+								<span class="report-title">Ending Balance</span>
+								<h4>{{vm.endBalance}}</h4>
+								<span class="report-count text-warning"></span>
+							</div>
+							<div class="inner-card-icon bg-warning">
+								<i class="fa fa-balance-scale" aria-hidden="true"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
 		<div class="col-md-6 col-sm-12 grid-margin stretch-card" ng-if="vm.displayFeedsDelivery">
 			<div class="card">
 				<div class="card-body">
 					<h4 class="card-title">
 						Delivery
 					</h4>
-					<p class="card-description">
-						Complete required input below and click on Submit to add/edit feeds delivery information.
+					<p class="card-description" ng-if="vm.editingPermission">
+						{{vm.editing ? 'Complete required input below and click on Submit to add/edit feeds delivery information.' : 
+						  vm.deliveries && vm.deliveries.length > 0 ? 'Click on Edit to update existing delivery information or Delete to discard delivery information.' : ""}}
 					</p>
-					<div class="row">
-						<div class="col-md-12">
-							<div standard-number class="col-md-12" header="Delivery Receipt Number" 
-								model="vm.delivery.deliveryReceiptNo" readonly="!vm.editingPermission" required="true"></div>
-							<div standard-text class="col-md-12" header="Beginning" 
-								model="vm.beginningBalance" readonly="true" required="false"></div>
-							<div standard-number class="col-md-12" header="Deliver" 
-								model="vm.delivery.delivery" readonly="!vm.editingPermission" required="true"
-								change-action="vm.computeBalance()"></div>
-							<div standard-number class="col-md-12" header="Out" 
-								model="vm.delivery.dailyConsumption" readonly="true"
-								change-action="vm.computeBalance()"></div>
-							<div standard-text class="col-md-12" header="Balance" 
-								model="vm.endBalance" readonly="true" required="false"></div>
+					<p class="card-description" ng-if="vm.deliveries && vm.deliveries.length == 0 && !vm.loading">
+						No deliveries made on {{vm.deliveryDate | dateFormat}}.
+					</p>
+					
+					<div class="row" ng-if="!vm.editing">
+						<div class="col-md-12 scrollable" ng-if="vm.deliveries && vm.deliveries.length > 0">
+							<table class="table table-striped" st-table="vm.deliveriesCopy" st-safe-src="vm.deliveries">
+								<thead>
+									<tr>
+							      		<th>Delivery Receipt No</th>
+							      		<th>Feeds Delivered</th>
+							      		<th></th>
+							    	</tr>
+							  	</thead>
+							  	<tbody>
+							    	<tr ng-repeat="delivery in vm.deliveries">
+							      		<td>
+							      			{{delivery.deliveryReceiptNo}}
+							      		</td>
+							      		<td>
+							      			{{delivery.delivery}}
+							      		</td>
+							      		<td class="text-center">
+							      			<button class="btn btn-dark btn-sm" ng-click="vm.editDelivery(delivery)" ng-if="vm.editingPermission">
+							      				<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+							      			</button>
+							      			<button class="btn btn-dark btn-sm" ng-click="vm.confirmDeleteReportAlert(delivery.id)" ng-if="vm.deletePermission">
+							      				<i class="fa fa-trash" aria-hidden="true"></i>
+							      			</button>
+							      		</td>
+							    	</tr>
+							  	</tbody>
+							  	<tfoot>
+							  		<tr>
+							      		<td>
+							      			<b>Total</b>
+							      		</td>
+							      		<td colspan="2">
+							      			<b>{{vm.totalDelivered}}</b>
+							      		</td>
+							    	</tr>
+							  	</tfoot>
+							</table>
 						</div>
 					</div>
-					<div class="col-xs-12 text-right" ng-if="vm.editingPermission">
+					<div class="col-xs-12 text-right" ng-if="vm.editingPermission && !vm.editing">
+						<button type="button" class="btn btn-dark" ng-click="vm.addDelivery(deliveryForm)">Add Delivery</button>
+					</div>
+					<div class="row" ng-if="vm.editing">
+						<div class="col-md-12">
+							<div standard-number class="col-md-12" header="Delivery Receipt Number" 
+								model="vm.deliveryData.deliveryReceiptNo" readonly="!vm.editingPermission" required="true"></div>
+							<div standard-number class="col-md-12" header="Deliver" 
+								model="vm.deliveryData.delivery" readonly="!vm.editingPermission" required="true"></div>
+						</div>
+					</div>
+					<div class="col-xs-12 text-right" ng-if="vm.editingPermission && vm.editing">
+						<button type="button" class="btn btn-secondary" ng-click="vm.back()">Back</button>
 						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(deliveryForm)">Submit</button>
 					</div>
 				</div>
@@ -87,7 +186,7 @@
 						      			<b>Total</b>
 						      		</td>
 						      		<td>
-						      			<b>{{vm.total}}</b>
+						      			<b>{{vm.totalConsumption}}</b>
 						      		</td>
 						    	</tr>
 						  	</tfoot>

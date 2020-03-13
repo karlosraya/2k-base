@@ -230,7 +230,7 @@
                 templateUrl: feedsDeliveryTemplate,
                 data: {
                     requiresAuth: true,
-                    allowedRoles: "viewFeedsDelivery,editFeedsDelivery,administrator"
+                    allowedRoles: "viewFeedsDelivery,editFeedsDelivery,deleteFeedsDelivery,administrator"
                 },
                 controller: "FeedsDeliveryCtrl",
                 controllerAs: "vm",
@@ -491,7 +491,7 @@
                 templateUrl: feedsDeliveredTemplate,
                 data: {
                     requiresAuth: true,
-                    allowedRoles: "viewFeedsDelivery,editFeedsDelivery,administrator"
+                    allowedRoles: "viewFeedsDelivery,editFeedsDelivery,deleteFeedsDelivery,administrator"
                 },
                 controller: "FeedsDeliveredCtrl",
                 controllerAs: "vm",
