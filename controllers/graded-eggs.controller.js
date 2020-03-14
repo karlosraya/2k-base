@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('GradedEggsCtrl', GradedEggsCtrl);
 
-	GradedEggsCtrl.$inject = ['$stateParams', '$filter', '$timeout', 'appService', 'gradedEggsService', 'productionService', 'exceptionService', 'toasterService'];
+	GradedEggsCtrl.$inject = ['$stateParams', '$filter', '$timeout', 'appService', 'gradedEggsService', 'productionService', 'dataLockService', 'exceptionService', 'toasterService'];
 
-	function GradedEggsCtrl($stateParams, $filter, $timeout, appService, gradedEggsService, productionService, exceptionService, toasterService) {
+	function GradedEggsCtrl($stateParams, $filter, $timeout, appService, gradedEggsService, productionService, dataLockService, exceptionService, toasterService) {
 		var vm = this;
 
 		vm.loading = false;
@@ -15,6 +15,7 @@
 		vm.editingPermission = false;
 
 		vm.gradedEggsDate = null;
+		vm.lockDate = null;
 
 		vm.editingRoles = ['administrator', 'editGradedEggs'];
 		vm.eggTypes = [
@@ -36,7 +37,8 @@
 		vm.gradedEggsUngraded = {};
 
 		vm.$onInit = init();
-
+		
+		vm.compareDate = appService.compareDate;
 		vm.getTotal = getTotal;
 		vm.editGradedEggs = editGradedEggs;
 		vm.verifyFields = verifyFields;
@@ -52,6 +54,7 @@
 			}
 			getGradedEggsByDate();
 			getProductionReportsByDate();
+			getLatestLockedDate();
 			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
@@ -222,11 +225,13 @@
 		}
 
 		function editGradedEggs(form) {
-			vm.gradedEggsProdCopy = angular.copy(vm.gradedEggsProd);
-			form.$submitted = false;
-			form.$setUntouched();
-			form.$setPristine();
-			vm.editingGradedEggs = true;
+			if(appService.checkLockDate(vm.gradedEggsDate)) {
+				vm.gradedEggsProdCopy = angular.copy(vm.gradedEggsProd);
+				form.$submitted = false;
+				form.$setUntouched();
+				form.$setPristine();
+				vm.editingGradedEggs = true;
+			}
 		}
 
 		function back() {
@@ -323,6 +328,18 @@
 		    document.body.removeChild(link);
 
 		    toasterService.success("Success", "Data exported successfully!");
+		}
+		
+		function getLatestLockedDate() {
+			dataLockService.getLatestLockedDate()
+			.then(function(response) {
+				appService.setLockDate(new Date(response.lockDate));
+				vm.lockDate = new Date(response.lockDate);
+			})
+			.catch(function(error){
+				console.log(error);
+				exceptionService.catcher(error);
+			});
 		}
 	}
 })();

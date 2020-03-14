@@ -94,7 +94,7 @@
 									<td>{{report.target | number : 2}}</td>
 									<td>{{report.actual | number : 2}}</td>
 									<td ng-if="vm.deletePermission">
-										<button class="btn btn-sm btn-dark" ng-click="vm.confirmDeleteReportAlert(report.id)" title="Delete">
+										<button class="btn btn-sm btn-dark" ng-click="vm.confirmDeleteReportAlert(report.id, report.reportDate)" title="Delete">
 											<i class="fa fa-trash" aria-hidden="true"></i>
 										</button>
 									</td>

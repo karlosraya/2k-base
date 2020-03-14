@@ -4,14 +4,15 @@
 	    .module('2kApp')
 	    .controller('EggsProductionCtrl', EggsProductionCtrl);
 
-	EggsProductionCtrl.$inject = ['$filter', '$timeout', 'appService', 'productionService', 'toasterService', 'exceptionService'];
+	EggsProductionCtrl.$inject = ['$filter', '$timeout', 'appService', 'productionService', 'dataLockService', 'toasterService', 'exceptionService'];
 
-	function EggsProductionCtrl($filter, $timeout, appService, productionService, toasterService, exceptionService) {
+	function EggsProductionCtrl($filter, $timeout, appService, productionService, dataLockService, toasterService, exceptionService) {
 		var vm = this;
 		
 		vm.loading = false;
-		vm.eggProdForm = null;
 		vm.editingPermission = false;
+		vm.eggProdForm = null;
+		vm.lockDate = null;
 
 		vm.editingRoles = ['administrator', 'editInvoice'];
 		vm.reportDate = new Date();
@@ -23,6 +24,7 @@
 
 		vm.$onInit = init();
 		
+		vm.compareDate = appService.compareDate;
 		vm.selectDate = selectDate;
 		vm.editEggsProd = editEggsProd;
 		vm.verifyFields = verifyFields;
@@ -35,6 +37,7 @@
 			vm.editing = false;
 
 			getProductionReportsByDate();
+			getLatestLockedDate();
 		}
 		
 		function getProductionReportsByDate(updated) {
@@ -129,12 +132,15 @@
 		}
 
 		function editEggsProd(data) {
-			vm.eggProdForm.$submitted = false;
-			vm.eggProdForm.$setUntouched();
-			vm.eggProdForm.$setPristine();
+			if(appService.checkLockDate(vm.reportDate)) {
 
-			vm.editing = true;
-			vm.eggProd = angular.copy(data);
+				vm.eggProdForm.$submitted = false;
+				vm.eggProdForm.$setUntouched();
+				vm.eggProdForm.$setPristine();
+
+				vm.editing = true;
+				vm.eggProd = angular.copy(data);
+			}
 		}
 
 		function verifyFields() {
@@ -184,6 +190,18 @@
 			});
 
 			return editPermission;
+		}
+		
+		function getLatestLockedDate() {
+			dataLockService.getLatestLockedDate()
+			.then(function(response) {
+				appService.setLockDate(new Date(response.lockDate));
+				vm.lockDate = new Date(response.lockDate);
+			})
+			.catch(function(error){
+				console.log(error);
+				exceptionService.catcher(error);
+			});
 		}
 	}
 })();

@@ -84,7 +84,7 @@
 									<button class="btn btn-sm btn-dark" ng-click="vm.viewInvoice(invoice.id)" title="View">
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</button>
-									<button class="btn btn-sm btn-dark" ng-click="vm.deleteInvoice(invoice.id)" title="Delete" ng-if="vm.deletePermission">
+									<button class="btn btn-sm btn-dark" ng-click="vm.deleteInvoice(invoice.id, invoice.invoiceDate)" title="Delete" ng-if="vm.deletePermission">
 										<i class="fa fa-trash" aria-hidden="true"></i>
 									</button>
 								</td>
@@ -250,7 +250,7 @@
 						<button type="button" class="btn btn-secondary" ng-click="vm.back()">
 							Back
 						</button>
-						<button class="btn btn-dark" ng-click="vm.editInvoice()" ng-if="vm.viewingInvoice && vm.editingPermission">
+						<button class="btn btn-dark" ng-click="vm.editInvoice(vm.invoice.invoiceDate)" ng-if="vm.viewingInvoice && vm.editingPermission">
 							Edit
 						</button>
 						<button class="btn btn-dark" ng-click="vm.verifyFields(invoiceForm)" ng-if="!vm.viewingInvoice">

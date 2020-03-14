@@ -4,9 +4,11 @@
 	    .module('2kApp')
 	    .controller('HistoricalReportsCtrl', HistoricalReportsCtrl);
 
-	HistoricalReportsCtrl.$inject = ['$stateParams', '$filter', '$timeout', 'appService', 'houseService', 'productionService', 'toasterService', 'exceptionService', 'alertService', 'Constants'];
+	HistoricalReportsCtrl.$inject = ['$stateParams', '$filter', '$timeout', 'appService', 'houseService', 'productionService', 
+		'dataLockService', 'toasterService', 'exceptionService', 'alertService', 'Constants'];
 
-	function HistoricalReportsCtrl($stateParams, $filter, $timeout, appService, houseService, productionService, toasterService, exceptionService, alertService, Constants) {
+	function HistoricalReportsCtrl($stateParams, $filter, $timeout, appService, houseService, productionService, 
+			dataLockService, toasterService, exceptionService, alertService, Constants) {
 		var vm = this;
 		
 		/*vm.standardTargetPercentage = Constants.StandardTargetPercentage;
@@ -19,6 +21,7 @@
 		vm.displayReport = false;
 		vm.deletePermission = false;
 
+		vm.lockDate = null;
 		vm.selectedHouse = null;
 
 		vm.deleteRoles = ['administrator', 'deleteEggProduction'];
@@ -54,7 +57,8 @@
 			vm.displayReport = false;
 			
 			getHouses();
-
+			getLatestLockedDate();
+			
 			if($stateParams.batchId) {
 				getProductionReportsByBatch();
 			}
@@ -408,23 +412,25 @@
 		    toasterService.success("Success", "Data exported successfully!");
 		}
 
-		function confirmDeleteReportAlert(reportId) {
+		function confirmDeleteReportAlert(reportId, reportDate) {
+			if(appService.checkLockDate(new Date(reportDate))) {
 
-			var deleteReportAlertObject = {
-			  	type: "warning",
-				title: 'Delete Record',
-  				text: "Are you sure you want to delete the record? Once deleted it can never be recovered.",
-  				showCancelButton: true,
-  				confirmButtonText: 'Yes'
-			};
+				var deleteReportAlertObject = {
+				  	type: "warning",
+					title: 'Delete Record',
+	  				text: "Are you sure you want to delete the record? Once deleted it can never be recovered.",
+	  				showCancelButton: true,
+	  				confirmButtonText: 'Yes'
+				};
 
-			var deleteReportAlertAction = function (result) {
-				if(result.value) {
-					deleteReport(reportId);
-				}
-			};
+				var deleteReportAlertAction = function (result) {
+					if(result.value) {
+						deleteReport(reportId);
+					}
+				};
 
-			alertService.custom(deleteReportAlertObject, deleteReportAlertAction);
+				alertService.custom(deleteReportAlertObject, deleteReportAlertAction);
+			}
 		}
 
 		function deleteReport(reportId) {
@@ -437,6 +443,18 @@
 			})
 			.catch(function(error) { 
 				vm.loading = false;
+				exceptionService.catcher(error);
+			});
+		}
+		
+		function getLatestLockedDate() {
+			dataLockService.getLatestLockedDate()
+			.then(function(response) {
+				appService.setLockDate(new Date(response.lockDate));
+				vm.lockDate = new Date(response.lockDate);
+			})
+			.catch(function(error){
+				console.log(error);
 				exceptionService.catcher(error);
 			});
 		}

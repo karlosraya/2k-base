@@ -7,17 +7,33 @@
 
 	function dataLockService($http, $log, $q, Constants) {
 
-		var baseUrl = Constants.LayersServiceBaseUrl;
+		var baseUrl = Constants.LayersServiceBaseUrl + 'data-lock';
 
 		var service = {
-			lockData: lockData,
-			computeLockedData: computeLockedData
+			getLatestLockedDate: getLatestLockedDate,
+			lockData: lockData
 		};
 
 		return service;
+
+
+		function getLatestLockedDate() {
+			return $http.get(baseUrl)
+			.then(successCallback, errorCallback);
+
+			function successCallback(response) {
+				$log.info("INFO: getLatestLockedDate", response);
+				return response.data;
+			}
+
+			function errorCallback(error) {
+				$log.error("ERROR: getLatestLockedDate", error);
+				return $q.reject(error);
+			}
+		}
 		
-		function lockData(data) {
-			return $http.post(baseUrl + 'lock-data', data)
+		function lockData(date) {
+			return $http.get(baseUrl + "/lock/" + date)
 			.then(successCallback, errorCallback);
 
 			function successCallback(response) {
@@ -27,21 +43,6 @@
 
 			function errorCallback(error) {
 				$log.error("ERROR: lockData", error);
-				return $q.reject(error);
-			}
-		}
-
-		function computeLockedData(date) {
-			return $http.get(baseUrl + 'lock-data/' + date)
-			.then(successCallback, errorCallback);
-
-			function successCallback(response) {
-				$log.info("INFO: computeLockedData", response);
-				return response.data;
-			}
-
-			function errorCallback(error) {
-				$log.error("ERROR: computeLockedData", error);
 				return $q.reject(error);
 			}
 		}

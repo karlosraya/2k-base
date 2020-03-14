@@ -4,9 +4,9 @@
 	    .module('2kApp')
 	    .controller('FeedsDeliveryCtrl', FeedsDeliveryCtrl);
 
-	FeedsDeliveryCtrl.$inject = ['$timeout', '$filter','appService', 'alertService', 'feedsDeliveryService', 'productionService', 'toasterService', 'exceptionService', 'Constants'];
+	FeedsDeliveryCtrl.$inject = ['$timeout', '$filter','appService', 'alertService', 'feedsDeliveryService', 'productionService', 'dataLockService', 'toasterService', 'exceptionService'];
 
-	function FeedsDeliveryCtrl($timeout, $filter, appService, alertService, feedsDeliveryService, productionService, toasterService, exceptionService, Constants) {
+	function FeedsDeliveryCtrl($timeout, $filter, appService, alertService, feedsDeliveryService, productionService, dataLockService, toasterService, exceptionService) {
 		var vm = this;
 		
 		vm.loading = false;
@@ -15,6 +15,7 @@
 		vm.displayFeedsConsumption = false;
 		vm.editingPermission = false;
 		vm.deletePermission = false;
+		vm.lockDate = null;
 		vm.beginningBalance = 0;
 		vm.totalDelivered = 0;
 		vm.totalConsumption = 0;
@@ -32,6 +33,7 @@
 		
 		vm.$onInit = init();
 
+		vm.compareDate = appService.compareDate;
 		vm.verifyFields = verifyFields;
 		vm.selectDate = selectDate;
 		vm.addDelivery = addDelivery;
@@ -42,6 +44,7 @@
 		function init() {
 			getFeedsDeliveryByDate();
 			getProductionReportsByDate();
+			getLatestLockedDate();
 			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 			vm.deletePermission = appService.checkMultipleUserRoles(vm.deleteRoles);
 		}
@@ -167,33 +170,38 @@
 		}
 
 		function addDelivery(form) {
-			form.$submitted = false;
-			vm.editing = true;
-			vm.deliveryData = {};
+			if(appService.checkLockDate(vm.deliveryDate)) {
+				form.$submitted = false;
+				vm.editing = true;
+				vm.deliveryData = {};
+			}
 		}
 		
 		function editDelivery(deliveryData) {
-			vm.editing = true;
-			vm.deliveryData = angular.copy(deliveryData);
+			if(appService.checkLockDate(vm.deliveryDate)) {
+				vm.editing = true;
+				vm.deliveryData = angular.copy(deliveryData);
+			}
 		}
 		
 		function confirmDeleteReportAlert(reportId) {
-
-			var deleteReportAlertObject = {
-			  	type: "warning",
-				title: 'Delete Record',
-  				text: "Are you sure you want to delete the record? Once deleted it can never be recovered.",
-  				showCancelButton: true,
-  				confirmButtonText: 'Yes'
-			};
-
-			var deleteReportAlertAction = function (result) {
-				if(result.value) {
-					deleteDelivery(reportId);
-				}
-			};
-
-			alertService.custom(deleteReportAlertObject, deleteReportAlertAction);
+			if(appService.checkLockDate(vm.deliveryDate)) {
+				var deleteReportAlertObject = {
+				  	type: "warning",
+					title: 'Delete Record',
+	  				text: "Are you sure you want to delete the record? Once deleted it can never be recovered.",
+	  				showCancelButton: true,
+	  				confirmButtonText: 'Yes'
+				};
+	
+				var deleteReportAlertAction = function (result) {
+					if(result.value) {
+						deleteDelivery(reportId);
+					}
+				};
+	
+				alertService.custom(deleteReportAlertObject, deleteReportAlertAction);
+			}
 		}
 		
 		function deleteDelivery(id) {
@@ -211,6 +219,18 @@
 		
 		function back() {
 			vm.editing = false;
+		}
+		
+		function getLatestLockedDate() {
+			dataLockService.getLatestLockedDate()
+			.then(function(response) {
+				appService.setLockDate(new Date(response.lockDate));
+				vm.lockDate = new Date(response.lockDate);
+			})
+			.catch(function(error){
+				console.log(error);
+				exceptionService.catcher(error);
+			});
 		}
 	}
 })();

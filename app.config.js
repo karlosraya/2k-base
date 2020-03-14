@@ -237,7 +237,7 @@
                 resolve: {
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [feedsDeliveryService, productionService]
+                            files: [feedsDeliveryService, productionService, dataLockService]
                         }]);
                     }],
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -270,7 +270,7 @@
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [productionService, houseService]
+                            files: [productionService, houseService, dataLockService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -298,7 +298,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [gradedEggsService, productionService]
+                            files: [gradedEggsService, productionService, dataLockService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -329,7 +329,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [customerService, pricesService, invoiceService, gradedEggsService]
+                            files: [customerService, pricesService, invoiceService, gradedEggsService, dataLockService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -444,7 +444,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [pricesService, customerService,]
+                            files: [pricesService, customerService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -472,7 +472,7 @@
                     }],
 					loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [houseService, productionService]
+                            files: [houseService, productionService, dataLockService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -559,7 +559,7 @@
                     }],
                     loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
-                            files: [invoiceService, customerService, pricesService]
+                            files: [invoiceService, customerService, pricesService, dataLockService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {
@@ -611,6 +611,11 @@
                     loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
                         return $ocLazyLoad.load([{
                             files: [standardNumber, standardDatepicker, standardText, standardDropdown]
+                        }]);
+                    }],
+                    loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [dataLockService]
                         }]);
                     }],
                     loadController: ["$ocLazyLoad", function($ocLazyLoad) {

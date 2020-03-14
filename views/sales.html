@@ -17,6 +17,10 @@
 						<div class="col-md-6" ng-if="vm.addingInvoice || vm.viewingInvoice || vm.editingInvoice" standard-dropdown header="Customer" 
 							model="vm.invoice.customerId" options="vm.customers" key="id" value="fullName" required="!vm.viewingInvoice" readonly="vm.viewingInvoice || vm.editingInvoice"
 							change-action="vm.setCustomer()"></div>
+						
+						<div class="col-md-12 text-danger" ng-if="vm.compareDate(vm.selectedDate)">
+	                   		<i class="fa fa-info-circle"></i> Data lock is enforced up to {{vm.lockDate | dateFormat}}!
+	                   	</div>
 					</div>
 
 					<div class="col-xs-12 text-right" ng-if="vm.addingInvoice && !vm.invoice.customerId">

@@ -3,18 +3,22 @@
 		.module('2kApp')
 		.factory('appService', appService);
 
-	appService.$inject = ['authService'];
-
-	function appService(authService) {
+	appService.$inject = ['$filter', 'toasterService'];
+	
+	function appService($filter, toasterService) {
 
 		var userDetails = {};
-
+		var lockDate = null;
+		
 		var service = {
 			setUserDetails: setUserDetails,
 			getUserDetails: getUserDetails,
 			getUserRoles: getUserRoles,
 			checkUserRoles: checkUserRoles,
-			checkMultipleUserRoles: checkMultipleUserRoles
+			checkMultipleUserRoles: checkMultipleUserRoles,
+			setLockDate: setLockDate,
+			checkLockDate: checkLockDate,
+			compareDate: compareDate
 		};
 
 		return service;
@@ -47,6 +51,29 @@
 					}
 				}
 				return false;
+			} else {
+				return false;
+			}
+		}
+		
+		function setLockDate(newLockDate) {
+			lockDate = newLockDate;
+		}
+		
+		function checkLockDate(date) {
+			if(compareDate(date)) {
+				toasterService.error("Error", "Data lock is enforced up to " + $filter('dateFormat')(lockDate) + "!");
+				return false;
+			} else {
+				return true;
+			}
+		}
+		function compareDate(date) {
+			if(lockDate && date) {
+				var lockDatePlain = lockDate.setHours(0,0,0,0);
+				var datePlain = date.setHours(0,0,0,0);
+				
+				return datePlain <= lockDatePlain;
 			} else {
 				return false;
 			}

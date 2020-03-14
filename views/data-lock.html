@@ -7,10 +7,15 @@
 			<div class="card-body">
 				<h4 class="card-title">Please select a date</h4>
 				<p class="card-description"></p>
-				<form>
-					<div class="col-xs-12">
+				<form name="dataLockForm">
+					<div class="col-xs-12" ng-if="vm.displayDate">
 						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.lockDate" required="true" change-action="vm.selectDate()"></div>
+							model="vm.lockDate" required="true" change-action="vm.selectDate()" min-date="vm.minDate"></div>
+					</div>
+					<div class="col-xs-12 text-right">
+						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields(dataLockForm)">
+							Submit
+						</button>
 					</div>
 				</form>
 			</div>

@@ -13,6 +13,7 @@
             scope: {
             	header:'@',
 				model:'=',
+				minDate: '=',
 				readonly: '=',
 				required: '=',
                 changeAction: "&"
@@ -29,6 +30,7 @@
 			scope.dateOptions = {
 				showWeeks:false,
 				maxDate: scope.maxDate,
+				minDate: scope.minDate,
                 formatYear: 'yyyy'
 			}
         }

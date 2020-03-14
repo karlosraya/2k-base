@@ -4,9 +4,11 @@
 	    .module('2kApp')
 	    .controller('SalesCtrl', SalesCtrl);
 
-	SalesCtrl.$inject = ['$timeout', '$filter', 'appService', 'customerService', 'pricesService', 'invoiceService', 'gradedEggsService', 'exceptionService', 'toasterService', 'alertService'];
+	SalesCtrl.$inject = ['$timeout', '$filter', 'appService', 'customerService', 'pricesService', 'invoiceService', 'gradedEggsService', 
+		'dataLockService', 'exceptionService', 'toasterService', 'alertService'];
 
-	function SalesCtrl($timeout, $filter, appService, customerService, pricesService, invoiceService, gradedEggsService, exceptionService, toasterService, alertService) {
+	function SalesCtrl($timeout, $filter, appService, customerService, pricesService, invoiceService, gradedEggsService, 
+			dataLockService, exceptionService, toasterService, alertService) {
 		var vm = this;
 		
 		vm.loading = false;
@@ -15,6 +17,7 @@
 		vm.viewingInvoice = false;
 		vm.editingInvoice = false;
 		vm.editingPermission = false;
+		vm.lockDate = null;
 
 		vm.editingRoles = ['administrator', 'editInvoice'];
 
@@ -42,7 +45,8 @@
 		vm.invoice = {};
 
 		vm.$onInit = init();
-
+		
+		vm.compareDate = appService.compareDate;
 		vm.selectDate = selectDate;
 		vm.viewInvoice = viewInvoice;
 		vm.editInvoice = editInvoice;
@@ -63,6 +67,7 @@
 			getAvailable();
 			getInvoicesByDate(vm.selectedDate);
 			getCustomers();
+			getLatestLockedDate();
 			vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
 		}
 
@@ -207,8 +212,10 @@
 		}
 
 		function editInvoice() {
-			vm.viewingInvoice = false;
-			vm.editingInvoice = true;
+			if(appService.checkLockDate(vm.selectedDate)) {
+				vm.viewingInvoice = false;
+				vm.editingInvoice = true;
+			}
 		}
 
 		function getInvoiceTotal(items) {
@@ -253,15 +260,17 @@
 		}
 
 		function addInvoice(form) {
-			form.$submitted = false;
-			form.$setUntouched();
-			form.$setPristine();
-
-			vm.addingInvoice = true;
-			vm.customer = {};
-			vm.invoiceItems = [];
-			vm.invoice = {};
-			vm.invoice.invoiceDate = vm.selectedDate;
+			if(appService.checkLockDate(vm.selectedDate)) {
+				form.$submitted = false;
+				form.$setUntouched();
+				form.$setPristine();
+	
+				vm.addingInvoice = true;
+				vm.customer = {};
+				vm.invoiceItems = [];
+				vm.invoice = {};
+				vm.invoice.invoiceDate = vm.selectedDate;
+			}
 		}
 
 		function addInvoiceItem() {
@@ -382,6 +391,18 @@
 			vm.addingInvoice = false;
 			vm.editingInvoice = false;
 			vm.viewingInvoice = false;
+		}
+		
+		function getLatestLockedDate() {
+			dataLockService.getLatestLockedDate()
+			.then(function(response) {
+				appService.setLockDate(new Date(response.lockDate));
+				vm.lockDate = new Date(response.lockDate);
+			})
+			.catch(function(error){
+				console.log(error);
+				exceptionService.catcher(error);
+			});
 		}
 	}
 })();

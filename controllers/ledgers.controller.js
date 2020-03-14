@@ -4,9 +4,11 @@
 	    .module('2kApp')
 	    .controller('LedgersCtrl', LedgersCtrl);
 
-	LedgersCtrl.$inject = ['$filter', '$timeout', 'appService', 'invoiceService', 'customerService', 'pricesService', 'exceptionService', 'toasterService', 'alertService'];
+	LedgersCtrl.$inject = ['$filter', '$timeout', 'appService', 'invoiceService', 'customerService', 'pricesService', 'dataLockService', 
+		'exceptionService', 'toasterService', 'alertService'];
 
-	function LedgersCtrl($filter, $timeout, appService, invoiceService, customerService, pricesService, exceptionService, toasterService, alertService) {
+	function LedgersCtrl($filter, $timeout, appService, invoiceService, customerService, pricesService, dataLockService, 
+			exceptionService, toasterService, alertService) {
 		var vm = this;
 		
 		vm.loading = false;
@@ -17,6 +19,7 @@
 		vm.customer = null;
 		vm.startDate = null;
 		vm.endDate = null;
+		vm.lockDate = null;
 
 		vm.editingRoles = ['administrator', 'editInvoice'];
 		vm.deleteRoles = ['administrator', 'deleteInvoice'];
@@ -61,7 +64,8 @@
 
 		function init() {
 			getCustomers();
-
+			getLatestLockedDate();
+			
 			var date = new Date();
 			vm.startDate = new Date(date.getFullYear(), date.getMonth(), 1);;
 			vm.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);;
@@ -168,22 +172,24 @@
 
 		}
 
-		function confirmDeleteInvoice(invoiceId) {
-			var confirmDeleteInvoiceAlertObject = {
-			  	type: "warning",
-				title: 'Delete Invoice',
-  				text: "Are you sure you want to delete this invoice? Once deleted it can never be recovered.",
-  				showCancelButton: true,
-  				confirmButtonText: 'Yes'
-			};
+		function confirmDeleteInvoice(invoiceId, invoiceDate) {
+			if(appService.checkLockDate(new Date(invoiceDate))) {
+				var confirmDeleteInvoiceAlertObject = {
+				  	type: "warning",
+					title: 'Delete Invoice',
+	  				text: "Are you sure you want to delete this invoice? Once deleted it can never be recovered.",
+	  				showCancelButton: true,
+	  				confirmButtonText: 'Yes'
+				};
 
-			var confirmDeleteInvoiceAlertAction = function (result) {
-				if(result.value) {
-					deleteInvoice(invoiceId) 
-				}
-			};
+				var confirmDeleteInvoiceAlertAction = function (result) {
+					if(result.value) {
+						deleteInvoice(invoiceId) 
+					}
+				};
 
-			alertService.custom(confirmDeleteInvoiceAlertObject, confirmDeleteInvoiceAlertAction);
+				alertService.custom(confirmDeleteInvoiceAlertObject, confirmDeleteInvoiceAlertAction);
+			}
 		}
 
 		function deleteInvoice(invoiceId) {
@@ -242,10 +248,12 @@
 			return eggType.header;
 		}
 
-		function editInvoice() {
-			vm.viewingInvoice = false;
-			vm.editingInvoice = true;
-			getPrices();
+		function editInvoice(invoiceDate) {
+			if(appService.checkLockDate(new Date(invoiceDate))) {
+				vm.viewingInvoice = false;
+				vm.editingInvoice = true;
+				getPrices();
+			}
 		}
 
 		function getPrices() {
@@ -345,6 +353,7 @@
 
 			alertService.custom(confirmUpdateInvoiceAlertObject, confirmUpdateInvoiceAlertAction);
 		}
+		
 		function submitSale() {
 			var request = generateRequest();
 
@@ -383,6 +392,18 @@
 		function back() {
 			vm.editingInvoice = false;
 			vm.viewingInvoice = false;
+		}
+		
+		function getLatestLockedDate() {
+			dataLockService.getLatestLockedDate()
+			.then(function(response) {
+				appService.setLockDate(new Date(response.lockDate));
+				vm.lockDate = new Date(response.lockDate);
+			})
+			.catch(function(error){
+				console.log(error);
+				exceptionService.catcher(error);
+			});
 		}
 	}
 })();

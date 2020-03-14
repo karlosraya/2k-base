@@ -12,10 +12,13 @@
 					Select a date to edit graded eggs data for that date.
 				</p>
 				<form>
-					<div class="col-xs-12">
+					<div>
 						<div class="col-md-6" standard-datepicker header="Date" 
 							model="vm.gradedEggsDate" required="true" change-action="vm.selectDate()"></div>
 					</div>
+					<div class="col-md-6 text-danger" ng-if="vm.compareDate(vm.gradedEggsDate)">
+                   		<i class="fa fa-info-circle"></i> Data lock is enforced up to {{vm.lockDate | dateFormat}}!
+                   	</div>
 				</form>
 			</div>
 		</div>

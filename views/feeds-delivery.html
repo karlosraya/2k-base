@@ -13,9 +13,12 @@
 					<p class="card-description">
 						Select a date to edit feeds delivery information for that date.
 					</p>
-					<div class="col-xs-12">
+					<div>
 						<div class="col-md-6" standard-datepicker header="Date" 
 							model="vm.deliveryDate" required="true" change-action="vm.selectDate(deliveryForm)"></div>
+						<div class="col-md-6 text-danger" ng-if="vm.compareDate(vm.deliveryDate)">
+                      		<i class="fa fa-info-circle"></i> Data lock is enforced up to {{vm.lockDate | dateFormat}}!
+                      	</div>
 					</div>
 				</div>
 			</div>
@@ -90,7 +93,7 @@
 						{{vm.editing ? 'Complete required input below and click on Submit to add/edit feeds delivery information.' : 
 						  vm.deliveries && vm.deliveries.length > 0 ? 'Click on Edit to update existing delivery information or Delete to discard delivery information.' : ""}}
 					</p>
-					<p class="card-description" ng-if="vm.deliveries && vm.deliveries.length == 0 && !vm.loading">
+					<p class="card-description" ng-if="vm.deliveries && vm.deliveries.length == 0 && !vm.loading && !vm.editing">
 						No deliveries made on {{vm.deliveryDate | dateFormat}}.
 					</p>
 					
