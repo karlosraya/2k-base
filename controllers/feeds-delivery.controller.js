@@ -137,7 +137,7 @@
 			$timeout(function() {
 				var delivery = sum(vm.dailyReport.deliveries, "delivery");
 				vm.totalDelivered = delivery;
-				var totalAvailable = parseInt(vm.dailyReport.totalAvailable);
+				var totalAvailable = vm.dailyReport.totalAvailable;
 				
 				vm.endBalance = totalAvailable + delivery - vm.dailyReport.dailyConsumption;
 			});
