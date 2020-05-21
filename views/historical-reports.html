@@ -72,6 +72,8 @@
 									<th st-sort="targetProduction">Target Production</th>
 									<th st-sort="feeds">Feeds</th>
 									<th st-sort="grams">Grams</th>
+									<th st-sort="birdPerDayGrams" class="text-center">Bird/Day (g)</th>
+									<th st-sort="hundredbirdsPerDayPounds" class="text-center">100 Birds/Day (lbs)</th>
 									<th st-sort="target">Target</th>
 									<th st-sort="actual">Actual</th>
 									<th ng-if="vm.deletePermission"></th>
@@ -91,6 +93,8 @@
 									<td>{{report.targetProduction}}</td>
 									<td>{{report.feeds}}</td>
 									<td>{{report.grams | number : 3}}</td>
+									<td>{{report.birdPerDayGrams}}</td>
+									<td>{{report.hundredbirdsPerDayPounds}}</td>
 									<td>{{report.target | number : 2}}</td>
 									<td>{{report.actual | number : 2}}</td>
 									<td ng-if="vm.deletePermission">
