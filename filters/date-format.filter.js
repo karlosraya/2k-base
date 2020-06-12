@@ -9,7 +9,6 @@
        return function (input) {
             if(input) {
                 var date = new Date(input);
-                date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
                 return $filter('date')(date, "M/d/yyyy");
             } else {
                 return null;
