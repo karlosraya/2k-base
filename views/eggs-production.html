@@ -53,7 +53,7 @@
                                     {{data.houseName}}
                                 </td>
                                 <td>
-                                    {{data.feeds}}
+                                    {{data.feeds | number}}
                                 </td>
                                 <td>
                                     {{data.eggProduction}}
@@ -83,7 +83,7 @@
                                     <b>Total</b>
                                 </td>
                                 <td>
-                                    <b>{{vm.total.feeds}}</b>
+                                    <b>{{vm.total.feeds | number}}</b>
                                 </td>
                                 <td>
                                     <b>{{vm.total.eggProduction}}</b>

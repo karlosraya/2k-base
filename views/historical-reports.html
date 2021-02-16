@@ -82,12 +82,12 @@
                                     <td>{{report.cull}}</td>
                                     <td>{{report.mortality}}</td>
                                     <td>{{report.birdBalance}}</td>
-                                    <td>{{report.targetBirdBalance}}</td>
+                                    <td>{{report.targetBirdBalance | number : 0}}</td>
                                     <td>{{report.eggProduction}}</td>
                                     <td>{{report.actualPercentage | number : 2}}%</td>
                                     <td>{{report.targetPercentage || report.targetPercentage == 0 ? report.targetPercentage + "%" : null}}</td>
                                     <td>{{report.targetProduction}}</td>
-                                    <td>{{report.feeds}}</td>
+                                    <td>{{report.feeds | number}}</td>
                                     <td>{{report.grams | number : 3}}</td>
                                     <td>{{report.birdPerDayGrams}}</td>
                                     <td>{{report.hundredbirdsPerDayPounds}}</td>

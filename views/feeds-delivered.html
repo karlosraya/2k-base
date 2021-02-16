@@ -48,7 +48,7 @@
 					      			{{feeds.deliveryReceiptNo}}
 					      		</td>
 					      		<td>
-					      			{{feeds.delivery}}
+					      			{{feeds.delivery | number}}
 					      		</td>
 					    	</tr>
 							<tfoot ng-if="vm.feedsDeliveryHistory.length > 15">

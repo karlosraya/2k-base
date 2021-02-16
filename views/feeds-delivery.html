@@ -39,7 +39,7 @@
                         <div class=" col-md -6 col-xl report-inner-card">
                             <div class="inner-card-text">
                                 <span class="report-title">Beginning Balance</span>
-                                <h4>{{vm.beginningBalance}}</h4>
+                                <h4>{{vm.beginningBalance | number}}</h4>
                                 <span class="report-count text-warning"></span>
                             </div>
                             <div class="inner-card-icon bg-primary">
@@ -49,7 +49,7 @@
                         <div class="col-md-6 col-xl report-inner-card">
                             <div class="inner-card-text">
                                 <span class="report-title">Feeds Delivered</span>
-                                <h4>{{vm.totalDelivered}}</h4>
+                                <h4>{{vm.totalDelivered | number}}</h4>
                             </div>
                             <div class="inner-card-icon bg-success">
                                 <i class="fa fa-truck" aria-hidden="true"></i>
@@ -58,7 +58,7 @@
                         <div class="col-md-6 col-xl report-inner-card">
                             <div class="inner-card-text">
                                 <span class="report-title">Total Out</span>
-                                <h4>{{vm.totalConsumption}}</h4>
+                                <h4>{{vm.totalConsumption | number}}</h4>
                                 <span class="report-count text-warning"></span>
                             </div>
                             <div class="inner-card-icon bg-danger">
@@ -68,7 +68,7 @@
                         <div class="col-md-6 col-xl report-inner-card">
                             <div class="inner-card-text">
                                 <span class="report-title">Ending Balance</span>
-                                <h4>{{vm.endBalance}}</h4>
+                                <h4>{{vm.endBalance | number}}</h4>
                                 <span class="report-count text-warning"></span>
                             </div>
                             <div class="inner-card-icon bg-warning">
@@ -112,7 +112,7 @@
                                             {{delivery.deliveryReceiptNo}}
                                         </td>
                                         <td>
-                                            {{delivery.delivery}}
+                                            {{delivery.delivery | number}}
                                         </td>
                                         <td class="text-center">
                                             <button class="btn btn-dark btn-sm" ng-click="vm.editDelivery(delivery)" ng-if="vm.editingPermission">
@@ -130,7 +130,7 @@
                                             <b>Total</b>
                                         </td>
                                         <td colspan="2">
-                                            <b>{{vm.totalDelivered}}</b>
+                                            <b>{{vm.totalDelivered | number}}</b>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -176,7 +176,7 @@
                                         {{data.houseName}}
                                     </td>
                                     <td>
-                                        {{data.feeds}}
+                                        {{data.feeds | number}}
                                     </td>
                                 </tr>
                             </tbody>
@@ -186,7 +186,7 @@
                                         <b>Total</b>
                                     </td>
                                     <td>
-                                        <b>{{vm.totalConsumption}}</b>
+                                        <b>{{vm.totalConsumption | number}}</b>
                                     </td>
                                 </tr>
                             </tfoot>
