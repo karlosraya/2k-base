@@ -1,157 +1,145 @@
 ﻿<div class="page-header">
-	<h4>Input</h4>
+    <h4>Input</h4>
 </div>
 <div class="row">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">
-					Production Date
-				</h4>
-				<p class="card-description">
-					Select a date to edit eggs production data for that date.
-				</p>
-				<form>
-					<div>
-						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.reportDate" required="true" change-action="vm.selectDate()"></div>
-						<div class="col-md-6 text-danger" ng-if="vm.compareDate(vm.reportDate)">
-	                   		<i class="fa fa-info-circle"></i> Data lock is enforced up to {{vm.lockDate | dateFormat}}!
-	                   	</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    Production Date
+                </h4>
+                <p class="card-description">
+                    Select a date to edit eggs production data for that date.
+                </p>
+                <form>
+                    <div>
+                        <div class="col-md-6" standard-datepicker header="Date" model="vm.reportDate" required="true" change-action="vm.selectDate()"></div>
+                        <div class="col-md-6 text-danger" ng-if="vm.compareDate(vm.reportDate)">
+                            <i class="fa fa-info-circle"></i> Data lock is enforced up to {{vm.lockDate | dateFormat}}!
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row" ng-show="!vm.editing">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">
-					Eggs Production
-				</h4>
-				<p class="card-description">
-					Click on Edit to input/update data.
-				</p>
-				<div class="col-xs-12 scrollable">
-					<table st-table="vm.eggsProductionDataCopy" st-safe-src="vm.eggsProductionData" class="table table-striped">
-						<thead>
-							<tr>
-					      		<th st-sort="houseName">House</th>
-					      		<th st-sort="feeds">Feeds</th>
-					      		<th st-sort="eggProduction">Eggs Produced</th>
-					      		<th st-sort="beginningBirdBalance">Beginning Bird Balance</th>
-					      		<th st-sort="cull">Culls</th>
-					      		<th st-sort="mortality">Mortality</th>
-					      		<th st-sort="endingBirdBalance">Ending Bird Balance</th>
-					      		<th></th>
-					    	</tr>
-					  	</thead>
-					  	<tbody>
-					    	<tr ng-repeat="data in vm.eggsProductionDataCopy">
-					      		<td>
-					      			{{data.houseName}}
-					      		</td>
-					      		<td>
-					      			{{data.feeds}}
-					      		</td>
-					      		<td>
-					      			{{data.eggProduction}}
-					      		</td>
-					      		<td>
-					      			{{data.beginningBirdBalance}}
-					      		</td>
-					      		<td>
-					      			{{data.cull}}
-					      		</td>
-					      		<td>	
-					      			{{data.mortality}}
-					      		</td>
-					      		<td>
-					      			{{data.endingBirdBalance}}
-					      		</td>
-					      		<td>
-					      			<button class="btn btn-sm btn-dark" ng-click="vm.editEggsProd(data)" ng-if="vm.editPermission(data.houseName)">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    Eggs Production
+                </h4>
+                <p class="card-description">
+                    Click on Edit to input/update data.
+                </p>
+                <div class="col-xs-12 scrollable">
+                    <table st-table="vm.eggsProductionDataCopy" st-safe-src="vm.eggsProductionData" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th st-sort="houseName">House</th>
+                                <th st-sort="feeds">Feeds</th>
+                                <th st-sort="eggProduction">Eggs Produced</th>
+                                <th st-sort="beginningBirdBalance">Beginning Bird Balance</th>
+                                <th st-sort="cull">Culls</th>
+                                <th st-sort="mortality">Mortality</th>
+                                <th st-sort="endingBirdBalance">Ending Bird Balance</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="data in vm.eggsProductionDataCopy">
+                                <td>
+                                    {{data.houseName}}
+                                </td>
+                                <td>
+                                    {{data.feeds}}
+                                </td>
+                                <td>
+                                    {{data.eggProduction}}
+                                </td>
+                                <td>
+                                    {{data.beginningBirdBalance}}
+                                </td>
+                                <td>
+                                    {{data.cull}}
+                                </td>
+                                <td>
+                                    {{data.mortality}}
+                                </td>
+                                <td>
+                                    {{data.endingBirdBalance}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-dark" ng-click="vm.editEggsProd(data)" ng-if="vm.editPermission(data.houseName)">
 					      				Edit
 					      			</button>
-					      		</td>
-					    	</tr>
-					  	</tbody>
-					  	<tfoot>
-					  		<tr>
-					      		<td>
-					      			<b>Total</b>
-					      		</td>
-					      		<td>
-					      			<b>{{vm.total.feeds}}</b>
-					      		</td>
-					      		<td>
-					      			<b>{{vm.total.eggProduction}}</b>
-					      		</td>
-					      		<td>
-					      			<b>{{vm.total.beginningBirdBalance}}</b>
-					      		</td>
-					      		<td colspan="2"></td>
-					      		<td>
-					      			<b>{{vm.total.endingBirdBalance}}</b>
-					      		</td>
-					      		<td></td>
-					    	</tr>
-					  	</tfoot>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <b>Total</b>
+                                </td>
+                                <td>
+                                    <b>{{vm.total.feeds}}</b>
+                                </td>
+                                <td>
+                                    <b>{{vm.total.eggProduction}}</b>
+                                </td>
+                                <td>
+                                    <b>{{vm.total.beginningBirdBalance}}</b>
+                                </td>
+                                <td colspan="2"></td>
+                                <td>
+                                    <b>{{vm.total.endingBirdBalance}}</b>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row" ng-show="vm.editing">
-	<div class="col-12 grid-margin stretch-card">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">
-					Eggs Production
-				</h4>
-				<p class="card-description">
-					Complete required input below and click on Submit to add/edit egg production data.
-				</p>
-				<form name="vm.eggProdForm" class="form-sample" novalidate>
-					<div class="row">
-						<div class="col-md-6" standard-datepicker header="Date" 
-							model="vm.eggProd.reportDate" readonly="true" required="true"></div>
-						<div class="col-md-6" standard-dropdown header="House" 
-							model="vm.eggProd.houseId" readonly="true" required="true"
-							options="vm.houseOptions" key="id" value="name" ></div>
-					</div>
-					<div class="row">
-						<div standard-number class="col-md-6" header="Feeds" 
-							model="vm.eggProd.feeds" readonly="false" required="true"></div>
-						<div standard-number class="col-md-6" header="Eggs Produced" 
-							model="vm.eggProd.eggProduction" readonly="false" required="true"></div>
-					</div>
-					<div class="row">
-						<div standard-number class="col-md-12" header="Beginning Bird Balance" 
-							model="vm.eggProd.beginningBirdBalance" readonly="true" required="false"></div>
-					</div>
-					<div class="row">
-						<div standard-number class="col-md-6" header="Cull" 
-							model="vm.eggProd.cull" readonly="false" required="false"
-							change-action="vm.getEndingBirdBalance()"></div>
-						<div standard-number class="col-md-6" header="Mortality" 
-							model="vm.eggProd.mortality" readonly="false" required="false"
-							change-action="vm.getEndingBirdBalance()"></div>
-					</div>
-					<div class="row">
-						<div standard-number class="col-md-12" header="Ending Bird Balance" 
-							model="vm.eggProd.endingBirdBalance" readonly="true" required="false"></div>
-					</div>
-					<div class="col-xs-12 text-right">
-						<button type="submit" class="btn btn-dark" ng-click="vm.verifyFields()">Submit</button>
-						<button type="button" class="btn btn-secondary" ng-click="vm.back()">Back</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    Eggs Production
+                </h4>
+                <p class="card-description">
+                    Complete required input below and click on Submit to add/edit egg production data.
+                </p>
+                <form name="vm.eggProdForm" class="form-sample" novalidate>
+                    <div class="row">
+                        <div class="col-md-6" standard-datepicker header="Date" model="vm.eggProd.reportDate" readonly="true" required="true"></div>
+                        <div class="col-md-6" standard-dropdown header="House" model="vm.eggProd.houseId" readonly="true" required="true" options="vm.houseOptions" key="id" value="name"></div>
+                    </div>
+                    <div class="row">
+                        <div standard-number class="col-md-6" header="Feeds" model="vm.eggProd.feeds" readonly="false" required="true"></div>
+                        <div standard-number class="col-md-6" header="Eggs Produced" model="vm.eggProd.eggProduction" readonly="false" required="true"></div>
+                    </div>
+                    <div class="row">
+                        <div standard-number class="col-md-12" header="Beginning Bird Balance" model="vm.eggProd.beginningBirdBalance" readonly="true" required="false"></div>
+                    </div>
+                    <div class="row">
+                        <div standard-number class="col-md-6" header="Cull" model="vm.eggProd.cull" readonly="false" required="false" change-action="vm.getEndingBirdBalance()"></div>
+                        <div standard-number class="col-md-6" header="Mortality" model="vm.eggProd.mortality" readonly="false" required="false" change-action="vm.getEndingBirdBalance()"></div>
+                    </div>
+                    <div class="row">
+                        <div standard-number class="col-md-12" header="Ending Bird Balance" model="vm.eggProd.endingBirdBalance" readonly="true" required="false"></div>
+                    </div>
+                    <div class="col-xs-12 text-right">
+                        <button type="submit" class="btn btn-dark" ng-click="vm.verifyFields()">Submit</button>
+                        <button type="button" class="btn btn-secondary" ng-click="vm.back()">Back</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 <loading-spinner is-loading="vm.loading"></loading-spinner>
