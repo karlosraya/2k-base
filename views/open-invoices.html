@@ -1,0 +1,95 @@
+﻿<div class="page-header">
+    <h4>Open Invoices</h4>
+</div>
+<form ng-if="(!vm.viewingInvoice && !vm.editingInvoice)">
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        Please Select Date Range
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-6" standard-datepicker header="Start Date" model="vm.startDate" change-action="vm.selectDate()"></div>
+                        <div class="col-md-6" standard-datepicker header="End Date" model="vm.endDate" change-action="vm.selectDate()"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <span class="pull-right">
+						<button class="btn btn-sm btn-dark" ng-click="vm.exportData()">
+							<span class="fa fa-table"></span> Export</button>
+                    </span>
+                </h4>
+                <span class="text-left">
+                    Rows per page: 
+                    <select name="rows-per-page" ng-model="vm.rowsPerPage" 
+                        ng-options="option.key as option.value for option in vm.rowsPerPageOptions">
+                    </select>
+                </span>
+                <div class="col-12 scrollable historical-reports-table-div margin-top-5">
+                    <table class="table" st-table="vm.openInvoicesCopy" st-safe-src="vm.openInvoices">
+                        <thead>
+                            <tr>
+                                <th colspan="4"><input st-search="" class="form-control" placeholder="Search" type="text" /></th>
+                            </tr>
+                            <tr>
+                                <th st-sort="customerName">Invoice #</th>
+                                <th st-sort="maxAge">Delivery Date</th>
+                                <th st-sort="maxAge">Age (days)</th>
+                                <th st-sort="totalOpenBalance">Open Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="openInvoice in vm.openInvoicesCopy">
+                                <td>
+                                    <b>{{openInvoice.customerName}}</b> <br>
+                                    <span ng-repeat="invoice in openInvoice.customerInvoices">
+                                        <a href="#" class="margin-left-10">{{invoice.invoiceNumber}}</a><br>
+                                    </span>
+                                    <p class="open-invoice-p"><b>Total {{openInvoice.customerName}}</b></p>
+                                </td>
+                                <td class="open-invoice-td">
+                                    <span ng-repeat="invoice in openInvoice.customerInvoices">
+                                        <br>{{invoice.invoiceDate}}
+                                    </span>
+                                </td>
+                                <td class="open-invoice-td">
+                                    <span ng-repeat="invoice in openInvoice.customerInvoices" ng-class="{'text-danger font-weight-bold': invoice.age > 30}">
+                                        <br>{{invoice.age}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span ng-repeat="invoice in openInvoice.customerInvoices">
+                                        <br>{{invoice.openBalance | currency : '₱'}}
+                                    </span>
+                                    <br>
+                                    <p class="open-invoice-p">
+                                        <b class="open-invoice-total">{{openInvoice.totalOpenBalance | currency : '₱'}}</b>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot ng-if="vm.openInvoices.length > 20">
+                            <tr>
+                                <td colspan="15" class="text-center">
+                                    <div st-pagination="" st-items-by-page="vm.rowsPerPage" st-displayed-pages="5"></div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<loading-spinner is-loading="vm.loading"></loading-spinner>

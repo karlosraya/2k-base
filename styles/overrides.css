@@ -6,21 +6,23 @@
     padding: 0.75rem 1.5rem;
 }
 
-.btn-sm, .btn-group-sm > .btn {
+.btn-sm,
+.btn-group-sm>.btn {
     padding: 0.5rem 0.75rem;
 }
 
 table {
-	font-size: 0.8125rem;
+    font-size: 0.8125rem;
 }
 
-.table td, .table th {
+.table td,
+.table th {
     padding: 5px;
     vertical-align: middle;
 }
 
 .add-button {
-	float: right;
+    float: right;
     margin-bottom: 5px;
 }
 
@@ -55,14 +57,14 @@ select.form-control {
 }
 
 .spinner-container {
-    position:fixed;
-    padding:0;
-    margin:0;
-    top:0;
-    left:0;
+    position: fixed;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background:rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.5);
     z-index: 10000;
 }
 
@@ -136,7 +138,8 @@ select.form-control {
     background-color: #e9ecef;
 }
 
-.table td, .table th {
+.table td,
+.table th {
     height: 40px;
 }
 
@@ -144,15 +147,16 @@ select.form-control {
     overflow: auto;
 }
 
-tr .st-sort-ascent:before{
+tr .st-sort-ascent:before {
     content: '\25B2';
 }
 
-tr .st-sort-descent:before{
+tr .st-sort-descent:before {
     content: '\25BC';
 }
 
-.pagination > li > a, .pagination > li > span {
+.pagination>li>a,
+.pagination>li>span {
     position: relative;
     float: left;
     padding: 6px 12px;
@@ -164,7 +168,12 @@ tr .st-sort-descent:before{
     border: 1px solid #3e4b5b;
 }
 
-.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+.pagination>.active>a,
+.pagination>.active>span,
+.pagination>.active>a:hover,
+.pagination>.active>span:hover,
+.pagination>.active>a:focus,
+.pagination>.active>span:focus {
     z-index: 3;
     color: #fff;
     cursor: default;
@@ -184,7 +193,12 @@ tr .st-sort-descent:before{
     margin-bottom: 10px;
 }
 
-.form-control, .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--single .select2-search__field, .typeahead, .tt-query, .tt-hint {
+.form-control,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--single .select2-search__field,
+.typeahead,
+.tt-query,
+.tt-hint {
     font-size: 0.8725rem;
 }
 
@@ -195,13 +209,15 @@ tr .st-sort-descent:before{
     height: 300px;
 }
 
-.ms-container .ms-selectable, .ms-container .ms-selection {
+.ms-container .ms-selectable,
+.ms-container .ms-selection {
     background: #ffffff;
     color: #495057;
     font-size: 0.8725rem;
 }
 
-.ms-container .ms-selectable li.ms-elem-selectable, .ms-container .ms-selection li.ms-elem-selection {
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection {
     border-bottom: 1px solid #e8ecf1;
     padding: 0px;
     color: #495057;
@@ -215,7 +231,8 @@ tr .st-sort-descent:before{
     box-shadow: unset;
 }
 
-.ms-container .ms-selectable li.ms-hover, .ms-container .ms-selection li.ms-hover {
+.ms-container .ms-selectable li.ms-hover,
+.ms-container .ms-selection li.ms-hover {
     background-color: #d8d8d8;
     color: #495057;
 }
@@ -249,10 +266,32 @@ tr .st-sort-descent:before{
 }
 
 .padding-top-5 {
-	padding-top: 5px;
+    padding-top: 5px;
 }
 
 .historical-reports-table-div {
-	max-height: 1350px;
+    max-height: 1350px;
     overflow-y: auto;
+}
+
+.open-invoice-p {
+    margin-top: 5px;
+    margin-bottom: 0px;
+    font-size: 0.8125rem
+}
+
+.open-invoice-total {
+    border-top: 1px solid;
+}
+
+.open-invoice-td {
+    vertical-align: top !important;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
 }

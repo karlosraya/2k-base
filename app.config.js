@@ -111,6 +111,7 @@
         var feedsDeliveryCtrl = "controllers/feeds-delivery.controller.js";
         var feedsDeliveredCtrl = "controllers/feeds-delivered.controller.js";
         var ledgersCtrl = "controllers/ledgers.controller.js";
+        var openInvoicesCtrl = "controllers/open-invoices.controller.js";
         var gradedEggsHistoryCtrl = "controllers/graded-eggs-history.controller.js";
 
 		//directives
@@ -154,6 +155,7 @@
         var feedsDeliveredTemplate = "views/feeds-delivered.html";
         var feedsDeliveryTemplate = "views/feeds-delivery.html";
         var ledgersTemplate = "views/ledgers.html";
+        var openInvoicesTemplate = "views/open-invoices.html";
         var gradedEggsHistoryTemplate = "views/graded-eggs-history.html"
 		
     	$urlRouterProvider.otherwise("/login");
@@ -566,6 +568,34 @@
                         return $ocLazyLoad.load([{
                             name: "2kApp",
                             files: [ledgersCtrl]
+                        }]);
+                    }]
+                }
+            })
+            .state("main.open-invoices", {
+                url: "open-invoices",
+                templateUrl: openInvoicesTemplate,
+                data: {
+                    requiresAuth: true,
+                    allowedRoles: "viewInvoice,editInvoice,deleteInvoice,administrator"
+                },
+                controller: "OpenInvoicesCtrl",
+                controllerAs: "vm",
+                resolve: {
+                    loadDirectives: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [standardDropdown, standardDatepicker]
+                        }]);
+                    }],
+                    loadServices: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            files: [invoiceService, customerService, pricesService, dataLockService]
+                        }]);
+                    }],
+                    loadController: ["$ocLazyLoad", function($ocLazyLoad) {
+                        return $ocLazyLoad.load([{
+                            name: "2kApp",
+                            files: [openInvoicesCtrl]
                         }]);
                     }]
                 }
