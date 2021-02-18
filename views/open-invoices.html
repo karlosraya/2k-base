@@ -25,7 +25,7 @@
             <div class="card-body">
                 <h4 class="card-title">
                     <span class="pull-right">
-						<button class="btn btn-sm btn-dark" ng-click="vm.exportData()">
+						<button class="btn btn-sm btn-dark" ng-click="vm.exportData()" disabled>
 							<span class="fa fa-table"></span> Export</button>
                     </span>
                 </h4>
@@ -53,7 +53,7 @@
                                 <td>
                                     <b>{{openInvoice.customerName}}</b> <br>
                                     <span ng-repeat="invoice in openInvoice.customerInvoices">
-                                        <a href="#" class="margin-left-10">{{invoice.invoiceNumber}}</a><br>
+                                      {{invoice.invoiceNumber}}<br>
                                     </span>
                                     <p class="open-invoice-p"><b>Total {{openInvoice.customerName}}</b></p>
                                 </td>
