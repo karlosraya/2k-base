@@ -96,7 +96,7 @@
         }
 
         function getOpenInvoiceByDate(request) {
-            return $http.post(baseUrl + 'invoices/open', request)
+            return $http.post(baseUrl + 'invoice/open', request)
                 .then(successCallback, errorCallback);
 
             function successCallback(response) {

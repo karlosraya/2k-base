@@ -19,13 +19,13 @@
     </div>
 </form>
 
-<div class="row">
+<div class="row" ng-show="!vm.viewingInvoice">
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">
                     <span class="pull-right">
-						<button class="btn btn-sm btn-dark" ng-click="vm.exportData()" disabled>
+						<button class="btn btn-sm btn-dark" ng-click="vm.exportOpenInvoices()">
 							<span class="fa fa-table"></span> Export</button>
                     </span>
                 </h4>
@@ -53,13 +53,13 @@
                                 <td>
                                     <b>{{openInvoice.customerName}}</b> <br>
                                     <span ng-repeat="invoice in openInvoice.customerInvoices">
-                                      {{invoice.invoiceNumber}}<br>
+                                      <a href="" ng-click="vm.viewInvoice(invoice.id)">{{invoice.invoiceNumber}}</a><br>
                                     </span>
                                     <p class="open-invoice-p"><b>Total {{openInvoice.customerName}}</b></p>
                                 </td>
                                 <td class="open-invoice-td">
                                     <span ng-repeat="invoice in openInvoice.customerInvoices">
-                                        <br>{{invoice.invoiceDate}}
+                                        <br>{{invoice.invoiceDate | dateFormat}}
                                     </span>
                                 </td>
                                 <td class="open-invoice-td">
@@ -86,6 +86,113 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-if="vm.viewingInvoice">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="invoice-wrapper col-sm-12 no-padding">
+                        <div class="invoice-header">
+                            INVOICE
+                        </div>
+                        <div class="invoice-body">
+                            <div class="col-sm-12">
+                                <h4>Bill To:</h4>
+                                {{vm.customer.fullName}}
+                                <br ng-if="vm.customer.address"> {{vm.customer.address}}
+                                <br ng-if="vm.customer.companyName"> {{vm.customer.companyName}}
+                                <br ng-if="vm.customer.phoneNumber">
+                                <br ng-if="vm.customer.phoneNumber"> {{vm.customer.phoneNumber ? "Phone: " + vm.customer.phoneNumber : null}}
+                            </div>
+                            <div class="col-sm-3 offset-sm-9">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Invoice #</td>
+                                            <td>
+                                                {{vm.invoice.invoiceNumber}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td>{{vm.invoice.invoiceDate | dateFormat}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-12 scrollable">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Item</td>
+                                            <td>Description</td>
+                                            <td>Quantity</td>
+                                            <td>Price</td>
+                                            <td>Total</td>
+                                        </tr>
+                                        <tr ng-repeat="item in vm.invoice.items">
+                                            <td class="cell-input-min-width">
+                                                {{vm.getEggTypeHeader(item.item)}}
+                                            </td>
+                                            <td class="cell-input-min-width">
+                                                {{item.description}}
+                                            </td>
+                                            <td class="cell-input-min-width">
+                                                {{item.quantity}}
+                                            </td>
+                                            <td class="cell-input-min-width">
+                                                {{item.price | currency : "₱" }}
+                                            </td>
+                                            <td class="cell-input-min-width">
+                                                {{item.price * item.quantity | currency : "₱" }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-3 offset-sm-9">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Subtotal</td>
+                                            <td>{{vm.invoice.subtotal | currency : "₱"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Discount</td>
+                                            <td>
+                                                {{vm.invoice.discount | currency : "₱" }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total</td>
+                                            <td>{{vm.invoice.subtotal - vm.invoice.discount | currency : "₱"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Amount Paid</td>
+                                            <td>
+                                                {{vm.invoice.amountPaid | currency : "₱" }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Amount Due</td>
+                                            <td>{{vm.invoice.subtotal - vm.invoice.discount - vm.invoice.amountPaid | currency : "₱"}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 text-right">
+                    <button type="button" class="btn btn-secondary" ng-click="vm.back()">
+                        Back
+                    </button>
                 </div>
             </div>
         </div>

@@ -4,27 +4,36 @@
         .module('2kApp')
         .controller('OpenInvoicesCtrl', OpenInvoicesCtrl);
 
-    OpenInvoicesCtrl.$inject = ['$filter', '$timeout', 'appService', 'invoiceService', 'customerService', 'pricesService', 'dataLockService',
-        'exceptionService', 'toasterService', 'alertService'
-    ];
+    OpenInvoicesCtrl.$inject = ['$filter', '$timeout', 'appService', 'invoiceService', 'customerService', 'exceptionService', 'toasterService'];
 
-    function OpenInvoicesCtrl($filter, $timeout, appService, invoiceService, customerService, pricesService, dataLockService,
-        exceptionService, toasterService, alertService) {
+    function OpenInvoicesCtrl($filter, $timeout, appService, invoiceService, customerService, exceptionService, toasterService) {
         var vm = this;
 
         vm.loading = false;
         vm.startDate = null;
         vm.endDate = null;
-        vm.lockDate = null;
-
-        vm.editingRoles = ['administrator', 'editInvoice'];
-        vm.deleteRoles = ['administrator', 'deleteInvoice'];
+        vm.invoice = null;
+        vm.customer = null;
+        vm.viewingInvoice = false;
 
         vm.rowsPerPage = 20;
         vm.rowsPerPageOptions = [
             { key: 20, value: 20 },
             { key: 50, value: 50 },
             { key: 100, value: 100 }
+        ];
+
+        vm.eggTypes = [
+            { header: 'PWW', key: 'pww' },
+            { header: 'PW', key: 'pw' },
+            { header: 'Pullets', key: 'pullets' },
+            { header: 'Small', key: 'small' },
+            { header: 'Medium', key: 'medium' },
+            { header: 'Large', key: 'large' },
+            { header: 'Extra Large', key: 'extraLarge' },
+            { header: 'Jumbo', key: 'jumbo' },
+            { header: 'Crack', key: 'crack' },
+            { header: 'Spoiled', key: 'spoiled' }
         ];
 
         vm.customers = [];
@@ -35,17 +44,17 @@
 
         vm.selectDate = selectDate;
         vm.getTotal = getTotal;
+        vm.exportOpenInvoices = exportOpenInvoices;
+        vm.viewInvoice = viewInvoice;
+        vm.getEggTypeHeader = getEggTypeHeader;
+        vm.back = back;
 
         function init() {
-            getLatestLockedDate();
             getCustomers();
 
             var date = new Date();
-            vm.startDate = new Date(date.getFullYear(), date.getMonth(), 1);;
-            vm.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);;
-
-            vm.editingPermission = appService.checkMultipleUserRoles(vm.editingRoles);
-            vm.deletePermission = appService.checkMultipleUserRoles(vm.deleteRoles);
+            vm.startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+            vm.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
         }
 
         function getCustomers() {
@@ -109,17 +118,6 @@
             return transformedOpenInvoices;
         }
 
-        function getLatestLockedDate() {
-            dataLockService.getLatestLockedDate()
-                .then(function(response) {
-                    appService.setLockDate(new Date(response.lockDate));
-                    vm.lockDate = new Date(response.lockDate);
-                })
-                .catch(function(error) {
-                    exceptionService.catcher(error);
-                });
-        }
-
         function getCustomerName(customerId) {
             return vm.customers.find(function(customer) {
                 return customer.id == customerId;
@@ -137,6 +135,66 @@
 
         function getTotal(invoices) {
             return invoices.reduce((a, b) => a + (b['openBalance'] || 0), 0);
+        }
+
+        function exportOpenInvoices() {
+            var csv = '';
+
+            csv += '"Open Invoices - ' + $filter('date')(vm.startDate, "MMM dd, yyyy") + " to " + $filter('date')(vm.endDate, "MMM dd, yyyy") + '"' + "\r\n\n";
+
+            csv += "Customer/Invoice #,Delivery Date,Age(days),Open Balance" + "\r\n";
+
+            var fileName = "OpenInvoices_" + "_" + $filter('date')(vm.startDate, "MMMddyyyy") + "_" + $filter('date')(vm.endDate, "MMMddyyyy");
+
+            vm.openInvoicesCopy.forEach(function(openInvoice) {
+                csv += openInvoice.customerName + "\r\n";
+                openInvoice.customerInvoices.forEach(function(invoice) {
+                    csv += invoice.invoiceNumber + ',"' + $filter('date')(invoice.invoiceDate, "MMM dd, yyyy") + '",' + invoice.age + "," + '"' + $filter('currency')(invoice.openBalance, "") + '"' + "\r\n";
+                });
+                csv += "Total " + openInvoice.customerName + ',,,"' + $filter('currency')(openInvoice.totalOpenBalance, "") + '"' + "\r\n";
+                csv += "\r\n";
+            });
+
+            var uri = 'data:text/csv;charset=utf-8,' + escape(csv);
+
+            var link = document.createElement("a");
+            link.href = uri;
+            link.style = "visibility:hidden";
+            link.download = fileName + ".csv";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            toasterService.success("Success", "Data exported successfully!");
+        }
+
+        function viewInvoice(invoiceId) {
+            vm.loading = true;
+            invoiceService.getInvoiceById(invoiceId)
+                .then(function(response) {
+                    vm.invoice = response;
+                    vm.customer = vm.customers.find(function(customer) {
+                        return customer.id == response.customerId;
+                    });
+                    vm.loading = false;
+                    vm.viewingInvoice = true;
+                })
+                .catch(function(error) {
+                    exceptionService.catcher(error);
+                    vm.loading = false;
+                });
+        }
+
+        function getEggTypeHeader(key) {
+            var eggType = vm.eggTypes.find(function(element) {
+                return element.key == key;
+            });
+            return eggType.header;
+        }
+
+        function back() {
+            vm.viewingInvoice = false;
         }
     }
 })();
